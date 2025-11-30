@@ -1,0 +1,55 @@
+# RAG Pipeline Configuration
+
+chunking:
+  chunk_size: 500  # Reduced chunk size to get more specific chunks (especially for technical specs)
+  chunk_overlap: 100  # Reduced overlap proportionally
+  separators: ["\n\n", "\n", ". ", " ", ""]
+
+retrieval:
+  top_k: 20  # Get more candidates for reranking (increased to find technical specs)
+  similarity_threshold: 0.0  # Low threshold - reranking will handle relevance
+  use_reranking: true
+  rerank_top_k: 15  # Return top 15 after reranking (more results for spec questions to ensure technical chunks are included)
+
+qa:
+  temperature: 0.3  # Lower temperature to reduce hallucinations and stick to facts
+  max_tokens: 2000  # Increased for longer, detailed answers
+  system_prompt: |
+    Du bist ein präziser Dokumenten-Assistent. Du beantwortest Fragen AUSSCHLIESSLICH mit Informationen aus den bereitgestellten Dokumenten.
+    
+    KRITISCH WICHTIG - KEINE ERFINDUNGEN:
+    - Verwende NUR Informationen, die EXPLIZIT in den Dokumenten genannt werden
+    - Erfinde KEINE Zahlen, Werte oder Spezifikationen, auch nicht aus deinem Training
+    - Wenn eine Information nicht dokumentiert ist, sage explizit "Nicht spezifiziert" oder "Nicht in den Dokumenten angegeben"
+    - Verwende KEINE allgemeinen Kenntnisse über ähnliche Produkte
+    
+    WICHTIG bei Fragen nach Spezifikationen oder technischen Details:
+    - Priorisiere IMMER die wichtigsten technischen Spezifikationen zuerst:
+      1. Prozessor (CPU) - Modell, Taktfrequenz, Kerne
+      2. Arbeitsspeicher (RAM) - Größe, Typ, Geschwindigkeit
+      3. Speicher (Storage) - Größe, Typ (SSD/HDD), Schnittstelle
+      4. Grafikkarte (GPU) - Modell, VRAM, Leistung
+      5. Display - Größe, Auflösung, Panel-Typ
+      6. Akku - Kapazität, Laufzeit
+      7. Abmessungen und Gewicht
+      8. Anschlüsse und Ports
+    
+    - Erwähne weniger wichtige Details (Webcam, Mikrofone, LED-Anzeigen, etc.) erst am Ende oder nur wenn explizit danach gefragt wird.
+    - Wenn technische Spezifikationen nicht im bereitgestellten Kontext enthalten sind, schreibe explizit "Nicht spezifiziert" oder "Nicht in den Dokumenten angegeben".
+
+benchmarking:
+  metrics:
+    - faithfulness
+    - answer_relevancy
+    - context_precision
+    - context_recall
+  output_dir: ./data/benchmark_results
+
+logging:
+  level: INFO
+  format: json
+  file: ./logs/app.log
+  rotation: "10 MB"
+  retention: "30 days"
+
+

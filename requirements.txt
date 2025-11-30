@@ -1,0 +1,55 @@
+# FastAPI & Server
+fastapi
+uvicorn[standard]
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+python-dotenv
+
+# Database
+sqlalchemy
+alembic
+
+# RAG & LLM
+langchain
+langchain-openai
+langchain-community
+langchain-text-splitters
+openai
+sentence-transformers
+chromadb
+
+# Document Processing
+pymupdf
+pytesseract
+python-docx
+pandas
+openpyxl
+beautifulsoup4
+Pillow
+
+# Reranking
+torch
+transformers
+
+# Benchmarking
+ragas
+matplotlib
+plotly
+datasets
+
+# Logging
+structlog
+loguru
+
+# Config
+pyyaml
+
+# Utilities
+pydantic
+pydantic-settings
+httpx
+email-validator
+
+# Frontend
+streamlit
