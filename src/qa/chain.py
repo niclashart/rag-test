@@ -51,40 +51,52 @@ class QAChain:
         """Format retrieved documents as context."""
         context_parts = []
         
-        # For spec queries, ensure we include important spec types even if they're further back
-        # Group chunks by type and prioritize important ones
+        # For spec queries, reorder chunks to prioritize important spec types
+        # but keep ALL chunks - don't filter any out
         important_spec_chunks = []
         other_chunks = []
         
-            for doc in retrieved_docs:
-                text_lower = doc.get("text", "").lower()
-                is_important = False
-                
-                # Check if this is an important spec chunk (Processor, Battery, Weight, Dimensions, Display)
-                # Processor chunks with model names
-                if (("processor" in text_lower or "cpu" in text_lower or "prozessor" in text_lower) and 
-                    (any(brand in text_lower for brand in ["intel", "amd", "core", "ryzen", "ultra", "i3", "i5", "i7", "i9"]) or
-                     any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"]))):
-                    is_important = True
-                # Battery chunks
-                elif (("battery" in text_lower or "akku" in text_lower) and any(unit in text_lower for unit in ["w", "wh", "capacity"])):
-                    is_important = True
-                # Weight chunks
-                elif (("weight" in text_lower or "gewicht" in text_lower) and any(unit in text_lower for unit in ["kg", "lbs", "g"])):
-                    is_important = True
-                # Dimensions chunks
-                elif (("dimensions" in text_lower or "abmessungen" in text_lower) and any(unit in text_lower for unit in ["mm", "inches", "cm"])):
-                    is_important = True
-                # Display chunks
-                elif (("display" in text_lower or "screen" in text_lower) and any(unit in text_lower for unit in ["nits", "inch", "resolution"])):
-                    is_important = True
+        for doc in retrieved_docs:
+            text_lower = doc.get("text", "").lower()
+            is_important = False
+            
+            # Check if this is an important spec chunk (Processor, RAM, Storage, Battery, Weight, Dimensions, Display)
+            # Processor chunks with model names
+            if (("processor" in text_lower or "cpu" in text_lower or "prozessor" in text_lower) and 
+                (any(brand in text_lower for brand in ["intel", "amd", "core", "ryzen", "ultra", "i3", "i5", "i7", "i9"]) or
+                 any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"]))):
+                is_important = True
+            # RAM/Memory chunks
+            elif (("memory" in text_lower or "ram" in text_lower or "speicher" in text_lower or "arbeitsspeicher" in text_lower) and 
+                  any(unit in text_lower for unit in ["gb", "ddr4", "ddr5", "ddr3", "sodimm"])):
+                is_important = True
+            # Storage chunks
+            elif (("storage" in text_lower or "ssd" in text_lower or "hdd" in text_lower) and 
+                  any(unit in text_lower for unit in ["gb", "tb", "m.2", "capacity"])):
+                is_important = True
+            # Battery chunks
+            elif (("battery" in text_lower or "akku" in text_lower) and any(unit in text_lower for unit in ["w", "wh", "capacity"])):
+                is_important = True
+            # Weight chunks
+            elif (("weight" in text_lower or "gewicht" in text_lower) and any(unit in text_lower for unit in ["kg", "lbs", "g"])):
+                is_important = True
+            # Dimensions chunks
+            elif (("dimensions" in text_lower or "abmessungen" in text_lower) and any(unit in text_lower for unit in ["mm", "inches", "cm"])):
+                is_important = True
+            # Display chunks
+            elif (("display" in text_lower or "screen" in text_lower) and any(unit in text_lower for unit in ["nits", "inch", "resolution", "fhd", "uhd", "4k"])):
+                is_important = True
+            # Graphics/GPU chunks
+            elif (("graphics" in text_lower or "gpu" in text_lower or "grafik" in text_lower) and 
+                  any(brand in text_lower for brand in ["intel", "amd", "nvidia", "arc", "radeon"])):
+                is_important = True
             
             if is_important:
                 important_spec_chunks.append(doc)
             else:
                 other_chunks.append(doc)
         
-        # Combine: important chunks first, then others (but limit total to avoid too long context)
+        # Combine: important chunks first, then others (keep ALL chunks)
         all_chunks = important_spec_chunks + other_chunks
         
         for i, doc in enumerate(all_chunks, 1):
@@ -314,10 +326,10 @@ Antwort:"""
         is_general_spec = any(kw in question_lower for kw in ["spezifikation", "specification", "specs", "technische"]) and \
                          not any(kw in question_lower for kw in ["akku", "battery", "gewicht", "weight", "dimensions", "abmessungen", "display", "screen", "prozessor", "cpu", "ram", "memory"])
         
-        # For general spec queries, ensure important spec chunks (Battery, Weight, Dimensions) are included
-        # even if they have lower similarity scores
-        if is_general_spec and len(retrieved_docs) > 30:
-            # Separate important spec chunks from others
+        # For general spec queries, ensure important spec chunks are included
+        # but don't limit too aggressively - keep all retrieved docs, just reorder them
+        if is_general_spec and len(retrieved_docs) > 50:
+            # Separate important spec chunks from others for reordering
             important_chunks = []
             other_chunks = []
             
@@ -329,15 +341,18 @@ Antwort:"""
                                 any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"]))) or \
                               (("battery" in text_lower or "akku" in text_lower) and any(unit in text_lower for unit in ["w", "wh", "capacity"])) or \
                               (("weight" in text_lower or "gewicht" in text_lower) and any(unit in text_lower for unit in ["kg", "lbs", "g"])) or \
-                              (("dimensions" in text_lower or "abmessungen" in text_lower) and any(unit in text_lower for unit in ["mm", "inches", "cm"]))
+                              (("dimensions" in text_lower or "abmessungen" in text_lower) and any(unit in text_lower for unit in ["mm", "inches", "cm"])) or \
+                              (("display" in text_lower or "screen" in text_lower) and any(unit in text_lower for unit in ["nits", "inch", "resolution"])) or \
+                              (("memory" in text_lower or "ram" in text_lower or "speicher" in text_lower) and any(unit in text_lower for unit in ["gb", "ddr4", "ddr5"])) or \
+                              (("storage" in text_lower or "ssd" in text_lower) and any(unit in text_lower for unit in ["gb", "tb", "m.2"]))
                 
                 if is_important:
                     important_chunks.append(doc)
                 else:
                     other_chunks.append(doc)
             
-            # Take top 30 from others + all important chunks (up to reasonable limit)
-            retrieved_docs = other_chunks[:30] + important_chunks[:10]
+            # Reorder: important chunks first, then others (but keep ALL chunks, don't limit)
+            retrieved_docs = important_chunks + other_chunks
         
         context = self.format_context(retrieved_docs)
         result = self.answer(question, context, return_sources=True, chat_history=chat_history)
