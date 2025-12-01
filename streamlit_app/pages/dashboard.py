@@ -9,8 +9,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 API_BASE_URL = "http://localhost:8000"
 
 def get_headers():
-    """Get authorization headers."""
-    return {"Authorization": f"Bearer {st.session_state.access_token}"}
+    """Get headers (no authentication needed)."""
+    return {}
 
 def show_dashboard():
     """Show dashboard page."""

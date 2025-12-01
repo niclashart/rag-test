@@ -11,17 +11,16 @@ from pydantic import BaseModel
 import time
 
 from database.database import get_db
-from database.models import User, Document
+from database.models import Document
 from database.crud import (
     create_document,
-    get_user_documents,
+    get_all_documents,
     get_document_by_id,
     update_document_status,
     delete_document,
     create_chunk,
     get_document_chunks
 )
-from backend.dependencies import get_current_active_user
 from src.ingestion.loader import DocumentLoader
 from src.ingestion.pdf_processor import PDFProcessor
 from src.chunking.chunker import Chunker
@@ -82,7 +81,6 @@ def document_to_response(document: Document) -> DocumentResponse:
 @router.post("/upload", response_model=DocumentResponse, status_code=status.HTTP_201_CREATED)
 async def upload_document(
     file: UploadFile = File(...),
-    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
     """Upload a document."""
@@ -94,14 +92,13 @@ async def upload_document(
             detail=f"File too large. Maximum size: {MAX_UPLOAD_SIZE / 1024 / 1024}MB"
         )
     
-    # Create user-specific directory
-    user_upload_dir = UPLOAD_DIR / str(current_user.id)
-    user_upload_dir.mkdir(parents=True, exist_ok=True)
+    # Create upload directory (no user-specific subdirectories)
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
     
     # Generate unique filename
     file_extension = Path(file.filename).suffix
     unique_filename = f"{uuid.uuid4()}{file_extension}"
-    file_path = user_upload_dir / unique_filename
+    file_path = UPLOAD_DIR / unique_filename
     
     # Save file
     with open(file_path, "wb") as f:
@@ -113,37 +110,34 @@ async def upload_document(
     # Create document record
     document = create_document(
         db=db,
-        user_id=current_user.id,
         filename=file.filename,
         file_path=str(file_path),
         file_type=file_type,
         file_size=len(file_content)
     )
     
-    logger.info(f"Uploaded document {document.id} for user {current_user.id}")
+    logger.info(f"Uploaded document {document.id}")
     
     return document_to_response(document)
 
 
 @router.get("", response_model=List[DocumentResponse])
 def list_documents(
-    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """List all documents for the current user."""
-    documents = get_user_documents(db, current_user.id)
+    """List all documents."""
+    documents = get_all_documents(db)
     return [document_to_response(doc) for doc in documents]
 
 
 @router.get("/{document_id}", response_model=DocumentResponse)
 def get_document(
     document_id: int,
-    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
     """Get a specific document."""
     document = get_document_by_id(db, document_id)
-    if not document or document.user_id != current_user.id:
+    if not document:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found"
@@ -154,12 +148,11 @@ def get_document(
 @router.delete("/{document_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_document_endpoint(
     document_id: int,
-    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
     """Delete a document."""
     document = get_document_by_id(db, document_id)
-    if not document or document.user_id != current_user.id:
+    if not document:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found"
@@ -172,18 +165,17 @@ def delete_document_endpoint(
     # Delete from database
     delete_document(db, document_id)
     
-    logger.info(f"Deleted document {document_id} for user {current_user.id}")
+    logger.info(f"Deleted document {document_id}")
     return None
 
 
 @router.post("/ingest-all", status_code=status.HTTP_200_OK)
 def ingest_all_documents(
-    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """Ingest all non-indexed documents for the current user."""
-    # Get all non-indexed documents for the user
-    all_documents = get_user_documents(db, current_user.id)
+    """Ingest all non-indexed documents."""
+    # Get all non-indexed documents
+    all_documents = get_all_documents(db)
     non_indexed_docs = [doc for doc in all_documents if doc.status != "indexed"]
     
     if not non_indexed_docs:
@@ -258,7 +250,6 @@ def ingest_all_documents(
             
             # Add to vector store
             vector_store.add_documents(
-                user_id=current_user.id,
                 texts=texts,
                 embeddings=embeddings_list,
                 metadatas=metadatas,
@@ -297,12 +288,11 @@ def ingest_all_documents(
 @router.post("/{document_id}/ingest", status_code=status.HTTP_200_OK)
 def ingest_document(
     document_id: int,
-    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
     """Ingest a document into the vector store."""
     document = get_document_by_id(db, document_id)
-    if not document or document.user_id != current_user.id:
+    if not document:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found"
@@ -366,7 +356,6 @@ def ingest_document(
         
         # Add to vector store
         vector_store.add_documents(
-            user_id=current_user.id,
             texts=texts,
             embeddings=embeddings_list,
             metadatas=metadatas,
@@ -396,12 +385,11 @@ def ingest_document(
 @router.get("/{document_id}/preview")
 def preview_document(
     document_id: int,
-    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
     """Preview a document (for PDFs, return the PDF file)."""
     document = get_document_by_id(db, document_id)
-    if not document or document.user_id != current_user.id:
+    if not document:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found"
@@ -429,12 +417,11 @@ def preview_document(
 @router.get("/{document_id}/chunks", response_model=List[ChunkResponse])
 def get_document_chunks_endpoint(
     document_id: int,
-    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
     """Get all chunks for a document."""
     document = get_document_by_id(db, document_id)
-    if not document or document.user_id != current_user.id:
+    if not document:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found"
@@ -448,14 +435,13 @@ def get_document_chunks_endpoint(
 def get_chunk(
     document_id: int,
     chunk_id: str,
-    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
     """Get a specific chunk."""
     from database.crud import get_chunk_by_id
     
     document = get_document_by_id(db, document_id)
-    if not document or document.user_id != current_user.id:
+    if not document:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Document not found"

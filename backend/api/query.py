@@ -6,9 +6,7 @@ from typing import List, Optional
 import time
 
 from database.database import get_db
-from database.models import User
-from database.crud import create_query_history, get_user_query_history
-from backend.dependencies import get_current_active_user
+from database.crud import create_query_history, get_query_history
 from src.retrieval.retriever import Retriever
 from src.rerank.reranker import Reranker
 from src.qa.chain import QAChain
@@ -51,6 +49,7 @@ class SourceInfo(BaseModel):
     document_id: Optional[int]
     page_number: Optional[int]
     similarity: Optional[float]
+    text: Optional[str] = None  # The actual text content of the chunk
 
 
 class QueryResponse(BaseModel):
@@ -72,7 +71,6 @@ class QueryHistoryItem(BaseModel):
 @router.post("", response_model=QueryResponse)
 def query_rag(
     request: QueryRequest,
-    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
     """Execute a RAG query."""
@@ -91,7 +89,6 @@ def query_rag(
         if request.use_reranking and not is_spec_query:
             # Use reranking for non-spec queries
             retrieved_docs = retriever.retrieve_with_reranking(
-                user_id=current_user.id,
                 query=request.query,
                 reranker=get_reranker()
             )
@@ -100,9 +97,8 @@ def query_rag(
             # This helps find technical chunks that might be ranked lower by the reranker
             # Get even more results for general spec queries to ensure Display, Battery, Dimensions are found
             retrieved_docs = retriever.retrieve(
-                user_id=current_user.id,
                 query=request.query,
-                n_results=25  # Increased from 15 to 25 to ensure all spec types are found
+                n_results=50  # Increased to 50 to ensure all spec types are found (Display, Battery, Dimensions, etc.)
             )
         
         retrieval_time = time.time() - retrieval_start
@@ -144,21 +140,36 @@ def query_rag(
                 "sources": []
             }
         
-        # Format sources
+        # Create a mapping from chunk_id to text from retrieved_docs
+        chunk_text_map = {}
+        for doc in retrieved_docs:
+            chunk_id = doc.get("id", "")
+            chunk_text = doc.get("text", "")
+            if chunk_id:
+                chunk_text_map[chunk_id] = chunk_text
+        
+        # Format sources with text content
         sources = []
         for source in result.get("sources", []):
+            chunk_id = source.get("chunk_id", "")
+            chunk_text = chunk_text_map.get(chunk_id, "")
+            
+            # Truncate text if too long (max 500 chars for display)
+            if chunk_text and len(chunk_text) > 500:
+                chunk_text = chunk_text[:500] + "..."
+            
             sources.append(SourceInfo(
-                chunk_id=source.get("chunk_id", ""),
+                chunk_id=chunk_id,
                 document_id=source.get("document_id"),
                 page_number=source.get("page_number"),
-                similarity=source.get("similarity")
+                similarity=source.get("similarity"),
+                text=chunk_text
             ))
         
         # Save to query history
         source_ids = [s.chunk_id for s in sources]
         create_query_history(
             db=db,
-            user_id=current_user.id,
             query=request.query,
             answer=result["answer"],
             sources=source_ids,
@@ -170,7 +181,7 @@ def query_rag(
             }
         )
         
-        logger.info(f"Query processed for user {current_user.id}: {request.query[:50]}...")
+        logger.info(f"Query processed: {request.query[:50]}...")
         
         return QueryResponse(
             answer=result["answer"],
@@ -191,13 +202,12 @@ def query_rag(
 
 
 @router.get("/history", response_model=List[QueryHistoryItem])
-def get_query_history(
+def get_query_history_endpoint(
     limit: int = 50,
-    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
-    """Get query history for the current user."""
-    history = get_user_query_history(db, current_user.id, limit=limit)
+    """Get query history."""
+    history = get_query_history(db, limit=limit)
     return history
 
 

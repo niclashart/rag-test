@@ -45,7 +45,6 @@ class Retriever:
     
     def retrieve(
         self,
-        user_id: int,
         query: str,
         n_results: Optional[int] = None,
         filter_metadata: Optional[Dict] = None
@@ -114,7 +113,8 @@ class Retriever:
                 additional_keywords = "display brightness Helligkeit nits cd/m2 cd/m² luminance luminanz screen display specifications"
             else:
                 # For general spec questions, add comprehensive technical keywords
-                additional_keywords = "processor CPU cores threads frequency cache memory RAM DDR4 DDR5 storage SSD HDD graphics GPU display screen resolution brightness nits cd/m2 luminance Helligkeit battery capacity power adapter dimensions weight size ports connectivity USB Thunderbolt HDMI"
+                # Emphasize processor keywords strongly
+                additional_keywords = "processor CPU Prozessor cores Kerne threads Threads frequency Taktfrequenz cache Intel AMD Core Ultra Ryzen i3 i5 i7 i9 GHz MHz memory RAM DDR4 DDR5 storage SSD HDD graphics GPU display screen resolution brightness nits cd/m2 luminance Helligkeit battery capacity power adapter dimensions weight size ports connectivity USB Thunderbolt HDMI"
             
             # Add generation keywords if any generation is mentioned
             generation_keywords = ""
@@ -127,8 +127,8 @@ class Retriever:
             # Add PERFORMANCE section keywords to find technical specification chunks
             # These keywords help find chunks that contain the PERFORMANCE section with all specs
             # Emphasize PERFORMANCE section strongly for spec queries
-            # Also add specific keywords for Display, Battery, Dimensions/Weight to ensure these are found
-            performance_keywords = "PERFORMANCE PERFORMANCE section PERFORMANCE specifications technical specifications processor CPU memory RAM DDR4 DDR5 16GB 32GB 64GB storage SSD HDD graphics GPU display screen resolution brightness nits cd/m2 luminance Helligkeit panel IPS LCD OLED battery akku batterie power adapter W Wh capacity life dimensions abmessungen weight gewicht size width height depth mm inches kg lbs ports connectivity"
+            # Also add specific keywords for Display, Battery, Dimensions/Weight, and Processor to ensure these are found
+            performance_keywords = "PERFORMANCE PERFORMANCE section PERFORMANCE specifications technical specifications processor CPU Prozessor Intel AMD Core Ultra Ryzen i3 i5 i7 i9 i11 cores Kerne threads Threads frequency Taktfrequenz GHz MHz cache memory RAM DDR4 DDR5 16GB 32GB 64GB storage SSD HDD graphics GPU display screen resolution brightness nits cd/m2 luminance Helligkeit panel IPS LCD OLED battery akku batterie power adapter W Wh capacity life dimensions abmessungen weight gewicht size width height depth mm inches kg lbs ports connectivity"
             
             expanded_query = f"{query} {product_emphasis} {additional_keywords} {generation_keywords} {performance_keywords}"
             spec_type = "RAM/memory" if additional_keywords else "general specs"
@@ -139,10 +139,10 @@ class Retriever:
         
         # Query vector store - get more results for spec queries
         # For spec queries, get significantly more candidates to ensure technical chunks are found
-        # Some technical chunks (like RAM specs) might have lower similarity but are still relevant
-        query_n_results = n_results * 6 if is_spec_query else n_results
+        # Some technical chunks (like RAM specs, Display, Battery, Dimensions) might have lower similarity but are still relevant
+        # Multiply by 8 instead of 6 to get even more candidates for spec queries
+        query_n_results = n_results * 8 if is_spec_query else n_results
         results = self.vector_store.query(
-            user_id=user_id,
             query_embeddings=[query_embedding],
             n_results=query_n_results,
             where=filter_metadata
@@ -151,7 +151,7 @@ class Retriever:
         # Format results and filter by product/model if specified
         retrieved_docs = []
         if results.get("ids") and len(results["ids"][0]) > 0:
-            logger.info(f"ChromaDB returned {len(results['ids'][0])} results for user {user_id}")
+            logger.info(f"ChromaDB returned {len(results['ids'][0])} results")
             
             # Extract product/model name and generation from query for filtering
             query_lower = query.lower()
@@ -200,25 +200,30 @@ class Retriever:
                         # Check for PERFORMANCE section first (most important)
                         if "performance" in text_lower and len(doc_text) > 200:  # Must be substantial chunk
                             similarity_boost = 0.25  # Very strong boost for PERFORMANCE section
+                        # Processor chunks - check for processor keywords AND model names/numbers
+                        elif (("processor" in text_lower or "cpu" in text_lower or "prozessor" in text_lower) and 
+                              (any(brand in text_lower for brand in ["intel", "amd", "core", "ryzen", "ultra", "i3", "i5", "i7", "i9"]) or
+                               any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"]))) and len(doc_text) > 200:
+                            similarity_boost = 0.24  # Very strong boost for processor chunks with model info
                         elif any(keyword in text_lower for keyword in ["processor", "cpu", "memory", "ram", "storage", "graphics", "gpu"]) and len(doc_text) > 200:
                             similarity_boost = 0.20  # Strong boost for technical keywords in substantial chunks
                         # Display chunks - check for display keywords AND measurements/units
                         elif ("display" in text_lower or "screen" in text_lower or "bildschirm" in text_lower) and (
-                            any(unit in text_lower for unit in ["nits", "cd/m2", "cd/m²", "brightness", "helligkeit", "luminance", "luminanz", "resolution", "auflösung", "inch", "inches", "\""]) or
+                            any(unit in text_lower for unit in ["nits", "cd/m2", "cd/m²", "brightness", "helligkeit", "luminance", "luminanz", "resolution", "auflösung", "inch", "inches", "\"", "fhd", "uhd", "4k", "1920", "2560", "3840"]) or
                             any(size in text_lower for size in ["14", "15", "16"])  # Screen sizes
                         ):
-                            similarity_boost = 0.22  # Very strong boost for display chunks with measurements
+                            similarity_boost = 0.30  # Very strong boost for display chunks with measurements
                         # Battery chunks - check for battery keywords AND capacity/units
-                        elif ("battery" in text_lower or "akku" in text_lower or "batterie" in text_lower or "power adapter" in text_lower) and (
-                            any(unit in text_lower for unit in ["w", "wh", "watt", "capacity", "kapazität", "life", "laufzeit", "mah", "mah"])
+                        elif ("battery" in text_lower or "akku" in text_lower or "batterie" in text_lower or "power adapter" in text_lower or "power supply" in text_lower) and (
+                            any(unit in text_lower for unit in ["w", "wh", "watt", "capacity", "kapazität", "life", "laufzeit", "mah", "mah", "hours", "stunden"])
                         ):
-                            similarity_boost = 0.21  # Very strong boost for battery chunks with capacity info
+                            similarity_boost = 0.28  # Very strong boost for battery chunks with capacity info
                         # Dimensions/Weight chunks - check for keywords AND measurements
                         elif ("dimensions" in text_lower or "abmessungen" in text_lower or "size" in text_lower or "weight" in text_lower or "gewicht" in text_lower) and (
-                            any(unit in text_lower for unit in ["mm", "inches", "kg", "lbs", "pounds", "g", "x", "×"]) or
-                            any(dim in text_lower for dim in ["width", "height", "depth", "breite", "höhe", "tiefe"])
+                            any(unit in text_lower for unit in ["mm", "inches", "kg", "lbs", "pounds", "g", "x", "×", "cm"]) or
+                            any(dim in text_lower for dim in ["width", "height", "depth", "breite", "höhe", "tiefe", "length", "länge"])
                         ):
-                            similarity_boost = 0.20  # Strong boost for dimensions/weight chunks with measurements
+                            similarity_boost = 0.26  # Strong boost for dimensions/weight chunks with measurements
                         elif ("display" in text_lower or "screen" in text_lower or "bildschirm" in text_lower):
                             similarity_boost = 0.19  # Strong boost for display chunks without measurements
                         elif "dimensions" in text_lower or ("weight" in text_lower and any(unit in text_lower for unit in ["kg", "lbs", "mm", "inches"])):
@@ -269,8 +274,10 @@ class Retriever:
                             product_in_chunk = has_product_in_text
                         
                         # If product filtering is active but chunk doesn't match, skip it (unless similarity is very high)
-                        # For queries with generation specified and PERFORMANCE chunks, be more lenient
-                        threshold = 0.25 if (target_gen is not None and "performance" in text_lower) else 0.3
+                        # For queries with generation specified and technical chunks, be more lenient
+                        # Lower threshold for technical chunks to ensure they're not filtered out
+                        is_technical = any(kw in text_lower for kw in ["performance", "processor", "cpu", "memory", "ram", "storage", "graphics", "gpu", "display", "screen", "battery", "akku", "dimensions", "weight", "gewicht"])
+                        threshold = 0.20 if (target_gen is not None and is_technical) else 0.25
                         if not product_in_chunk and similarity < threshold:
                             logger.debug(f"Filtered out result {i} - product mismatch (target: {target_product}, similarity: {similarity})")
                             continue
@@ -286,10 +293,38 @@ class Retriever:
                     logger.debug(f"Filtered out result {i} due to similarity threshold")
             
             # Sort by similarity (highest first) if we applied boosts
+            # For spec queries, prioritize important spec types (Display, Battery, Dimensions) even if similarity is slightly lower
             if is_spec_query:
-                retrieved_docs.sort(key=lambda x: x.get("similarity", 0), reverse=True)
+                def sort_key(doc):
+                    similarity = doc.get("similarity", 0)
+                    text_lower = doc.get("text", "").lower()
+                    
+                    # Priority boost for important spec types
+                    priority = 0
+                    if "performance" in text_lower and len(doc.get("text", "")) > 200:
+                        priority = 1000  # Highest priority
+                    # Processor chunks with model names get very high priority
+                    elif (("processor" in text_lower or "cpu" in text_lower or "prozessor" in text_lower) and 
+                          (any(brand in text_lower for brand in ["intel", "amd", "core", "ryzen", "ultra", "i3", "i5", "i7", "i9"]) or
+                           any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"]))):
+                        priority = 950  # Very high priority for processor with model info
+                    elif ("battery" in text_lower or "akku" in text_lower) and any(unit in text_lower for unit in ["w", "wh", "capacity"]):
+                        priority = 900  # Very high priority for battery
+                    elif ("weight" in text_lower or "gewicht" in text_lower) and any(unit in text_lower for unit in ["kg", "lbs", "g"]):
+                        priority = 850  # Very high priority for weight
+                    elif ("dimensions" in text_lower or "abmessungen" in text_lower) and any(unit in text_lower for unit in ["mm", "inches", "cm"]):
+                        priority = 800  # High priority for dimensions
+                    elif ("display" in text_lower or "screen" in text_lower) and any(unit in text_lower for unit in ["nits", "inch", "resolution"]):
+                        priority = 750  # High priority for display
+                    elif any(kw in text_lower for kw in ["processor", "cpu", "memory", "ram", "storage"]):
+                        priority = 700  # Medium-high priority for core specs
+                    
+                    # Return combined score (priority + similarity)
+                    return priority + similarity
+                
+                retrieved_docs.sort(key=sort_key, reverse=True)
         else:
-            logger.warning(f"No results returned from ChromaDB for user {user_id}")
+            logger.warning(f"No results returned from ChromaDB")
         
         logger.info(f"Retrieved {len(retrieved_docs)} documents for query (after threshold and product filtering)")
         return retrieved_docs
@@ -330,7 +365,7 @@ class Retriever:
         else:
             initial_k = max(target_k * 3, 10)  # Get 3x more for reranking, minimum 10
         
-        retrieved = self.retrieve(user_id, query, n_results=initial_k)
+        retrieved = self.retrieve(query, n_results=initial_k)
         
         logger.info(f"Retrieved {len(retrieved)} documents for reranking (target: {target_k})")
         

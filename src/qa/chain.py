@@ -50,7 +50,44 @@ class QAChain:
     def format_context(self, retrieved_docs: List[Dict]) -> str:
         """Format retrieved documents as context."""
         context_parts = []
-        for i, doc in enumerate(retrieved_docs, 1):
+        
+        # For spec queries, ensure we include important spec types even if they're further back
+        # Group chunks by type and prioritize important ones
+        important_spec_chunks = []
+        other_chunks = []
+        
+            for doc in retrieved_docs:
+                text_lower = doc.get("text", "").lower()
+                is_important = False
+                
+                # Check if this is an important spec chunk (Processor, Battery, Weight, Dimensions, Display)
+                # Processor chunks with model names
+                if (("processor" in text_lower or "cpu" in text_lower or "prozessor" in text_lower) and 
+                    (any(brand in text_lower for brand in ["intel", "amd", "core", "ryzen", "ultra", "i3", "i5", "i7", "i9"]) or
+                     any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"]))):
+                    is_important = True
+                # Battery chunks
+                elif (("battery" in text_lower or "akku" in text_lower) and any(unit in text_lower for unit in ["w", "wh", "capacity"])):
+                    is_important = True
+                # Weight chunks
+                elif (("weight" in text_lower or "gewicht" in text_lower) and any(unit in text_lower for unit in ["kg", "lbs", "g"])):
+                    is_important = True
+                # Dimensions chunks
+                elif (("dimensions" in text_lower or "abmessungen" in text_lower) and any(unit in text_lower for unit in ["mm", "inches", "cm"])):
+                    is_important = True
+                # Display chunks
+                elif (("display" in text_lower or "screen" in text_lower) and any(unit in text_lower for unit in ["nits", "inch", "resolution"])):
+                    is_important = True
+            
+            if is_important:
+                important_spec_chunks.append(doc)
+            else:
+                other_chunks.append(doc)
+        
+        # Combine: important chunks first, then others (but limit total to avoid too long context)
+        all_chunks = important_spec_chunks + other_chunks
+        
+        for i, doc in enumerate(all_chunks, 1):
             chunk_id = doc.get("id", "")
             text = doc.get("text", "")
             metadata = doc.get("metadata", {})
@@ -194,18 +231,22 @@ WICHTIG: Nenne zuerst die wichtigsten technischen Spezifikationen (Prozessor, RA
 Erwähne weniger wichtige Details (Webcam, Mikrofone, LEDs, etc.) erst am Ende oder gar nicht.
 
 WICHTIG FÜR ALLE SPEZIFIKATIONEN:
-- Suche GRÜNDLICH in ALLEN bereitgestellten Chunks nach den Informationen
+- Suche GRÜNDLICH in ALLEN bereitgestellten Chunks nach den Informationen - auch in Chunks mit niedrigerer Ähnlichkeit!
+- Durchsuche JEDEN Chunk systematisch, auch wenn er nicht direkt relevant erscheint
 - Achte auf verschiedene Formulierungen und Synonyme:
-  * Storage/Speicher: "Storage", "Speicher", "SSD", "HDD", "M.2", "capacity", "Kapazität", "TB", "GB" - Achte auf "Up to X drives" oder "2x" = multipliziere die Einzelkapazität!
+  * Prozessor/CPU: "Processor", "CPU", "Prozessor", "Intel", "AMD", "Core", "Ultra", "Ryzen", "i3", "i5", "i7", "i9", "i11", "GHz", "MHz", "Cores", "Kerne", "Threads", "P-core", "E-core", "Taktfrequenz", "frequency" - Suche nach KOMPLETTEN Prozessor-Modellnamen wie "Intel Core Ultra 7 265U" oder "AMD Ryzen 5 7535U"! Wenn mehrere Prozessor-Optionen angegeben sind, nenne ALLE!
+  * Storage/Speicher: "Storage", "Speicher", "SSD", "HDD", "M.2", "capacity", "Kapazität", "TB", "GB", "drive", "Laufwerk" - Achte auf "Up to X drives" oder "2x" = multipliziere die Einzelkapazität!
+  * Display: "Display", "Screen", "Bildschirm", "Panel", "LCD", "IPS", "OLED", "Resolution", "Auflösung", "FHD", "UHD", "4K", "1920x1080", "2560x1440", "3840x2160"
   * Display-Helligkeit/Brightness: "Brightness", "Helligkeit", "nits", "cd/m²", "cd/m2", "luminance", "Luminanz" - Zahlen mit "nits" oder "cd/m²" sind Helligkeitsangaben!
-  * Akku/Battery: "Battery", "Akku", "Batterie", "Power Adapter", "W", "Wh", "capacity", "life"
-  * Abmessungen/Dimensions: "Dimensions", "Abmessungen", "Size", "WxDxH", "Width x Depth x Height", "mm", "inches"
-  * Gewicht/Weight: "Weight", "Gewicht", "kg", "lbs", "pounds"
+  * Akku/Battery: "Battery", "Akku", "Batterie", "Power Adapter", "Power Supply", "W", "Wh", "Watt", "capacity", "Kapazität", "life", "Laufzeit", "hours", "Stunden", "mAh"
+  * Abmessungen/Dimensions: "Dimensions", "Abmessungen", "Size", "WxDxH", "Width x Depth x Height", "mm", "inches", "cm", "Length", "Länge", "Width", "Breite", "Height", "Höhe", "Depth", "Tiefe"
+  * Gewicht/Weight: "Weight", "Gewicht", "kg", "lbs", "pounds", "g", "grams"
 - WICHTIG FÜR STORAGE-KAPAZITÄT: Wenn du "Up to two drives" oder "2x" siehst, multipliziere die Einzelkapazität (z.B. "2x 1TB" = 2TB maximal, NICHT 4TB!)
 - Wenn Informationen in verschiedenen Chunks stehen, kombiniere sie zu einer vollständigen Antwort
 - Wenn du Zahlen oder Werte siehst (z.B. "300nits", "65W", "313 x 220.3 x 10.1 mm", "1.69 kg"), verwende diese explizit
 - Besonders wichtig: Wenn du "nits" oder "cd/m²" siehst, ist das eine Helligkeitsangabe - verwende diese!
-- Nur wenn du wirklich KEINE Informationen findest, schreibe "Nicht spezifiziert"{product_warning}{ram_instructions}
+- Wenn du eine Spezifikation in einem Chunk findest, auch wenn sie nicht perfekt formatiert ist, verwende sie trotzdem!
+- Nur wenn du wirklich KEINE Informationen in ALLEN Chunks findest, schreibe "Nicht spezifiziert"{product_warning}{ram_instructions}
 
 Dokumente:
 {context}
@@ -268,6 +309,36 @@ Antwort:"""
         chat_history: Optional[List[Dict]] = None
     ) -> Dict:
         """Answer question using retrieved documents and chat history."""
+        # Detect if this is a general spec query (asking for all specs, not specific ones)
+        question_lower = question.lower()
+        is_general_spec = any(kw in question_lower for kw in ["spezifikation", "specification", "specs", "technische"]) and \
+                         not any(kw in question_lower for kw in ["akku", "battery", "gewicht", "weight", "dimensions", "abmessungen", "display", "screen", "prozessor", "cpu", "ram", "memory"])
+        
+        # For general spec queries, ensure important spec chunks (Battery, Weight, Dimensions) are included
+        # even if they have lower similarity scores
+        if is_general_spec and len(retrieved_docs) > 30:
+            # Separate important spec chunks from others
+            important_chunks = []
+            other_chunks = []
+            
+            for doc in retrieved_docs:
+                text_lower = doc.get("text", "").lower()
+                # Processor chunks with model names
+                is_important = (("processor" in text_lower or "cpu" in text_lower or "prozessor" in text_lower) and 
+                               (any(brand in text_lower for brand in ["intel", "amd", "core", "ryzen", "ultra", "i3", "i5", "i7", "i9"]) or
+                                any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"]))) or \
+                              (("battery" in text_lower or "akku" in text_lower) and any(unit in text_lower for unit in ["w", "wh", "capacity"])) or \
+                              (("weight" in text_lower or "gewicht" in text_lower) and any(unit in text_lower for unit in ["kg", "lbs", "g"])) or \
+                              (("dimensions" in text_lower or "abmessungen" in text_lower) and any(unit in text_lower for unit in ["mm", "inches", "cm"]))
+                
+                if is_important:
+                    important_chunks.append(doc)
+                else:
+                    other_chunks.append(doc)
+            
+            # Take top 30 from others + all important chunks (up to reasonable limit)
+            retrieved_docs = other_chunks[:30] + important_chunks[:10]
+        
         context = self.format_context(retrieved_docs)
         result = self.answer(question, context, return_sources=True, chat_history=chat_history)
         

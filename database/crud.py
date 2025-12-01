@@ -28,7 +28,6 @@ def get_user_by_id(db: Session, user_id: int) -> Optional[User]:
 # Document CRUD
 def create_document(
     db: Session,
-    user_id: int,
     filename: str,
     file_path: str,
     file_type: str,
@@ -37,7 +36,6 @@ def create_document(
 ) -> Document:
     """Create a new document record."""
     document = Document(
-        user_id=user_id,
         filename=filename,
         file_path=file_path,
         file_type=file_type,
@@ -55,9 +53,9 @@ def get_document_by_id(db: Session, document_id: int) -> Optional[Document]:
     return db.query(Document).filter(Document.id == document_id).first()
 
 
-def get_user_documents(db: Session, user_id: int) -> List[Document]:
-    """Get all documents for a user."""
-    return db.query(Document).filter(Document.user_id == user_id).all()
+def get_all_documents(db: Session) -> List[Document]:
+    """Get all documents."""
+    return db.query(Document).all()
 
 
 def update_document_status(db: Session, document_id: int, status: str) -> Optional[Document]:
@@ -125,7 +123,6 @@ def get_chunks_by_ids(db: Session, chunk_ids: List[str]) -> List[Chunk]:
 # Query History CRUD
 def create_query_history(
     db: Session,
-    user_id: int,
     query: str,
     answer: Optional[str] = None,
     sources: Optional[List[str]] = None,
@@ -133,7 +130,7 @@ def create_query_history(
 ) -> QueryHistory:
     """Create a query history entry."""
     history = QueryHistory(
-        user_id=user_id,
+        user_id=1,  # Dummy user_id for compatibility (can be removed later)
         query=query,
         answer=answer,
         sources=sources or [],
@@ -145,11 +142,10 @@ def create_query_history(
     return history
 
 
-def get_user_query_history(db: Session, user_id: int, limit: int = 50) -> List[QueryHistory]:
-    """Get query history for a user."""
+def get_query_history(db: Session, limit: int = 50) -> List[QueryHistory]:
+    """Get query history (all users)."""
     return (
         db.query(QueryHistory)
-        .filter(QueryHistory.user_id == user_id)
         .order_by(QueryHistory.created_at.desc())
         .limit(limit)
         .all()

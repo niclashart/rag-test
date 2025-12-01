@@ -9,13 +9,13 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 API_BASE_URL = "http://localhost:8000"
 
 def get_headers():
-    """Get authorization headers."""
-    return {"Authorization": f"Bearer {st.session_state.access_token}"}
+    """Get headers (no authentication needed)."""
+    return {}
 
 def show_chat():
     """Show chat page."""
     st.title("💬 RAG Chat")
-    st.markdown("Stellen Sie Fragen zu Ihren indizierten Dokumenten")
+    st.markdown("Stellen Sie Fragen zu den indizierten Dokumenten")
     
     # Initialize chat history
     if "messages" not in st.session_state:
@@ -37,7 +37,7 @@ def show_chat():
                 
                 if indexed_docs:
                     st.success(f"✅ {len(indexed_docs)} indizierte Dokument(e) verfügbar")
-                    st.info("Alle Ihre Dokumente werden bei der Suche berücksichtigt.")
+                    st.info("Alle Dokumente werden bei der Suche berücksichtigt.")
                 else:
                     st.warning("Keine indizierten Dokumente verfügbar")
                     st.info("Bitte indizieren Sie zuerst Dokumente im Dashboard")
@@ -49,13 +49,41 @@ def show_chat():
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
             if "sources" in message and message["sources"]:
-                with st.expander("Quellen anzeigen"):
+                with st.expander("📚 Quellen anzeigen", expanded=False):
                     for i, source in enumerate(message["sources"], 1):
-                        st.write(f"**Quelle {i}:**")
-                        st.write(f"- Dokument ID: {source.get('document_id', 'N/A')}")
-                        st.write(f"- Seite: {source.get('page_number', 'N/A')}")
-                        if source.get('similarity'):
-                            st.write(f"- Ähnlichkeit: {source['similarity']*100:.1f}%")
+                        with st.container():
+                            st.markdown(f"### Quelle {i}")
+                            
+                            # Source metadata
+                            col1, col2 = st.columns(2)
+                            with col1:
+                                if source.get('page_number'):
+                                    st.caption(f"📄 Seite {source.get('page_number')}")
+                                if source.get('document_id'):
+                                    st.caption(f"📑 Dokument ID: {source.get('document_id')}")
+                            with col2:
+                                if source.get('similarity'):
+                                    similarity_pct = source['similarity'] * 100
+                                    st.caption(f"🎯 Ähnlichkeit: {similarity_pct:.1f}%")
+                            
+                            # Display chunk text if available
+                            if source.get('text'):
+                                st.markdown("**Text-Ausschnitt:**")
+                                # Use chunk_id for unique key, fallback to index + message index
+                                unique_key = f"hist_source_{source.get('chunk_id', f'idx_{i}')}_{st.session_state.messages.index(message)}"
+                                st.text_area(
+                                    label=f"Text aus Quelle {i}",
+                                    value=source.get('text'),
+                                    height=150,
+                                    disabled=True,
+                                    label_visibility="collapsed",
+                                    key=unique_key
+                                )
+                            else:
+                                st.caption(f"Chunk ID: {source.get('chunk_id', 'N/A')}")
+                            
+                            if i < len(message["sources"]):
+                                st.divider()
     
     # Chat input
     if prompt := st.chat_input("Stellen Sie eine Frage..."):
@@ -99,14 +127,42 @@ def show_chat():
                             answer = "Keine Antwort generiert."
                         
                         if sources:
-                            with st.expander("Quellen anzeigen"):
+                            with st.expander("📚 Quellen anzeigen", expanded=False):
                                 for i, source in enumerate(sources, 1):
-                                    st.write(f"**Quelle {i}:**")
-                                    st.write(f"- Chunk ID: {source.get('chunk_id', 'N/A')}")
-                                    st.write(f"- Dokument ID: {source.get('document_id', 'N/A')}")
-                                    st.write(f"- Seite: {source.get('page_number', 'N/A')}")
-                                    if source.get('similarity'):
-                                        st.write(f"- Ähnlichkeit: {source['similarity']*100:.1f}%")
+                                    with st.container():
+                                        st.markdown(f"### Quelle {i}")
+                                        
+                                        # Source metadata
+                                        col1, col2 = st.columns(2)
+                                        with col1:
+                                            if source.get('page_number'):
+                                                st.caption(f"📄 Seite {source.get('page_number')}")
+                                            if source.get('document_id'):
+                                                st.caption(f"📑 Dokument ID: {source.get('document_id')}")
+                                        with col2:
+                                            if source.get('similarity'):
+                                                similarity_pct = source['similarity'] * 100
+                                                st.caption(f"🎯 Ähnlichkeit: {similarity_pct:.1f}%")
+                                        
+                                        # Display chunk text if available
+                                        if source.get('text'):
+                                            st.markdown("**Text-Ausschnitt:**")
+                                            # Use chunk_id for unique key, fallback to index + timestamp
+                                            import time
+                                            unique_key = f"source_{source.get('chunk_id', f'idx_{i}')}_{int(time.time() * 1000)}"
+                                            st.text_area(
+                                                label=f"Text aus Quelle {i}",
+                                                value=source.get('text'),
+                                                height=150,
+                                                disabled=True,
+                                                label_visibility="collapsed",
+                                                key=unique_key
+                                            )
+                                        else:
+                                            st.caption(f"Chunk ID: {source.get('chunk_id', 'N/A')}")
+                                        
+                                        if i < len(sources):
+                                            st.divider()
                         else:
                             st.info("Keine Quellen verfügbar.")
                         

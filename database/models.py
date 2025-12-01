@@ -27,7 +27,7 @@ class Document(Base):
     __tablename__ = "documents"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, default=1)  # Optional for compatibility
     filename = Column(String, nullable=False)
     file_path = Column(String, nullable=False)
     file_type = Column(String, nullable=False)  # pdf, docx, txt, etc.
@@ -64,7 +64,7 @@ class QueryHistory(Base):
     __tablename__ = "query_history"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, default=1)  # Optional for compatibility
     query = Column(Text, nullable=False)
     answer = Column(Text, nullable=True)
     sources = Column(JSON, default=[])  # List of chunk IDs used
