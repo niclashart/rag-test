@@ -280,8 +280,12 @@ Antwort:"""
         
         # Get answer from LLM
         try:
-            logger.info(f"Calling LLM with {len(messages)} messages, context length: {len(context)}")
+            logger.info(f"Calling LLM", num_messages=len(messages), context_length=len(context))
+            logger.debug(f"LLM Prompt", messages=[m.content for m in messages])
+            
             response = self.llm.invoke(messages)
+            
+            logger.debug(f"LLM Raw Response", response=response)
             
             # Handle different response types
             if hasattr(response, 'content'):

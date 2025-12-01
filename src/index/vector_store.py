@@ -81,7 +81,8 @@ class VectorStore:
             where=where
         )
         
-        logger.debug(f"Query returned {len(results.get('ids', [[]])[0])} results")
+        num_results = len(results.get('ids', [[]])[0])
+        logger.debug(f"Query returned results", num_results=num_results, n_results_requested=n_results)
         return results
     
     def delete_documents(self, ids: List[str]):

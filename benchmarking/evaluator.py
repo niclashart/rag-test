@@ -57,9 +57,34 @@ class RAGASEvaluator:
         
         # Evaluate
         logger.info(f"Evaluating {len(questions)} examples with RAGAS")
+        
+        # Import here to avoid circular imports or early initialization issues
+        # Import here to avoid circular imports or early initialization issues
+        from langchain_openai import ChatOpenAI
+        from langchain_huggingface import HuggingFaceEmbeddings
+        
+        # Use the same model as the pipeline with higher timeout and retries
+        llm = ChatOpenAI(model="gpt-4o-mini", request_timeout=60, max_retries=3)
+        
+        # Use HuggingFace embeddings (same as pipeline)
+        # Model: sentence-transformers/all-MiniLM-L6-v2
+        embeddings = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2"
+        )
+        
+        # Use RunConfig to limit concurrency
+        from ragas.run_config import RunConfig
+        
+        # Limit to 1 worker to avoid rate limits/timeouts
+        run_config = RunConfig(max_workers=1, timeout=120)
+        
         result = evaluate(
             dataset=dataset,
-            metrics=self.metrics
+            metrics=self.metrics,
+            llm=llm,
+            embeddings=embeddings,
+            raise_exceptions=False,
+            run_config=run_config
         )
         
         # Convert to dict

@@ -2,6 +2,7 @@
 import os
 import sys
 import structlog
+import logging
 from loguru import logger
 from pathlib import Path
 
@@ -24,35 +25,51 @@ logger.add(
 logger.add(
     LOG_DIR / "app.log",
     format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {name}:{function}:{line} | {message}",
-    level=os.getenv("LOG_LEVEL", "INFO"),
+    level=os.getenv("LOG_LEVEL", "DEBUG"),  # Set to DEBUG to capture more info
     rotation="10 MB",
     retention="30 days",
     compression="zip",
-    serialize=os.getenv("LOG_FORMAT", "text") == "json"
+    serialize=True  # Force JSON for file
 )
 
-# Configure structlog
+# Configure structlog to wrap loguru
 structlog.configure(
     processors=[
-        structlog.stdlib.filter_by_level,
-        structlog.stdlib.add_logger_name,
-        structlog.stdlib.add_log_level,
-        structlog.stdlib.PositionalArgumentsFormatter(),
-        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.contextvars.merge_contextvars,
+        structlog.processors.add_log_level,
         structlog.processors.StackInfoRenderer(),
-        structlog.processors.format_exc_info,
-        structlog.processors.UnicodeDecoder(),
+        structlog.dev.set_exc_info,
+        structlog.processors.TimeStamper(fmt="iso"),
         structlog.processors.JSONRenderer() if os.getenv("LOG_FORMAT", "text") == "json" else structlog.dev.ConsoleRenderer(),
     ],
-    context_class=dict,
     logger_factory=structlog.stdlib.LoggerFactory(),
     wrapper_class=structlog.stdlib.BoundLogger,
     cache_logger_on_first_use=True,
 )
 
+# Redirect standard logging to loguru
+class InterceptHandler(logging.Handler):
+    def emit(self, record):
+        # Get corresponding Loguru level if it exists
+        try:
+            level = logger.level(record.levelname).name
+        except ValueError:
+            level = record.levelno
+
+        # Find caller from where originated the logged message
+        frame, depth = logging.currentframe(), 2
+        while frame.f_code.co_filename == logging.__file__:
+            frame = frame.f_back
+            depth += 1
+
+        logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
+
+logging.basicConfig(handlers=[InterceptHandler()], level=0)
+
 # Get logger instance
 def get_logger(name: str = __name__):
     """Get a structured logger instance."""
+    # Return a structlog logger that uses standard logging, which is intercepted by loguru
     return structlog.get_logger(name)
 
 

@@ -142,11 +142,16 @@ class Retriever:
         # Some technical chunks (like RAM specs, Display, Battery, Dimensions) might have lower similarity but are still relevant
         # Multiply by 8 instead of 6 to get even more candidates for spec queries
         query_n_results = n_results * 8 if is_spec_query else n_results
+        
+        logger.info(f"Querying vector store", query=query, n_results=query_n_results, is_spec_query=is_spec_query)
+        
         results = self.vector_store.query(
             query_embeddings=[query_embedding],
             n_results=query_n_results,
             where=filter_metadata
         )
+        
+        logger.debug(f"Raw results from vector store", num_results=len(results.get('ids', [[]])[0]))
         
         # Format results and filter by product/model if specified
         retrieved_docs = []
