@@ -98,10 +98,11 @@ def query_rag(
         else:
             # For spec queries, use direct retrieval without reranking
             # This helps find technical chunks that might be ranked lower by the reranker
+            # Get even more results for general spec queries to ensure Display, Battery, Dimensions are found
             retrieved_docs = retriever.retrieve(
                 user_id=current_user.id,
                 query=request.query,
-                n_results=15  # Get more results for spec queries
+                n_results=25  # Increased from 15 to 25 to ensure all spec types are found
             )
         
         retrieval_time = time.time() - retrieval_start

@@ -5,14 +5,41 @@ from PIL import Image
 import pytesseract
 import io
 import os
+import sys
 from logging_config.logger import get_logger
 
 logger = get_logger(__name__)
 
-# Try to get tesseract command from environment
-TESSERACT_CMD = os.getenv("TESSERACT_CMD", "/usr/bin/tesseract")
-if os.path.exists(TESSERACT_CMD):
+# Try to get tesseract command from environment or use platform-specific defaults
+TESSERACT_CMD = os.getenv("TESSERACT_CMD")
+if not TESSERACT_CMD:
+    if sys.platform.startswith('win'):
+        # Common Windows installation paths for Tesseract
+        possible_paths = [
+            r"C:\Program Files\Tesseract-OCR\tesseract.exe",
+            r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+            r"C:\Users\{}\AppData\Local\Programs\Tesseract-OCR\tesseract.exe".format(os.getenv("USERNAME", "")),
+        ]
+        # Try to find tesseract in PATH first
+        import shutil
+        tesseract_in_path = shutil.which("tesseract")
+        if tesseract_in_path:
+            TESSERACT_CMD = tesseract_in_path
+        else:
+            # Try common installation paths
+            for path in possible_paths:
+                if os.path.exists(path):
+                    TESSERACT_CMD = path
+                    break
+    else:
+        # Linux/Mac default
+        TESSERACT_CMD = "/usr/bin/tesseract"
+
+if TESSERACT_CMD and os.path.exists(TESSERACT_CMD):
     pytesseract.pytesseract.tesseract_cmd = TESSERACT_CMD
+    logger.info(f"Tesseract found at: {TESSERACT_CMD}")
+else:
+    logger.warning("Tesseract not found. OCR functionality will be disabled. Install Tesseract-OCR to enable image text extraction.")
 
 
 class PDFProcessor:

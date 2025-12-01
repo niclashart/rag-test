@@ -36,6 +36,7 @@ pip install -r requirements.txt
 ```bash
 cp .env.example .env
 # .env Datei bearbeiten und OPENAI_API_KEY eintragen
+# Empfohlenes Modell gpt-4o-mini, da Reasoning-Modelle hier ungeeignet sind aufgrund zu hohem Tokenkonsum
 ```
 
 ## Verwendung

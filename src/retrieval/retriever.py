@@ -4,6 +4,7 @@ from src.index.vector_store import VectorStore
 from src.embeddings.embedder import Embedder
 import yaml
 import os
+import re
 from logging_config.logger import get_logger
 
 logger = get_logger(__name__)
@@ -74,21 +75,27 @@ class Retriever:
         # Extract product/model name from query to improve specificity
         product_keywords = []
         
-        # Common product identifiers
+        # Detect product brand
         if "thinkpad" in query_lower or "think pad" in query_lower:
             product_keywords.append("thinkpad")
-        if "e14" in query_lower:
-            product_keywords.append("e14")
-            # Also add generation if specified (e.g., "Gen 7", "Generation 7")
-            if "gen 7" in query_lower or "generation 7" in query_lower:
-                product_keywords.append("gen 7")
-                product_keywords.append("generation 7")
-        if "p15v" in query_lower or "p15" in query_lower:
-            product_keywords.append("p15v")
-        if "zbook" in query_lower:
+        elif "zbook" in query_lower:
             product_keywords.append("zbook")
-        if "ideapad" in query_lower:
+        elif "ideapad" in query_lower:
             product_keywords.append("ideapad")
+        
+        # Detect model names (E14, E16, L14, P15v, etc.) - pattern: letter(s) followed by numbers
+        model_pattern = r'\b([a-z]\d{1,2}|[a-z]{2}\d{1,2})\b'
+        model_matches = re.findall(model_pattern, query_lower)
+        for model_match in model_matches:
+            if model_match not in product_keywords:
+                product_keywords.append(model_match)
+        
+        # Detect generation numbers (Gen X, Generation X, GenX) - pattern: gen/generation followed by number
+        gen_pattern = r'\b(?:gen|generation)\s*(\d+)\b'
+        gen_matches = re.findall(gen_pattern, query_lower)
+        for gen_num in gen_matches:
+            product_keywords.append(f"gen {gen_num}")
+            product_keywords.append(f"generation {gen_num}")
         
         if is_spec_query:
             # Expand query with technical terms while emphasizing the specific product name
@@ -109,15 +116,19 @@ class Retriever:
                 # For general spec questions, add comprehensive technical keywords
                 additional_keywords = "processor CPU cores threads frequency cache memory RAM DDR4 DDR5 storage SSD HDD graphics GPU display screen resolution brightness nits cd/m2 luminance Helligkeit battery capacity power adapter dimensions weight size ports connectivity USB Thunderbolt HDMI"
             
-            # Add generation keywords if Gen 7 is mentioned
+            # Add generation keywords if any generation is mentioned
             generation_keywords = ""
-            if "gen 7" in query_lower_for_spec or "generation 7" in query_lower_for_spec:
-                generation_keywords = "Gen 7 Generation 7 7th generation"
+            gen_pattern = r'\b(?:gen|generation)\s*(\d+)\b'
+            gen_matches = re.findall(gen_pattern, query_lower_for_spec)
+            if gen_matches:
+                gen_num = gen_matches[0]  # Use first generation found
+                generation_keywords = f"Gen {gen_num} Generation {gen_num} {gen_num}th generation"
             
             # Add PERFORMANCE section keywords to find technical specification chunks
             # These keywords help find chunks that contain the PERFORMANCE section with all specs
             # Emphasize PERFORMANCE section strongly for spec queries
-            performance_keywords = "PERFORMANCE PERFORMANCE section PERFORMANCE specifications technical specifications processor CPU memory RAM DDR4 DDR5 16GB 32GB 64GB storage SSD HDD graphics GPU display screen battery power adapter W Wh capacity dimensions weight size width height depth mm inches kg lbs ports connectivity"
+            # Also add specific keywords for Display, Battery, Dimensions/Weight to ensure these are found
+            performance_keywords = "PERFORMANCE PERFORMANCE section PERFORMANCE specifications technical specifications processor CPU memory RAM DDR4 DDR5 16GB 32GB 64GB storage SSD HDD graphics GPU display screen resolution brightness nits cd/m2 luminance Helligkeit panel IPS LCD OLED battery akku batterie power adapter W Wh capacity life dimensions abmessungen weight gewicht size width height depth mm inches kg lbs ports connectivity"
             
             expanded_query = f"{query} {product_emphasis} {additional_keywords} {generation_keywords} {performance_keywords}"
             spec_type = "RAM/memory" if additional_keywords else "general specs"
@@ -142,25 +153,27 @@ class Retriever:
         if results.get("ids") and len(results["ids"][0]) > 0:
             logger.info(f"ChromaDB returned {len(results['ids'][0])} results for user {user_id}")
             
-            # Extract product/model name from query for filtering
+            # Extract product/model name and generation from query for filtering
             query_lower = query.lower()
             target_product = None
             target_gen = None
-            if "e16" in query_lower and "e14" not in query_lower and "p15" not in query_lower:
-                target_product = "e16"
-                # Check for generation
-                if "gen 3" in query_lower or "gen3" in query_lower:
-                    target_gen = 3
-            elif "e14" in query_lower and "p15" not in query_lower:
-                target_product = "e14"
-                # Check for generation
-                if "gen 7" in query_lower or "generation 7" in query_lower:
-                    target_gen = 7
-                elif "gen 6" in query_lower or "generation 6" in query_lower:
-                    target_gen = 6
-            elif ("p15v" in query_lower or ("p15" in query_lower and "v" in query_lower)) and "e14" not in query_lower:
-                target_product = "p15v"
-            elif "zbook ultra 14" in query_lower:
+            
+            # Detect model names (E14, E16, L14, P15v, etc.) - pattern: letter(s) followed by numbers
+            model_pattern = r'\b([a-z]\d{1,2}|[a-z]{2}\d{1,2})\b'
+            model_matches = re.findall(model_pattern, query_lower)
+            
+            if model_matches:
+                # Use the first model found, but prioritize longer matches (e.g., "p15v" over "p15")
+                target_product = max(model_matches, key=len)
+                
+                # Check for generation number
+                gen_pattern = r'\b(?:gen|generation)\s*(\d+)\b'
+                gen_matches = re.findall(gen_pattern, query_lower)
+                if gen_matches:
+                    target_gen = int(gen_matches[0])
+            
+            # Handle special cases for multi-word model names
+            if "zbook ultra 14" in query_lower:
                 target_product = "zbook ultra 14"
             elif "zbook 8 14" in query_lower:
                 target_product = "zbook 8 14"
@@ -189,8 +202,25 @@ class Retriever:
                             similarity_boost = 0.25  # Very strong boost for PERFORMANCE section
                         elif any(keyword in text_lower for keyword in ["processor", "cpu", "memory", "ram", "storage", "graphics", "gpu"]) and len(doc_text) > 200:
                             similarity_boost = 0.20  # Strong boost for technical keywords in substantial chunks
-                        elif ("display" in text_lower and any(unit in text_lower for unit in ["nits", "cd/m2", "brightness", "helligkeit"])) or ("brightness" in text_lower and "nits" in text_lower):
-                            similarity_boost = 0.19  # Strong boost for display brightness chunks
+                        # Display chunks - check for display keywords AND measurements/units
+                        elif ("display" in text_lower or "screen" in text_lower or "bildschirm" in text_lower) and (
+                            any(unit in text_lower for unit in ["nits", "cd/m2", "cd/m²", "brightness", "helligkeit", "luminance", "luminanz", "resolution", "auflösung", "inch", "inches", "\""]) or
+                            any(size in text_lower for size in ["14", "15", "16"])  # Screen sizes
+                        ):
+                            similarity_boost = 0.22  # Very strong boost for display chunks with measurements
+                        # Battery chunks - check for battery keywords AND capacity/units
+                        elif ("battery" in text_lower or "akku" in text_lower or "batterie" in text_lower or "power adapter" in text_lower) and (
+                            any(unit in text_lower for unit in ["w", "wh", "watt", "capacity", "kapazität", "life", "laufzeit", "mah", "mah"])
+                        ):
+                            similarity_boost = 0.21  # Very strong boost for battery chunks with capacity info
+                        # Dimensions/Weight chunks - check for keywords AND measurements
+                        elif ("dimensions" in text_lower or "abmessungen" in text_lower or "size" in text_lower or "weight" in text_lower or "gewicht" in text_lower) and (
+                            any(unit in text_lower for unit in ["mm", "inches", "kg", "lbs", "pounds", "g", "x", "×"]) or
+                            any(dim in text_lower for dim in ["width", "height", "depth", "breite", "höhe", "tiefe"])
+                        ):
+                            similarity_boost = 0.20  # Strong boost for dimensions/weight chunks with measurements
+                        elif ("display" in text_lower or "screen" in text_lower or "bildschirm" in text_lower):
+                            similarity_boost = 0.19  # Strong boost for display chunks without measurements
                         elif "dimensions" in text_lower or ("weight" in text_lower and any(unit in text_lower for unit in ["kg", "lbs", "mm", "inches"])):
                             similarity_boost = 0.18  # Strong boost for dimensions/weight chunks
                         elif "battery" in text_lower or "akku" in text_lower or ("power adapter" in text_lower and any(unit in text_lower for unit in ["w", "wh"])):
@@ -208,45 +238,39 @@ class Retriever:
                         # Check if chunk contains the target product name OR if it's a technical chunk from the right document
                         product_in_chunk = False
                         
-                        if target_product == "e16":
-                            # Check for E16 in text
-                            has_e16_in_text = ("e16" in text_lower or "thinkpad e16" in text_lower) and "e14" not in text_lower and "p15" not in text_lower
+                        # Check if chunk contains the target product name
+                        # Normalize target_product for comparison (lowercase, handle variations)
+                        target_product_normalized = target_product.lower()
+                        has_product_in_text = target_product_normalized in text_lower
+                        
+                        # Also check for common variations (e.g., "thinkpad e14", "e14 gen 6")
+                        if "thinkpad" in query_lower or "think pad" in query_lower:
+                            has_product_in_text = has_product_in_text or f"thinkpad {target_product_normalized}" in text_lower
+                        
+                        # For queries with generation specified, also accept technical chunks
+                        # even if they don't explicitly mention the model name
+                        # This is important because PERFORMANCE sections and spec tables often don't include the model name
+                        if target_gen is not None:
+                            # Check for various technical chunk types
+                            has_performance = "performance" in text_lower
+                            has_core_specs = any(kw in text_lower for kw in ["processor", "cpu", "memory", "ram", "storage", "graphics", "gpu"])
+                            has_display = any(kw in text_lower for kw in ["display", "screen", "bildschirm"])
+                            has_battery = (("battery" in text_lower or "akku" in text_lower) and 
+                                         any(unit in text_lower for unit in ["w", "wh", "capacity", "kapazität", "mah"]))
+                            has_dimensions = (("dimensions" in text_lower or "abmessungen" in text_lower or 
+                                             "weight" in text_lower or "gewicht" in text_lower) and 
+                                            any(unit in text_lower for unit in ["mm", "kg", "inches", "lbs", "pounds", "g"]))
                             
-                            # For Gen 3 queries, also accept technical chunks (PERFORMANCE, processor, etc.)
-                            # even if they don't explicitly mention E16 in the text
-                            if target_gen == 3:
-                                is_technical_chunk = (
-                                    "performance" in text_lower or 
-                                    any(kw in text_lower for kw in ["processor", "cpu", "memory", "ram", "storage", "graphics", "gpu"])
-                                )
-                                # Accept if E16 in text OR if it's a technical chunk (likely from Gen 3 doc)
-                                product_in_chunk = has_e16_in_text or is_technical_chunk
-                            else:
-                                product_in_chunk = has_e16_in_text
-                        elif target_product == "e14":
-                            # Check for E14 in text
-                            has_e14_in_text = ("e14" in text_lower or "thinkpad e14" in text_lower) and "p15" not in text_lower
-                            
-                            # For Gen 7 queries, also accept technical chunks (PERFORMANCE, processor, etc.)
-                            # even if they don't explicitly mention E14 in the text
-                            # This is important because PERFORMANCE sections often don't include the model name
-                            if target_gen == 7:
-                                is_technical_chunk = (
-                                    "performance" in text_lower or 
-                                    any(kw in text_lower for kw in ["processor", "cpu", "memory", "ram", "storage", "graphics", "gpu"])
-                                )
-                                # Accept if E14 in text OR if it's a technical chunk (likely from Gen 7 doc)
-                                product_in_chunk = has_e14_in_text or is_technical_chunk
-                            else:
-                                product_in_chunk = has_e14_in_text
-                        elif target_product == "p15v":
-                            product_in_chunk = ("p15v" in text_lower or ("p15" in text_lower and "v" in text_lower)) and "e14" not in text_lower
-                        elif "zbook" in target_product:
-                            product_in_chunk = target_product.lower() in text_lower
+                            is_technical_chunk = (has_performance or has_core_specs or has_display or has_battery or has_dimensions)
+                            # Accept if product in text OR if it's a technical chunk (likely from the correct model/gen doc)
+                            product_in_chunk = has_product_in_text or is_technical_chunk
+                        else:
+                            # Without generation, require explicit product mention
+                            product_in_chunk = has_product_in_text
                         
                         # If product filtering is active but chunk doesn't match, skip it (unless similarity is very high)
-                        # For Gen 7 queries with PERFORMANCE chunks, be more lenient
-                        threshold = 0.25 if (target_gen == 7 and "performance" in text_lower) else 0.3
+                        # For queries with generation specified and PERFORMANCE chunks, be more lenient
+                        threshold = 0.25 if (target_gen is not None and "performance" in text_lower) else 0.3
                         if not product_in_chunk and similarity < threshold:
                             logger.debug(f"Filtered out result {i} - product mismatch (target: {target_product}, similarity: {similarity})")
                             continue

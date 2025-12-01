@@ -7,6 +7,7 @@ except ImportError:
 from typing import List, Dict, Optional
 import os
 import yaml
+import re
 from dotenv import load_dotenv
 from logging_config.logger import get_logger
 
@@ -112,27 +113,40 @@ class QAChain:
         # Extract product/model name from question for context
         question_lower = question.lower()
         product_name = None
-        if "e16" in question_lower:
-            if "gen 3" in question_lower or "gen3" in question_lower:
-                product_name = "ThinkPad E16 Gen 3"
-            else:
-                product_name = "ThinkPad E16"
-        elif "e14" in question_lower:
-            if "gen 7" in question_lower or "generation 7" in question_lower:
-                product_name = "ThinkPad E14 Gen 7"
-            elif "gen 6" in question_lower or "generation 6" in question_lower:
-                product_name = "ThinkPad E14 Gen 6"
-            else:
-                product_name = "ThinkPad E14"
-        elif "p15v" in question_lower or ("p15" in question_lower and "v" in question_lower):
-            product_name = "ThinkPad P15v"
+        
+        # Detect brand
+        brand = None
+        if "thinkpad" in question_lower or "think pad" in question_lower:
+            brand = "ThinkPad"
         elif "zbook" in question_lower:
-            if "ultra 14" in question_lower:
-                product_name = "HP ZBook Ultra 14"
-            elif "8 14" in question_lower:
-                product_name = "HP ZBook 8 14"
-            elif "8 16" in question_lower:
-                product_name = "HP ZBook 8 16"
+            brand = "HP ZBook"
+        elif "ideapad" in question_lower:
+            brand = "IdeaPad"
+        
+        # Detect model names (E14, E16, L14, P15v, etc.) - pattern: letter(s) followed by numbers
+        model_pattern = r'\b([a-z]\d{1,2}|[a-z]{2}\d{1,2})\b'
+        model_matches = re.findall(model_pattern, question_lower)
+        
+        if model_matches:
+            model = max(model_matches, key=len).upper()  # Use longest match and uppercase
+            
+            # Detect generation number
+            gen_pattern = r'\b(?:gen|generation)\s*(\d+)\b'
+            gen_matches = re.findall(gen_pattern, question_lower)
+            
+            if gen_matches:
+                gen_num = gen_matches[0]
+                product_name = f"{brand} {model} Gen {gen_num}" if brand else f"{model} Gen {gen_num}"
+            else:
+                product_name = f"{brand} {model}" if brand else model
+        
+        # Handle special cases for multi-word model names
+        if "zbook ultra 14" in question_lower:
+            product_name = "HP ZBook Ultra 14"
+        elif "zbook 8 14" in question_lower:
+            product_name = "HP ZBook 8 14"
+        elif "zbook 8 16" in question_lower:
+            product_name = "HP ZBook 8 16"
         
         # Add current context and question
         if is_spec_question:
