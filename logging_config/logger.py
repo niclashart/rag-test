@@ -32,6 +32,18 @@ logger.add(
     serialize=True  # Force JSON for file
 )
 
+# Add interaction file handler
+logger.add(
+    LOG_DIR / "interactions.log",
+    format="{message}",  # We will log raw JSON string
+    filter=lambda record: record["extra"].get("type") == "interaction",
+    level="INFO",
+    rotation="10 MB",
+    retention="90 days",
+    compression="zip",
+    serialize=False # We handle serialization manually or let the message be the JSON
+)
+
 # Configure structlog to wrap loguru
 structlog.configure(
     processors=[

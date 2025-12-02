@@ -10,6 +10,9 @@ import yaml
 import re
 from dotenv import load_dotenv
 from logging_config.logger import get_logger
+from loguru import logger as loguru_logger
+import json
+import time
 
 load_dotenv()
 
@@ -310,6 +313,22 @@ Antwort:"""
         except Exception as e:
             logger.error(f"Error generating answer: {e}", exc_info=True)
             answer = f"Fehler bei der Generierung der Antwort: {str(e)}"
+        
+        # Log interaction
+        try:
+            interaction_data = {
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+                "question": question,
+                "answer": answer,
+                "model": self.llm.model_name,
+                "context_length": len(context) if context else 0,
+                "chat_history_length": len(chat_history) if chat_history else 0
+            }
+            # Use bind to add the type="interaction" to extra dict
+            loguru_logger.bind(type="interaction").info(json.dumps(interaction_data, ensure_ascii=False))
+        except Exception as e:
+            logger.error(f"Failed to log interaction: {e}")
+
         
         result = {
             "answer": answer,
