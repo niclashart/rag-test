@@ -41,4 +41,7 @@ frontend/build/
 .coverage
 htmlcov/
 
+# Logs
+logs/app.log
+*.log
 
