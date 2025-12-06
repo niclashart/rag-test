@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.ingestion.loader import DocumentLoader
 from src.ingestion.pdf_processor import PDFProcessor
+from src.ingestion.pdf_processor_advanced import PDFProcessorAdvanced
 from src.chunking.chunker import Chunker
 from src.embeddings.embedder import Embedder
 from src.index.vector_store import VectorStore
@@ -46,7 +47,10 @@ def ingest_file(file_path: str, user_id: int, db):
     try:
         # Load document
         if document.file_type == "pdf":
-            processor = PDFProcessor()
+            processor = PDFProcessorAdvanced(
+                remove_headers_footers=True,
+                output_format="text"
+            )
             doc_data = processor.process_pdf(str(file_path_obj))
             pages_data = doc_data.get("pages", [])
             chunks = chunker.chunk_pages(pages_data, document.id)

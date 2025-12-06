@@ -21,6 +21,8 @@ chromadb
 
 # Document Processing
 pymupdf
+pymupdf-layout
+pymupdf4llm
 pytesseract
 python-docx
 pandas

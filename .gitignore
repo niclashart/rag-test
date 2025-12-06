@@ -45,3 +45,6 @@ htmlcov/
 logs/app.log
 *.log
 
+# PDF Outputs
+data/pdf_outputs/
+

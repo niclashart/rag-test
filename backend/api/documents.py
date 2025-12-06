@@ -23,6 +23,7 @@ from database.crud import (
 )
 from src.ingestion.loader import DocumentLoader
 from src.ingestion.pdf_processor import PDFProcessor
+from src.ingestion.pdf_processor_advanced import PDFProcessorAdvanced
 from src.chunking.chunker import Chunker
 from src.embeddings.embedder import Embedder
 from src.index.vector_store import VectorStore
@@ -200,7 +201,10 @@ def ingest_all_documents(
             
             # Load document based on type
             if document.file_type == "pdf":
-                processor = PDFProcessor()
+                processor = PDFProcessorAdvanced(
+                    remove_headers_footers=True,
+                    output_format="text"
+                )
                 doc_data = processor.process_pdf(document.file_path)
                 pages_data = doc_data.get("pages", [])
                 
@@ -306,7 +310,10 @@ def ingest_document(
         
         # Load document based on type
         if document.file_type == "pdf":
-            processor = PDFProcessor()
+            processor = PDFProcessorAdvanced(
+                remove_headers_footers=True,
+                output_format="text"
+            )
             doc_data = processor.process_pdf(document.file_path)
             pages_data = doc_data.get("pages", [])
             
