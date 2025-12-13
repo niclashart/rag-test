@@ -111,6 +111,17 @@ class Retriever:
             # Display brightness specific
             elif any(term in query_lower_for_spec for term in ["helligkeit", "brightness", "nits", "luminance", "luminanz"]):
                 additional_keywords = "display brightness Helligkeit nits cd/m2 cd/m² luminance luminanz screen display specifications"
+            # Weight/Dimensions specific - add strong cross-language keywords
+            elif any(term in query_lower_for_spec for term in ["gewicht", "weight", "schwer", "leicht", "kg", "lbs", "gramm"]):
+                additional_keywords = "weight Weight Gewicht kg lbs pounds kilogram starting at mechanical dimensions size mass specifications"
+            elif any(term in query_lower_for_spec for term in ["abmessung", "dimension", "größe", "maße", "breite", "höhe", "tiefe"]):
+                additional_keywords = "dimensions Dimensions Abmessungen WxDxH width height depth mm inches mechanical size specifications"
+            # Display specific (not brightness)
+            elif any(term in query_lower_for_spec for term in ["display", "bildschirm", "screen", "monitor", "auflösung", "resolution"]):
+                additional_keywords = "display Display screen panel IPS LCD OLED FHD UHD resolution inch inches nits brightness specifications"
+            # Battery/Akku specific
+            elif any(term in query_lower_for_spec for term in ["akku", "battery", "batterie", "laufzeit", "wh", "kapazität"]):
+                additional_keywords = "battery Battery Akku Wh capacity power cells life runtime specifications"
             else:
                 # For general spec questions, add comprehensive technical keywords
                 # Emphasize processor keywords strongly
@@ -193,7 +204,9 @@ class Retriever:
                 
                 logger.debug(f"Result {i}: doc_id={doc_id}, distance={distance}, similarity={similarity}, threshold={self.similarity_threshold}")
                 
-                if similarity is not None and similarity >= self.similarity_threshold:
+                # Allow all results through - the threshold is mainly for logging
+                # Some embedding models produce very different distance scales
+                if similarity is not None and similarity >= -100.0:  # Very permissive threshold
                     doc_text = results["documents"][0][i] if results.get("documents") else ""
                     doc_metadata = results["metadatas"][0][i] if results.get("metadatas") else {}
                     

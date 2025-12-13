@@ -203,7 +203,7 @@ def ingest_all_documents(
             if document.file_type == "pdf":
                 processor = PDFProcessorAdvanced(
                     remove_headers_footers=True,
-                    output_format="text"
+                    output_format="markdown"  # Markdown preserves table structure better
                 )
                 doc_data = processor.process_pdf(document.file_path)
                 pages_data = doc_data.get("pages", [])
@@ -312,7 +312,7 @@ def ingest_document(
         if document.file_type == "pdf":
             processor = PDFProcessorAdvanced(
                 remove_headers_footers=True,
-                output_format="text"
+                output_format="markdown"  # Markdown preserves table structure better
             )
             doc_data = processor.process_pdf(document.file_path)
             pages_data = doc_data.get("pages", [])

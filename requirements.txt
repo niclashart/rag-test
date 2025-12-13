@@ -52,6 +52,7 @@ pydantic
 pydantic-settings
 httpx
 email-validator
+opencv-python
 
 # Frontend
 streamlit

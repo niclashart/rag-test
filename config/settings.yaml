@@ -1,8 +1,8 @@
 # RAG Pipeline Configuration
 
 chunking:
-  chunk_size: 500  # Reduced chunk size to get more specific chunks (especially for technical specs)
-  chunk_overlap: 100  # Reduced overlap proportionally
+  chunk_size: 1200  # Larger chunks to keep tables/specs together
+  chunk_overlap: 200  # More overlap to avoid cutting off important info
   separators: ["\n\n", "\n", ". ", " ", ""]
 
 retrieval:
