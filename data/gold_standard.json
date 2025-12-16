@@ -1,8 +1,6 @@
 {
   "dataset_name": "RAG Gold Standard v1.0",
   "description": "Evaluations-Dataset für RAG-Pipeline - Technische Spezifikationen",
-  "created_at": "2025-01-XX",
-  "version": "1.0",
   "questions": [
     {
       "id": 1,

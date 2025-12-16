@@ -73,8 +73,14 @@ def run_evaluation_from_file(
         logger.info(f"Processing question {i+1}/{len(questions)}: {question[:60]}...")
         
         try:
-            # Retrieve - verwende Reranking wenn aktiviert
-            if use_reranking and reranker:
+            # Retrieve - mirror logic from backend/api/query.py
+            # For specification queries, try without reranking first to see if it helps
+            # The reranker might be prioritizing title chunks over technical specification chunks
+            spec_keywords = ["spezifikation", "specification", "specs", "technische", "hardware", 
+                            "wieviel", "wie viel", "welche", "was ist"]
+            is_spec_query = any(keyword in question.lower() for keyword in spec_keywords)
+            
+            if use_reranking and reranker and not is_spec_query:
                 # Für reranking benötigen wir user_id, aber da die VectorStore global ist,
                 # verwenden wir user_id=1 als Default
                 retrieved_docs = retriever.retrieve_with_reranking(
@@ -83,7 +89,14 @@ def run_evaluation_from_file(
                     reranker=reranker
                 )
             else:
-                retrieved_docs = retriever.retrieve(query=question)
+                # For spec queries, use direct retrieval without reranking
+                # This helps find technical chunks that might be ranked lower by the reranker
+                # Get even more results for general spec queries to ensure Display, Battery, Dimensions are found
+                n_results = 50 if is_spec_query else None
+                retrieved_docs = retriever.retrieve(
+                    query=question,
+                    n_results=n_results
+                )
             
             context_text_list = [doc["text"] for doc in retrieved_docs]
             
@@ -96,7 +109,8 @@ def run_evaluation_from_file(
             # Generate Answer
             result = qa_chain.answer_with_retrieved_docs(
                 question=question,
-                retrieved_docs=retrieved_docs
+                retrieved_docs=retrieved_docs,
+                concise_mode=True
             )
             answers.append(result.get("answer", ""))
             

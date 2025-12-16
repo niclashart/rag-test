@@ -119,7 +119,8 @@ class QAChain:
         question: str,
         context: str,
         return_sources: bool = True,
-        chat_history: Optional[List[Dict]] = None
+        chat_history: Optional[List[Dict]] = None,
+        concise_mode: bool = False
     ) -> Dict:
         """
         Answer a question based on context and chat history.
@@ -279,6 +280,14 @@ Frage: {question}
 
 Antwort:"""
         
+        if concise_mode:
+            context_prompt += """
+            
+ZUSATZ-INSTRUKTION FÜR EVALUATION:
+Antworte extrem kurz und präzise. Keine ganzen Sätze. Nur die angeforderten Fakten/Werte.
+Beispiel Formatierung: "16 GB DDR4" statt "Der Laptop verfügt über 16 GB DDR4 Arbeitsspeicher."
+"""
+        
         messages.append(HumanMessage(content=context_prompt))
         
         # Get answer from LLM
@@ -341,7 +350,8 @@ Antwort:"""
         self,
         question: str,
         retrieved_docs: List[Dict],
-        chat_history: Optional[List[Dict]] = None
+        chat_history: Optional[List[Dict]] = None,
+        concise_mode: bool = False
     ) -> Dict:
         """Answer question using retrieved documents and chat history."""
         # Detect if this is a general spec query (asking for all specs, not specific ones)
@@ -378,7 +388,7 @@ Antwort:"""
             retrieved_docs = important_chunks + other_chunks
         
         context = self.format_context(retrieved_docs)
-        result = self.answer(question, context, return_sources=True, chat_history=chat_history)
+        result = self.answer(question, context, return_sources=True, chat_history=chat_history, concise_mode=concise_mode)
         
         # Add source information
         sources = []
