@@ -10,7 +10,11 @@ logger = get_logger(__name__)
 
 def load_gold_standard(file_path: str) -> Dict:
     """
-    Lädt Goldstandard-Dataset aus JSON-Datei.
+    Lädt Goldstandard-Dataset aus JSON-Datei (JSON oder JSONL-Format).
+    
+    Unterstützt zwei Formate:
+    1. JSON-Format: {"dataset_name": "...", "questions": [...]}
+    2. JSONL-Format: Ein JSON-Objekt pro Zeile {"id": 1, "question": "...", "ground_truth": "..."}
     
     Args:
         file_path: Pfad zur JSON-Datei
@@ -27,27 +31,66 @@ def load_gold_standard(file_path: str) -> Dict:
         raise FileNotFoundError(f"Gold standard file not found: {file_path}")
     
     with open(path, 'r', encoding='utf-8') as f:
-        try:
-            data = json.load(f)
-        except json.JSONDecodeError as e:
-            raise ValueError(f"Invalid JSON in gold standard file: {e}")
+        content = f.read().strip()
     
-    # Validiere Format
-    if "questions" not in data:
-        raise ValueError("Gold standard file must contain 'questions' field")
+    # Versuche zuerst JSONL-Format (ein Objekt pro Zeile)
+    questions = []
+    try:
+        for line_num, line in enumerate(content.split('\n'), 1):
+            line = line.strip()
+            if not line:  # Leere Zeilen überspringen
+                continue
+            try:
+                q = json.loads(line)
+                # Validiere, dass es die notwendigen Felder hat
+                if "id" not in q:
+                    q["id"] = line_num
+                if "question" not in q:
+                    q["question"] = ""
+                if "ground_truth" not in q:
+                    q["ground_truth"] = ""
+                # Nur Fragen mit nicht-leerem question-Feld hinzufügen
+                if q.get("question", "").strip():
+                    questions.append(q)
+            except json.JSONDecodeError as e:
+                # Wenn JSONL-Parsing fehlschlägt, versuche normales JSON
+                break
+        
+        # Wenn wir Fragen gefunden haben, ist es JSONL-Format
+        if questions:
+            logger.info(f"Loaded gold standard from JSONL format: {len(questions)} questions")
+            return {
+                "dataset_name": "Gold Standard Dataset",
+                "description": "Loaded from JSONL format",
+                "version": "1.0",
+                "created_at": datetime.now().isoformat(),
+                "questions": questions
+            }
+    except Exception as e:
+        logger.debug(f"JSONL parsing failed, trying JSON format: {e}")
     
-    if not isinstance(data["questions"], list):
-        raise ValueError("'questions' must be a list")
-    
-    # Validiere jede Frage
-    for i, q in enumerate(data["questions"]):
-        if "question" not in q:
-            raise ValueError(f"Question {i+1} missing 'question' field")
-        if not isinstance(q["question"], str) or not q["question"].strip():
-            raise ValueError(f"Question {i+1} has invalid 'question' field")
-    
-    logger.info(f"Loaded gold standard: {data.get('dataset_name', 'Unknown')} with {len(data['questions'])} questions")
-    return data
+    # Versuche normales JSON-Format
+    try:
+        data = json.loads(content)
+        
+        # Validiere Format
+        if "questions" not in data:
+            raise ValueError("Gold standard file must contain 'questions' field or be in JSONL format")
+        
+        if not isinstance(data["questions"], list):
+            raise ValueError("'questions' must be a list")
+        
+        # Validiere jede Frage
+        for i, q in enumerate(data["questions"]):
+            if "question" not in q:
+                raise ValueError(f"Question {i+1} missing 'question' field")
+            if not isinstance(q["question"], str) or not q["question"].strip():
+                raise ValueError(f"Question {i+1} has invalid 'question' field")
+        
+        logger.info(f"Loaded gold standard: {data.get('dataset_name', 'Unknown')} with {len(data['questions'])} questions")
+        return data
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Invalid JSON in gold standard file: {e}")
 
 
 def save_gold_standard(data: Dict, file_path: str) -> None:

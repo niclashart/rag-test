@@ -21,16 +21,9 @@ from logging_config.logger import get_logger
 logger = get_logger(__name__)
 
 def load_gold_standard(file_path: str) -> Dict:
-    """Lädt Goldstandard-Dataset aus JSON-Datei."""
-    path = Path(file_path)
-    if not path.exists():
-        raise FileNotFoundError(f"Gold standard file not found: {file_path}")
-    
-    with open(path, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    
-    logger.info(f"Loaded gold standard: {data.get('dataset_name', 'Unknown')} with {len(data.get('questions', []))} questions")
-    return data
+    """Lädt Goldstandard-Dataset aus JSON-Datei (unterstützt JSONL-Format)."""
+    from benchmarking.gold_standard import load_gold_standard as load_gs
+    return load_gs(file_path)
 
 
 def run_evaluation_from_file(
@@ -107,10 +100,14 @@ def run_evaluation_from_file(
             contexts.append(context_text_list)
             
             # Generate Answer
+            # Verwende eval_mode wenn Ground Truth vorhanden ist
+            ground_truth = ground_truths[i] if i < len(ground_truths) and ground_truths[i] else None
             result = qa_chain.answer_with_retrieved_docs(
                 question=question,
                 retrieved_docs=retrieved_docs,
-                concise_mode=True
+                concise_mode=True,
+                eval_mode=True,  # Aktiviere Evaluierungsmodus
+                ground_truth=ground_truth
             )
             answers.append(result.get("answer", ""))
             

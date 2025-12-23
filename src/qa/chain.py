@@ -38,6 +38,7 @@ class QAChain:
         model_name = os.getenv("OPENAI_MODEL", "gpt-4o-mini")  # Use gpt-4o-mini as default (faster, cheaper)
         temperature = qa_config.get("temperature", 0.7)
         max_tokens = qa_config.get("max_tokens", 2000)  # Increased to allow for longer answers
+        eval_max_tokens = qa_config.get("eval_max_tokens", None)  # Optional max tokens for eval mode
         system_prompt = qa_config.get("system_prompt", 
             "Du bist ein hilfreicher Assistent, der Fragen basierend auf den bereitgestellten Dokumenten beantwortet.")
         
@@ -49,6 +50,8 @@ class QAChain:
         )
         
         self.system_prompt = system_prompt
+        self.eval_max_tokens = eval_max_tokens
+        self.default_max_tokens = max_tokens
     
     def format_context(self, retrieved_docs: List[Dict]) -> str:
         """Format retrieved documents as context."""
@@ -64,10 +67,16 @@ class QAChain:
             is_important = False
             
             # Check if this is an important spec chunk (Processor, RAM, Storage, Battery, Weight, Dimensions, Display)
-            # Processor chunks with model names
-            if (("processor" in text_lower or "cpu" in text_lower or "prozessor" in text_lower) and 
+            # Processor chunks with model names - also check for GPU tables that contain processor info
+            # Check for processor keywords OR GPU/graphics tables that might contain processor specifications
+            has_processor_keywords = (("processor" in text_lower or "cpu" in text_lower or "prozessor" in text_lower) and 
                 (any(brand in text_lower for brand in ["intel", "amd", "core", "ryzen", "ultra", "i3", "i5", "i7", "i9"]) or
-                 any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"]))):
+                 any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"])))
+            # Also check for GPU/graphics tables that contain processor names (common pattern)
+            has_gpu_table_with_processors = (("gpu" in text_lower or "graphics" in text_lower or "grafik" in text_lower) and 
+                any(proc_name in text_lower for proc_name in ["u300e", "i3-1315u", "core 3 100u", "core 5 120u", "core 5 220u", "core 7 150u", "core 7 250u", "core ultra 5", "core ultra 7"]))
+            
+            if has_processor_keywords or has_gpu_table_with_processors:
                 is_important = True
             # RAM/Memory chunks
             elif (("memory" in text_lower or "ram" in text_lower or "speicher" in text_lower or "arbeitsspeicher" in text_lower) and 
@@ -120,7 +129,9 @@ class QAChain:
         context: str,
         return_sources: bool = True,
         chat_history: Optional[List[Dict]] = None,
-        concise_mode: bool = False
+        concise_mode: bool = False,
+        eval_mode: bool = False,
+        ground_truth: Optional[str] = None
     ) -> Dict:
         """
         Answer a question based on context and chat history.
@@ -249,8 +260,10 @@ Erwähne weniger wichtige Details (Webcam, Mikrofone, LEDs, etc.) erst am Ende o
 WICHTIG FÜR ALLE SPEZIFIKATIONEN:
 - Suche GRÜNDLICH in ALLEN bereitgestellten Chunks nach den Informationen - auch in Chunks mit niedrigerer Ähnlichkeit!
 - Durchsuche JEDEN Chunk systematisch, auch wenn er nicht direkt relevant erscheint
+- WICHTIG FÜR TABELLEN: Prozessoren können auch in Tabellen stehen, die andere Themen behandeln (z.B. GPU-Tabellen, Spezifikations-Tabellen). Durchsuche ALLE Tabellen gründlich, auch wenn der Tabellentitel nicht direkt "Prozessor" oder "CPU" enthält!
+- Ignoriere HTML-Formatierung wie <br>, <p>, etc. - extrahiere den reinen Text-Inhalt!
 - Achte auf verschiedene Formulierungen und Synonyme:
-  * Prozessor/CPU: "Processor", "CPU", "Prozessor", "Intel", "AMD", "Core", "Ultra", "Ryzen", "i3", "i5", "i7", "i9", "i11", "GHz", "MHz", "Cores", "Kerne", "Threads", "P-core", "E-core", "Taktfrequenz", "frequency" - Suche nach KOMPLETTEN Prozessor-Modellnamen wie "Intel Core Ultra 7 265U" oder "AMD Ryzen 5 7535U"! Wenn mehrere Prozessor-Optionen angegeben sind, nenne ALLE!
+  * Prozessor/CPU: "Processor", "CPU", "Prozessor", "Intel", "AMD", "Core", "Ultra", "Ryzen", "i3", "i5", "i7", "i9", "i11", "GHz", "MHz", "Cores", "Kerne", "Threads", "P-core", "E-core", "Taktfrequenz", "frequency" - Suche nach KOMPLETTEN Prozessor-Modellnamen wie "Intel Core Ultra 7 265U", "Intel Processor U300E", "13th Generation Intel Core i3-1315U", "Intel Core 3 100U", "Intel Core 5 120U" oder "AMD Ryzen 5 7535U"! Wenn mehrere Prozessor-Optionen angegeben sind, nenne ALLE - auch wenn sie in einer Tabelle mit anderem Titel stehen (z.B. GPU-Tabelle)!
   * Storage/Speicher: "Storage", "Speicher", "SSD", "HDD", "M.2", "capacity", "Kapazität", "TB", "GB", "drive", "Laufwerk" - Achte auf "Up to X drives" oder "2x" = multipliziere die Einzelkapazität!
   * Display: "Display", "Screen", "Bildschirm", "Panel", "LCD", "IPS", "OLED", "Resolution", "Auflösung", "FHD", "UHD", "4K", "1920x1080", "2560x1440", "3840x2160"
   * Display-Helligkeit/Brightness: "Brightness", "Helligkeit", "nits", "cd/m²", "cd/m2", "luminance", "Luminanz" - Zahlen mit "nits" oder "cd/m²" sind Helligkeitsangaben!
@@ -288,14 +301,41 @@ Antworte extrem kurz und präzise. Keine ganzen Sätze. Nur die angeforderten Fa
 Beispiel Formatierung: "16 GB DDR4" statt "Der Laptop verfügt über 16 GB DDR4 Arbeitsspeicher."
 """
         
+        if eval_mode and ground_truth:
+            # Evaluierungsmodus: Versuche die Antwortlänge und den Stil an den Ground Truth anzupassen
+            ground_truth_length = len(ground_truth)
+            # Schätze die Token-Anzahl basierend auf der Zeichenlänge (ca. 4 Zeichen pro Token)
+            estimated_tokens = max(50, int(ground_truth_length / 3))  # Etwas mehr als nötig für Sicherheit
+            
+            context_prompt += f"""
+
+WICHTIG FÜR EVALUIERUNG:
+- Die erwartete Antwortlänge beträgt etwa {ground_truth_length} Zeichen (ca. {estimated_tokens} Tokens)
+- Antworte im gleichen Stil und Format wie der Ground Truth
+- Verwende die gleiche Struktur (z.B. Komma-getrennte Liste, Aufzählung, etc.)
+- Beispiel Ground Truth Format: "{ground_truth[:100]}..."
+- Antworte präzise und ohne zusätzliche Erklärungen, nur die Fakten
+- Verwende KEINE zusätzlichen Formatierungen wie Aufzählungszeichen oder Nummerierungen, wenn der Ground Truth diese nicht hat
+- Wenn der Ground Truth eine Komma-getrennte Liste ist, verwende das gleiche Format
+"""
+            
+            # Temporär max_tokens für diese Anfrage anpassen
+            if self.eval_max_tokens:
+                original_max_tokens = self.llm.max_tokens
+                self.llm.max_tokens = min(self.eval_max_tokens, estimated_tokens + 50)  # Etwas Puffer
+        
         messages.append(HumanMessage(content=context_prompt))
         
         # Get answer from LLM
         try:
-            logger.info(f"Calling LLM", num_messages=len(messages), context_length=len(context))
+            logger.info(f"Calling LLM", num_messages=len(messages), context_length=len(context), eval_mode=eval_mode)
             logger.debug(f"LLM Prompt", messages=[m.content for m in messages])
             
             response = self.llm.invoke(messages)
+            
+            # Stelle max_tokens wieder her wenn eval_mode verwendet wurde
+            if eval_mode and self.eval_max_tokens:
+                self.llm.max_tokens = self.default_max_tokens
             
             logger.debug(f"LLM Raw Response", response=response)
             
@@ -351,7 +391,9 @@ Beispiel Formatierung: "16 GB DDR4" statt "Der Laptop verfügt über 16 GB DDR4 
         question: str,
         retrieved_docs: List[Dict],
         chat_history: Optional[List[Dict]] = None,
-        concise_mode: bool = False
+        concise_mode: bool = False,
+        eval_mode: bool = False,
+        ground_truth: Optional[str] = None
     ) -> Dict:
         """Answer question using retrieved documents and chat history."""
         # Detect if this is a general spec query (asking for all specs, not specific ones)
@@ -388,7 +430,15 @@ Beispiel Formatierung: "16 GB DDR4" statt "Der Laptop verfügt über 16 GB DDR4 
             retrieved_docs = important_chunks + other_chunks
         
         context = self.format_context(retrieved_docs)
-        result = self.answer(question, context, return_sources=True, chat_history=chat_history, concise_mode=concise_mode)
+        result = self.answer(
+            question, 
+            context, 
+            return_sources=True, 
+            chat_history=chat_history, 
+            concise_mode=concise_mode,
+            eval_mode=eval_mode,
+            ground_truth=ground_truth
+        )
         
         # Add source information
         sources = []

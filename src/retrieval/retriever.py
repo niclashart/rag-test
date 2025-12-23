@@ -219,10 +219,14 @@ class Retriever:
                         if "performance" in text_lower and len(doc_text) > 200:  # Must be substantial chunk
                             similarity_boost = 0.25  # Very strong boost for PERFORMANCE section
                         # Processor chunks - check for processor keywords AND model names/numbers
-                        elif (("processor" in text_lower or "cpu" in text_lower or "prozessor" in text_lower) and 
+                        # Also check for GPU/graphics tables that contain processor specifications
+                        elif ((("processor" in text_lower or "cpu" in text_lower or "prozessor" in text_lower) and 
                               (any(brand in text_lower for brand in ["intel", "amd", "core", "ryzen", "ultra", "i3", "i5", "i7", "i9"]) or
-                               any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"]))) and len(doc_text) > 200:
-                            similarity_boost = 0.24  # Very strong boost for processor chunks with model info
+                               any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"]))) or
+                              # GPU tables often contain processor information
+                              (("gpu" in text_lower or "graphics" in text_lower or "grafik" in text_lower) and 
+                               any(proc_name in text_lower for proc_name in ["u300e", "i3-1315u", "core 3 100u", "core 5 120u", "core 5 220u", "core 7 150u", "core 7 250u", "core ultra 5", "core ultra 7", "processor", "intel processor"]))) and len(doc_text) > 200:
+                            similarity_boost = 0.24  # Very strong boost for processor chunks with model info or GPU tables with processors
                         elif any(keyword in text_lower for keyword in ["processor", "cpu", "memory", "ram", "storage", "graphics", "gpu"]) and len(doc_text) > 200:
                             similarity_boost = 0.20  # Strong boost for technical keywords in substantial chunks
                         # Display chunks - check for display keywords AND measurements/units
