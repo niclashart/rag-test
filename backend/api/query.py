@@ -88,7 +88,9 @@ def query_rag(
         
         if request.use_reranking and not is_spec_query:
             # Use reranking for non-spec queries
+            # Use user_id=1 as default since vector store is global
             retrieved_docs = retriever.retrieve_with_reranking(
+                user_id=1,
                 query=request.query,
                 reranker=get_reranker()
             )

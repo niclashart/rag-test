@@ -105,12 +105,12 @@ class Retriever:
             query_lower_for_spec = query_lower
             additional_keywords = ""
             
+            # Display brightness specific - CHECK THIS FIRST before RAM to avoid misclassification
+            if any(term in query_lower_for_spec for term in ["helligkeit", "brightness", "nits", "luminance", "luminanz"]):
+                additional_keywords = "display brightness Helligkeit nits cd/m2 cd/m² luminance luminanz screen display specifications 300 nits typical brightness"
             # RAM/Memory specific
-            if any(term in query_lower_for_spec for term in ["ram", "memory", "speicher", "arbeitsspeicher"]):
+            elif any(term in query_lower_for_spec for term in ["ram", "memory", "speicher", "arbeitsspeicher"]):
                 additional_keywords = "RAM memory DDR4 DDR5 DDR3 GB gigabytes 16GB 32GB 64GB 8GB memory specifications"
-            # Display brightness specific
-            elif any(term in query_lower_for_spec for term in ["helligkeit", "brightness", "nits", "luminance", "luminanz"]):
-                additional_keywords = "display brightness Helligkeit nits cd/m2 cd/m² luminance luminanz screen display specifications"
             # Weight/Dimensions specific - add strong cross-language keywords
             elif any(term in query_lower_for_spec for term in ["gewicht", "weight", "schwer", "leicht", "kg", "lbs", "gramm"]):
                 additional_keywords = "weight Weight Gewicht kg lbs pounds kilogram starting at mechanical dimensions size mass specifications"
@@ -230,11 +230,17 @@ class Retriever:
                         elif any(keyword in text_lower for keyword in ["processor", "cpu", "memory", "ram", "storage", "graphics", "gpu"]) and len(doc_text) > 200:
                             similarity_boost = 0.20  # Strong boost for technical keywords in substantial chunks
                         # Display chunks - check for display keywords AND measurements/units
+                        # Prioritize chunks with brightness/nits information even more
                         elif ("display" in text_lower or "screen" in text_lower or "bildschirm" in text_lower) and (
-                            any(unit in text_lower for unit in ["nits", "cd/m2", "cd/m²", "brightness", "helligkeit", "luminance", "luminanz", "resolution", "auflösung", "inch", "inches", "\"", "fhd", "uhd", "4k", "1920", "2560", "3840"]) or
+                            any(unit in text_lower for unit in ["nits", "cd/m2", "cd/m²", "brightness", "helligkeit", "luminance", "luminanz"]) or
+                            ("300" in text_lower and ("nits" in text_lower or "brightness" in text_lower or "helligkeit" in text_lower))
+                        ):
+                            similarity_boost = 0.35  # Very strong boost for display chunks with brightness/nits
+                        elif ("display" in text_lower or "screen" in text_lower or "bildschirm" in text_lower) and (
+                            any(unit in text_lower for unit in ["resolution", "auflösung", "inch", "inches", "\"", "fhd", "uhd", "4k", "1920", "2560", "3840"]) or
                             any(size in text_lower for size in ["14", "15", "16"])  # Screen sizes
                         ):
-                            similarity_boost = 0.30  # Very strong boost for display chunks with measurements
+                            similarity_boost = 0.30  # Strong boost for display chunks with other measurements
                         # Battery chunks - check for battery keywords AND capacity/units
                         elif ("battery" in text_lower or "akku" in text_lower or "batterie" in text_lower or "power adapter" in text_lower or "power supply" in text_lower) and (
                             any(unit in text_lower for unit in ["w", "wh", "watt", "capacity", "kapazität", "life", "laufzeit", "mah", "mah", "hours", "stunden"])
@@ -336,7 +342,13 @@ class Retriever:
                         priority = 850  # Very high priority for weight
                     elif ("dimensions" in text_lower or "abmessungen" in text_lower) and any(unit in text_lower for unit in ["mm", "inches", "cm"]):
                         priority = 800  # High priority for dimensions
-                    elif ("display" in text_lower or "screen" in text_lower) and any(unit in text_lower for unit in ["nits", "inch", "resolution"]):
+                    # Prioritize display chunks with brightness/nits even more
+                    elif ("display" in text_lower or "screen" in text_lower) and (
+                        any(unit in text_lower for unit in ["nits", "brightness", "helligkeit", "luminance"]) or
+                        ("300" in text_lower and ("nits" in text_lower or "brightness" in text_lower))
+                    ):
+                        priority = 850  # Very high priority for display with brightness
+                    elif ("display" in text_lower or "screen" in text_lower) and any(unit in text_lower for unit in ["inch", "resolution"]):
                         priority = 750  # High priority for display
                     elif any(kw in text_lower for kw in ["processor", "cpu", "memory", "ram", "storage"]):
                         priority = 700  # Medium-high priority for core specs
