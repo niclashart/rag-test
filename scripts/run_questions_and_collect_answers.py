@@ -184,3 +184,5 @@ if __name__ == "__main__":
         print("HINWEIS: Verwende --update um die gold_standard.json zu aktualisieren")
         print("="*80)
 
+
+
