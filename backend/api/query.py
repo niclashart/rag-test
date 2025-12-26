@@ -142,7 +142,7 @@ def query_rag(
                 "sources": []
             }
         
-        # Create a mapping from chunk_id to text from retrieved_docs
+        # Create a mapping from chunk_id to text from retrieved_docs (fallback)
         chunk_text_map = {}
         for doc in retrieved_docs:
             chunk_id = doc.get("id", "")
@@ -154,7 +154,8 @@ def query_rag(
         sources = []
         for source in result.get("sources", []):
             chunk_id = source.get("chunk_id", "")
-            chunk_text = chunk_text_map.get(chunk_id, "")
+            # Use text from source if available (from filtered sources), otherwise fallback to chunk_text_map
+            chunk_text = source.get("text", "") or chunk_text_map.get(chunk_id, "")
             
             # Truncate text if too long (max 500 chars for display)
             if chunk_text and len(chunk_text) > 500:
@@ -164,7 +165,7 @@ def query_rag(
                 chunk_id=chunk_id,
                 document_id=source.get("document_id"),
                 page_number=source.get("page_number"),
-                similarity=source.get("similarity"),
+                similarity=None,  # Remove similarity display
                 text=chunk_text
             ))
         

@@ -263,7 +263,7 @@ WICHTIG FÜR ALLE SPEZIFIKATIONEN:
 - WICHTIG FÜR TABELLEN: Prozessoren können auch in Tabellen stehen, die andere Themen behandeln (z.B. GPU-Tabellen, Spezifikations-Tabellen). Durchsuche ALLE Tabellen gründlich, auch wenn der Tabellentitel nicht direkt "Prozessor" oder "CPU" enthält!
 - Ignoriere HTML-Formatierung wie <br>, <p>, etc. - extrahiere den reinen Text-Inhalt!
 - Achte auf verschiedene Formulierungen und Synonyme:
-  * Prozessor/CPU: "Processor", "CPU", "Prozessor", "Intel", "AMD", "Core", "Ultra", "Ryzen", "i3", "i5", "i7", "i9", "i11", "GHz", "MHz", "Cores", "Kerne", "Threads", "P-core", "E-core", "Taktfrequenz", "frequency" - Suche nach KOMPLETTEN Prozessor-Modellnamen wie "Intel Core Ultra 7 265U", "Intel Processor U300E", "13th Generation Intel Core i3-1315U", "Intel Core 3 100U", "Intel Core 5 120U" oder "AMD Ryzen 5 7535U"! Wenn mehrere Prozessor-Optionen angegeben sind, nenne ALLE - auch wenn sie in einer Tabelle mit anderem Titel stehen (z.B. GPU-Tabelle)!
+  * Prozessor/CPU: "Processor", "CPU", "Prozessor", "Intel", "AMD", "Core", "Ultra", "Ryzen", "i3", "i5", "i7", "i9", "i11", "GHz", "MHz", "Cores", "Kerne", "Threads", "P-core", "E-core", "Taktfrequenz", "frequency" - Suche nach KOMPLETTEN Prozessor-Modellnamen wie "Intel Core Ultra 7 265U", "Intel Processor U300E", "13th Generation Intel Core i3-1315U", "Intel Core 3 100U", "Intel Core 5 120U" oder "AMD Ryzen 5 7535U"! Wenn mehrere Prozessor-Optionen angegeben sind, nenne ALLE - auch wenn sie in einer Tabelle mit anderem Titel steht (z.B. GPU-Tabelle)!
   * Storage/Speicher: "Storage", "Speicher", "SSD", "HDD", "M.2", "capacity", "Kapazität", "TB", "GB", "drive", "Laufwerk" - Achte auf "Up to X drives" oder "2x" = multipliziere die Einzelkapazität!
   * Display: "Display", "Screen", "Bildschirm", "Panel", "LCD", "IPS", "OLED", "Resolution", "Auflösung", "FHD", "UHD", "4K", "1920x1080", "2560x1440", "3840x2160"
   * Display-Helligkeit/Brightness: "Brightness", "Helligkeit", "nits", "cd/m²", "cd/m2", "luminance", "Luminanz" - Zahlen mit "nits" oder "cd/m²" sind Helligkeitsangaben! Suche besonders nach "300 nits" oder ähnlichen Zahlen mit "nits"!
@@ -275,14 +275,15 @@ WICHTIG FÜR ALLE SPEZIFIKATIONEN:
 - Wenn du Zahlen oder Werte siehst (z.B. "300nits", "65W", "313 x 220.3 x 10.1 mm", "1.69 kg"), verwende diese explizit
 - Besonders wichtig: Wenn du "nits" oder "cd/m²" siehst, ist das eine Helligkeitsangabe - verwende diese!
 - Wenn du eine Spezifikation in einem Chunk findest, auch wenn sie nicht perfekt formatiert ist, verwende sie trotzdem!
-- Nur wenn du wirklich KEINE Informationen in ALLEN Chunks findest, schreibe "Nicht spezifiziert"{product_warning}{ram_instructions}
+- KRITISCH: Wenn du Informationen gefunden hast, gib NUR diese Informationen aus. Füge KEIN "Nicht spezifiziert" am Ende hinzu, wenn bereits Informationen vorhanden sind!
+- Nur wenn du wirklich KEINE Informationen in ALLEN Chunks findest (also GAR NICHTS), schreibe "Nicht spezifiziert"{product_warning}{ram_instructions}
 
 Dokumente:
 {context}
 
 Frage: {question}
 
-Antwort (NUR dokumentierte Informationen verwenden - wenn etwas nicht dokumentiert ist, explizit "Nicht spezifiziert" angeben):"""
+Antwort (NUR dokumentierte Informationen verwenden. Wenn du Informationen gefunden hast, gib NUR diese aus. Füge KEIN "Nicht spezifiziert" hinzu, wenn bereits Informationen vorhanden sind. Nur wenn GAR KEINE Informationen gefunden wurden, schreibe "Nicht spezifiziert"):"""
         else:
             context_prompt = f"""Basierend auf den folgenden Dokumenten, beantworte die Frage.
 
@@ -429,7 +430,52 @@ WICHTIG FÜR EVALUIERUNG:
             # Reorder: important chunks first, then others (but keep ALL chunks, don't limit)
             retrieved_docs = important_chunks + other_chunks
         
-        context = self.format_context(retrieved_docs)
+        # IMPORTANT: Reorder documents to match format_context order
+        # format_context sorts documents (important_spec_chunks first, then others)
+        # We need the same order here to correctly map source numbers
+        important_spec_chunks = []
+        other_chunks = []
+        
+        for doc in retrieved_docs:
+            text_lower = doc.get("text", "").lower()
+            is_important = False
+            
+            # Same logic as in format_context
+            has_processor_keywords = (("processor" in text_lower or "cpu" in text_lower or "prozessor" in text_lower) and 
+                (any(brand in text_lower for brand in ["intel", "amd", "core", "ryzen", "ultra", "i3", "i5", "i7", "i9"]) or
+                 any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"])))
+            has_gpu_table_with_processors = (("gpu" in text_lower or "graphics" in text_lower or "grafik" in text_lower) and 
+                any(proc_name in text_lower for proc_name in ["u300e", "i3-1315u", "core 3 100u", "core 5 120u", "core 5 220u", "core 7 150u", "core 7 250u", "core ultra 5", "core ultra 7"]))
+            
+            if has_processor_keywords or has_gpu_table_with_processors:
+                is_important = True
+            elif (("memory" in text_lower or "ram" in text_lower or "speicher" in text_lower or "arbeitsspeicher" in text_lower) and 
+                  any(unit in text_lower for unit in ["gb", "ddr4", "ddr5", "ddr3", "sodimm"])):
+                is_important = True
+            elif (("storage" in text_lower or "ssd" in text_lower or "hdd" in text_lower) and 
+                  any(unit in text_lower for unit in ["gb", "tb", "m.2", "capacity"])):
+                is_important = True
+            elif (("battery" in text_lower or "akku" in text_lower) and any(unit in text_lower for unit in ["w", "wh", "capacity"])):
+                is_important = True
+            elif (("weight" in text_lower or "gewicht" in text_lower) and any(unit in text_lower for unit in ["kg", "lbs", "g"])):
+                is_important = True
+            elif (("dimensions" in text_lower or "abmessungen" in text_lower) and any(unit in text_lower for unit in ["mm", "inches", "cm"])):
+                is_important = True
+            elif (("display" in text_lower or "screen" in text_lower) and any(unit in text_lower for unit in ["nits", "inch", "resolution", "fhd", "uhd", "4k"])):
+                is_important = True
+            elif (("graphics" in text_lower or "gpu" in text_lower or "grafik" in text_lower) and 
+                  any(brand in text_lower for brand in ["intel", "amd", "nvidia", "arc", "radeon"])):
+                is_important = True
+            
+            if is_important:
+                important_spec_chunks.append(doc)
+            else:
+                other_chunks.append(doc)
+        
+        # Combine in same order as format_context (important first, then others)
+        ordered_docs = important_spec_chunks + other_chunks
+        
+        context = self.format_context(ordered_docs)
         result = self.answer(
             question, 
             context, 
@@ -440,16 +486,54 @@ WICHTIG FÜR EVALUIERUNG:
             ground_truth=ground_truth
         )
         
-        # Add source information
-        sources = []
-        for doc in retrieved_docs:
-            sources.append({
+        # Extract source numbers from answer (e.g., "Quelle 6" -> 6)
+        answer = result.get("answer", "")
+        source_numbers = set()
+        
+        # Pattern to match "Quelle X" or "[Quelle X]"
+        single_pattern = r'(?:\[)?Quelle\s+(\d+)(?:\])?'
+        matches = re.findall(single_pattern, answer, re.IGNORECASE)
+        for match in matches:
+            source_numbers.add(int(match))
+        
+        # Pattern to match "Quelle X-Y" (range)
+        range_pattern = r'Quelle\s+(\d+)\s*-\s*(\d+)'
+        range_matches = re.findall(range_pattern, answer, re.IGNORECASE)
+        for start_str, end_str in range_matches:
+            start, end = int(start_str), int(end_str)
+            source_numbers.update(range(start, end + 1))
+        
+        # Filter sources to only include referenced ones
+        if source_numbers:
+            # Map source numbers (1-based) to actual documents
+            filtered_sources = []
+            for i, doc in enumerate(ordered_docs, 1):
+                if i in source_numbers:
+                    filtered_sources.append({
+                        "chunk_id": doc.get("id"),
+                        "document_id": doc.get("metadata", {}).get("document_id"),
+                        "page_number": doc.get("metadata", {}).get("page_number"),
+                        "similarity": doc.get("similarity"),
+                        "text": doc.get("text", "")  # Include text directly from doc
+                    })
+            
+            result["sources"] = filtered_sources
+            logger.info(f"Filtered sources: found {len(source_numbers)} referenced sources out of {len(ordered_docs)} total")
+        else:
+            # No source references found - return top sources by similarity (max 10)
+            # Sort by similarity (descending) and take top 10
+            sorted_docs = sorted(ordered_docs, key=lambda x: x.get("similarity", 0.0), reverse=True)
+            top_sources = sorted_docs[:10]
+            
+            result["sources"] = [{
                 "chunk_id": doc.get("id"),
                 "document_id": doc.get("metadata", {}).get("document_id"),
                 "page_number": doc.get("metadata", {}).get("page_number"),
-                "similarity": doc.get("similarity")
-            })
-        result["sources"] = sources
+                "similarity": doc.get("similarity"),
+                "text": doc.get("text", "")  # Include text directly from doc
+            } for doc in top_sources]
+            
+            logger.info(f"No source references found in answer, returning top {len(top_sources)} sources by similarity")
         
         return result
 

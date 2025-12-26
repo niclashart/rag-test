@@ -55,16 +55,10 @@ def show_chat():
                             st.markdown(f"### Quelle {i}")
                             
                             # Source metadata
-                            col1, col2 = st.columns(2)
-                            with col1:
-                                if source.get('page_number'):
-                                    st.caption(f"📄 Seite {source.get('page_number')}")
-                                if source.get('document_id'):
-                                    st.caption(f"📑 Dokument ID: {source.get('document_id')}")
-                            with col2:
-                                if source.get('similarity'):
-                                    similarity_pct = source['similarity'] * 100
-                                    st.caption(f"🎯 Ähnlichkeit: {similarity_pct:.1f}%")
+                            if source.get('page_number'):
+                                st.caption(f"📄 Seite {source.get('page_number')}")
+                            if source.get('document_id'):
+                                st.caption(f"📑 Dokument ID: {source.get('document_id')}")
                             
                             # Display chunk text if available
                             if source.get('text'):
@@ -133,16 +127,10 @@ def show_chat():
                                         st.markdown(f"### Quelle {i}")
                                         
                                         # Source metadata
-                                        col1, col2 = st.columns(2)
-                                        with col1:
-                                            if source.get('page_number'):
-                                                st.caption(f"📄 Seite {source.get('page_number')}")
-                                            if source.get('document_id'):
-                                                st.caption(f"📑 Dokument ID: {source.get('document_id')}")
-                                        with col2:
-                                            if source.get('similarity'):
-                                                similarity_pct = source['similarity'] * 100
-                                                st.caption(f"🎯 Ähnlichkeit: {similarity_pct:.1f}%")
+                                        if source.get('page_number'):
+                                            st.caption(f"📄 Seite {source.get('page_number')}")
+                                        if source.get('document_id'):
+                                            st.caption(f"📑 Dokument ID: {source.get('document_id')}")
                                         
                                         # Display chunk text if available
                                         if source.get('text'):

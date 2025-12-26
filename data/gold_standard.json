@@ -1,16 +1,16 @@
 {"id": 1, "question": "Welche Prozessor-Konfigurationen hat das Dell Pro 16 PC16250?", "ground_truth": "Intel Processor U300E, 13th Generation Intel Core i3-1315U, Intel Core 3 100U, Intel Core 5 120U, Intel Core 5 220U, Intel Core 7 150U, Intel Core 7 250U, Intel Core Ultra 5 225U, Intel Core Ultra 5 235U, Intel Core Ultra 7 255U, Intel Core Ultra 7 265U"}
 {"id": 2, "question": "Welche maximale RAM-Kapazität hat das Dell Pro 16 PC16250?", "ground_truth": "64 GB"}
-{"id": 3, "question": "Welche Storage-Optionen (SSD) sind für das Dell Pro 16 PC16250 verfügbar?", "ground_truth": "- One Universal Flash Storage (onboard)  \n- UFS ist verfügbar nur für Computer mit Intel Core Series Prozessoren.  \n- Nicht spezifiziert: SSD-Kapazität oder -Typ."}
+{"id": 3, "question": "Wieviel maximale Speicherkapazität hat das Dell Pro 16 PC16250?", "ground_truth": "2 TB"}
 {"id": 4, "question": "Welche Display-Größe und Auflösung hat das Dell Pro 16 PC16250?", "ground_truth": "16 Zoll, Full High Definition Plus (FHD+)"}
-{"id": 5, "question": "Wie hoch ist die Display-Helligkeit (in nits) des Dell Pro 16 PC16250?", "ground_truth": "Nicht spezifiziert"}
-{"id": 6, "question": "Welche Akku-Kapazität hat das Dell Pro 16 PC16250?", "ground_truth": "Nicht spezifiziert"}
-{"id": 7, "question": "Wie viel wiegt das Dell Pro 16 PC16250?", "ground_truth": "Minimum - 1.92 kg (4.23 lb)"}
-{"id": 8, "question": "Welche Abmessungen (Breite x Tiefe x Höhe) hat das Dell Pro 16 PC16250?", "ground_truth": "Nicht spezifiziert"}
-{"id": 9, "question": "Welche Grafikkarte (GPU) ist im Dell Pro 16 PC16250 verbaut?", "ground_truth": "Intel UHD Graphics (Shared system memory)  \nIntel Graphics (Shared system memory)  \n- Intel Processor U300E  \n- 13th Generation Intel Core i3-1315U  \n- Intel Core 3 100U  \n- Intel Core 5 120U  \n- Intel Core 5 220U  \n- Intel Core 7 150U  \n- Intel Core 7 250U  \n- Intel Core Ultra 5 225U  \n- Intel Core Ultra 5 235U  \n- Intel Core Ultra 7 255U  \n- Intel Core Ultra 7 265U  \n(Quelle 1, 2, 3, 4)"}
-{"id": 10, "question": "Welche Anschlüsse und Ports hat das Dell Pro 16 PC16250?", "ground_truth": "- 1 RJ45 ethernet port (1 Gbps)\n- 2 USB 3.2 Gen 1 ports (5 Gbps)\n- 1 USB 3.2 Gen 1 port with PowerShare\n- 1 USB 3.2 Gen 2 Type-C port (10 Gbps) with DisplayPort Alt Mode/Power Delivery\n- 1 Thunderbolt 4 port (40 Gbps) with DisplayPort Alt Mode/USB Type-C/USB4/Power Delivery\n- 1 HDMI 2.1 port\n- 1 global headset port\n- 1 power-adapter port (4.5 mm x 2.9 mm DC-in)\n- 1 security-cable slot (wedge-shaped)"}
-{"id": 11, "question": "", "ground_truth": ""}
-{"id": 12, "question": "", "ground_truth": ""}
-{"id": 13, "question": "", "ground_truth": ""}
+{"id": 5, "question": "Wie hoch ist die Display-Helligkeit (in nits) des Dell Pro 16 PC16250?", "ground_truth": "300 nits"}
+{"id": 6, "question": "Welche Grafikkarte ist im Dell Pro 16 PC16250 verbaut?", "ground_truth": "Intel UHD Graphics / Intel Graphics"}
+{"id": 7, "question": "Wie viel wiegt das Dell Pro 16 PC16250 in kg?", "ground_truth": "1.92 kg"}
+{"id": 8, "question": "Welche Prozessoren unterstützt das Lenovo ThinkPad E14 Gen 6 mit genauen Typen?", "ground_truth": "AMD Ryzen™ 3 7335U, AMD Ryzen™ 5 7535HS, AMD Ryzen™ 5 7535U, AMD Ryzen™ 7 7735HS, AMD Ryzen™ 7 7735U"}
+{"id": 9, "question": "Wieviel maximalen Arbeitsspeicher hat das Lenovo Thinkpad E14 Gen 6?", "ground_truth": "64 GB"}
+{"id": 10, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E14 Gen 6?", "ground_truth": "DDR5"}
+{"id": 11, "question": "Wieviel maximale Speicherkapazität hat das Lenovo Thinkpad E14 Gen 6?", "ground_truth": "2 TB"}
+{"id": 12, "question": "Welche Display-Helligkeit hat das Lenovo Thinkpad E14 Gen 6?", "ground_truth": "300 nits"}
+{"id": 13, "question": "Welche Grafikkarte ist im Lenovo Thinkpad E14 Gen 6 verbaut?", "ground_truth": "AMD Radeon 660M, AMD Radeon 680M"}
 {"id": 14, "question": "", "ground_truth": ""}
 {"id": 15, "question": "", "ground_truth": ""}
 {"id": 16, "question": "", "ground_truth": ""}

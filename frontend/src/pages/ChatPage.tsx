@@ -101,7 +101,6 @@ const ChatPage: React.FC = () => {
                         {msg.sources.map((source, i) => (
                           <li key={i}>
                             Dokument {source.document_id}, Seite {source.page_number}
-                            {source.similarity && ` (${(source.similarity * 100).toFixed(1)}%)`}
                           </li>
                         ))}
                       </ul>
