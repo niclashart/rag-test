@@ -11,11 +11,11 @@
 {"id": 11, "question": "Wieviel maximale Speicherkapazität hat das Lenovo Thinkpad E14 Gen 6?", "ground_truth": "2 TB"}
 {"id": 12, "question": "Welche Display-Helligkeit hat das Lenovo Thinkpad E14 Gen 6?", "ground_truth": "300 nits"}
 {"id": 13, "question": "Welche Grafikkarte ist im Lenovo Thinkpad E14 Gen 6 verbaut?", "ground_truth": "AMD Radeon 660M, AMD Radeon 680M"}
-{"id": 14, "question": "", "ground_truth": ""}
-{"id": 15, "question": "", "ground_truth": ""}
-{"id": 16, "question": "", "ground_truth": ""}
-{"id": 17, "question": "", "ground_truth": ""}
-{"id": 18, "question": "", "ground_truth": ""}
+{"id": 14, "question": "Welche Betriebssysteme unterstützt das Lenovo Thinkpad E14 Gen 6?", "ground_truth": "Windows 11 Pro, Windows 11 Home, Windows 11 Home Single Language, kein vorinstalliertes Betriebssystem"}
+{"id": 15, "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L16 Gen 2?", "ground_truth": "Intel® Core™ Ultra 5 225H, Intel® Core™ Ultra 5 225U, Intel® Core™ Ultra 5 235H, Intel® Core™ Ultra 5 235U, Intel® Core™ Ultra 7 255H, Intel® Core™ Ultra 7 255U, Intel® Core™ Ultra 7 265U"}
+{"id": 16, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L16 Gen 2?", "ground_truth": "64 GB"}
+{"id": 17, "question": "Welche RAM-Typ unterstützt das Lenovo Thinkpad L16 Gen 2?", "ground_truth": "DDR5"}
+{"id": 18, "question": "Welche Grafikkarte ist im Lenovo Thinkpad L16 Gen 2 verbaut?", "ground_truth": "Intel® UHD Graphics / Intel® Iris® Xe Graphics"}
 {"id": 19, "question": "", "ground_truth": ""}
 {"id": 20, "question": "", "ground_truth": ""}
 {"id": 21, "question": "", "ground_truth": ""}

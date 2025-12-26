@@ -53,63 +53,87 @@ class QAChain:
         self.eval_max_tokens = eval_max_tokens
         self.default_max_tokens = max_tokens
     
-    def format_context(self, retrieved_docs: List[Dict]) -> str:
-        """Format retrieved documents as context."""
+    def format_context(self, retrieved_docs: List[Dict], preserve_order: bool = False) -> str:
+        """Format retrieved documents as context.
+        
+        Args:
+            retrieved_docs: List of documents to format
+            preserve_order: If True, use documents in the order provided (don't re-sort).
+                           This is important when documents are already sorted to match source numbering.
+        """
         context_parts = []
         
-        # For spec queries, reorder chunks to prioritize important spec types
-        # but keep ALL chunks - don't filter any out
-        important_spec_chunks = []
-        other_chunks = []
+        # If preserve_order is True, use documents as-is (already sorted correctly)
+        if preserve_order:
+            all_chunks = retrieved_docs
+        else:
+            # For spec queries, reorder chunks to prioritize important spec types
+            # but keep ALL chunks - don't filter any out
+            important_spec_chunks = []
+            other_chunks = []
+            
+            for doc in retrieved_docs:
+                text_lower = doc.get("text", "").lower()
+                is_important = False
+                
+                # Check if this is an important spec chunk (Processor, RAM, Storage, Battery, Weight, Dimensions, Display)
+                # Processor chunks with model names - also check for GPU tables that contain processor info
+                # Check for processor keywords OR GPU/graphics tables that might contain processor specifications
+                has_processor_keywords = (("processor" in text_lower or "cpu" in text_lower or "prozessor" in text_lower) and 
+                    (any(brand in text_lower for brand in ["intel", "amd", "core", "ryzen", "ultra", "i3", "i5", "i7", "i9"]) or
+                     any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"])))
+                # Also check for GPU/graphics tables that contain processor names (common pattern)
+                has_gpu_table_with_processors = (("gpu" in text_lower or "graphics" in text_lower or "grafik" in text_lower) and 
+                    any(proc_name in text_lower for proc_name in ["u300e", "i3-1315u", "core 3 100u", "core 5 120u", "core 5 220u", "core 7 150u", "core 7 250u", "core ultra 5", "core ultra 7"]))
+                # Check for processor model numbers (e.g., 225H, 225U, 235H, 235U, 245H, 245U)
+                has_processor_models = any(model in text_lower for model in [
+                    "225h", "225u", "235h", "235u", "245h", "245u", "255h", "255u",
+                    "core ultra 5 225", "core ultra 5 235", "core ultra 5 245",
+                    "core ultra 7 155", "core ultra 7 165", "core ultra 7 155h", "core ultra 7 165h"
+                ])
+                # Check for table-like structures that might contain processor information
+                doc_text = doc.get("text", "")
+                has_table_structure = (("|" in doc_text or "---" in doc_text or "table" in text_lower) and 
+                    any(keyword in text_lower for keyword in ["processor", "cpu", "core", "ultra", "intel", "amd"]))
+                
+                if has_processor_keywords or has_gpu_table_with_processors or has_processor_models or has_table_structure:
+                    is_important = True
+                # RAM/Memory chunks
+                elif (("memory" in text_lower or "ram" in text_lower or "speicher" in text_lower or "arbeitsspeicher" in text_lower) and 
+                      any(unit in text_lower for unit in ["gb", "ddr4", "ddr5", "ddr3", "sodimm"])):
+                    is_important = True
+                # Storage chunks
+                elif (("storage" in text_lower or "ssd" in text_lower or "hdd" in text_lower) and 
+                      any(unit in text_lower for unit in ["gb", "tb", "m.2", "capacity"])):
+                    is_important = True
+                # Battery chunks
+                elif (("battery" in text_lower or "akku" in text_lower) and any(unit in text_lower for unit in ["w", "wh", "capacity"])):
+                    is_important = True
+                # Weight chunks
+                elif (("weight" in text_lower or "gewicht" in text_lower) and any(unit in text_lower for unit in ["kg", "lbs", "g"])):
+                    is_important = True
+                # Dimensions chunks
+                elif (("dimensions" in text_lower or "abmessungen" in text_lower) and any(unit in text_lower for unit in ["mm", "inches", "cm"])):
+                    is_important = True
+                # Display chunks
+                elif (("display" in text_lower or "screen" in text_lower) and any(unit in text_lower for unit in ["nits", "inch", "resolution", "fhd", "uhd", "4k"])):
+                    is_important = True
+                # Graphics/GPU chunks
+                elif (("graphics" in text_lower or "gpu" in text_lower or "grafik" in text_lower) and 
+                      any(brand in text_lower for brand in ["intel", "amd", "nvidia", "arc", "radeon"])):
+                    is_important = True
+                
+                if is_important:
+                    important_spec_chunks.append(doc)
+                else:
+                    other_chunks.append(doc)
+            
+            # Combine: important chunks first, then others (keep ALL chunks)
+            all_chunks = important_spec_chunks + other_chunks
         
-        for doc in retrieved_docs:
-            text_lower = doc.get("text", "").lower()
-            is_important = False
-            
-            # Check if this is an important spec chunk (Processor, RAM, Storage, Battery, Weight, Dimensions, Display)
-            # Processor chunks with model names - also check for GPU tables that contain processor info
-            # Check for processor keywords OR GPU/graphics tables that might contain processor specifications
-            has_processor_keywords = (("processor" in text_lower or "cpu" in text_lower or "prozessor" in text_lower) and 
-                (any(brand in text_lower for brand in ["intel", "amd", "core", "ryzen", "ultra", "i3", "i5", "i7", "i9"]) or
-                 any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"])))
-            # Also check for GPU/graphics tables that contain processor names (common pattern)
-            has_gpu_table_with_processors = (("gpu" in text_lower or "graphics" in text_lower or "grafik" in text_lower) and 
-                any(proc_name in text_lower for proc_name in ["u300e", "i3-1315u", "core 3 100u", "core 5 120u", "core 5 220u", "core 7 150u", "core 7 250u", "core ultra 5", "core ultra 7"]))
-            
-            if has_processor_keywords or has_gpu_table_with_processors:
-                is_important = True
-            # RAM/Memory chunks
-            elif (("memory" in text_lower or "ram" in text_lower or "speicher" in text_lower or "arbeitsspeicher" in text_lower) and 
-                  any(unit in text_lower for unit in ["gb", "ddr4", "ddr5", "ddr3", "sodimm"])):
-                is_important = True
-            # Storage chunks
-            elif (("storage" in text_lower or "ssd" in text_lower or "hdd" in text_lower) and 
-                  any(unit in text_lower for unit in ["gb", "tb", "m.2", "capacity"])):
-                is_important = True
-            # Battery chunks
-            elif (("battery" in text_lower or "akku" in text_lower) and any(unit in text_lower for unit in ["w", "wh", "capacity"])):
-                is_important = True
-            # Weight chunks
-            elif (("weight" in text_lower or "gewicht" in text_lower) and any(unit in text_lower for unit in ["kg", "lbs", "g"])):
-                is_important = True
-            # Dimensions chunks
-            elif (("dimensions" in text_lower or "abmessungen" in text_lower) and any(unit in text_lower for unit in ["mm", "inches", "cm"])):
-                is_important = True
-            # Display chunks
-            elif (("display" in text_lower or "screen" in text_lower) and any(unit in text_lower for unit in ["nits", "inch", "resolution", "fhd", "uhd", "4k"])):
-                is_important = True
-            # Graphics/GPU chunks
-            elif (("graphics" in text_lower or "gpu" in text_lower or "grafik" in text_lower) and 
-                  any(brand in text_lower for brand in ["intel", "amd", "nvidia", "arc", "radeon"])):
-                is_important = True
-            
-            if is_important:
-                important_spec_chunks.append(doc)
-            else:
-                other_chunks.append(doc)
-        
-        # Combine: important chunks first, then others (keep ALL chunks)
-        all_chunks = important_spec_chunks + other_chunks
+        # Log which chunks are being formatted and in what order
+        target_chunk_id = "bd9d0fc1-98f4-4ebe-a47c-eed250205951"  # The correct graphics table chunk
+        target_position_in_context = None
         
         for i, doc in enumerate(all_chunks, 1):
             chunk_id = doc.get("id", "")
@@ -117,9 +141,17 @@ class QAChain:
             metadata = doc.get("metadata", {})
             source_info = metadata.get("source", "")
             
+            # Check if this is the target chunk
+            if chunk_id == target_chunk_id:
+                target_position_in_context = i
+                logger.info(f"format_context: Target graphics table chunk found at position {i} in context")
+            
             context_parts.append(
                 f"[Quelle {i} - {chunk_id}]:\n{text}\n"
             )
+        
+        if target_position_in_context is None:
+            logger.warning(f"format_context: Target chunk {target_chunk_id[:8]}... NOT FOUND in context!")
         
         return "\n---\n".join(context_parts)
     
@@ -220,17 +252,22 @@ class QAChain:
 KRITISCH WICHTIG - MODELL-SPEZIFIZITÄT:
 Die Frage bezieht sich AUSSCHLIESSLICH auf das {product_name}.
 - Verwende NUR Informationen, die explizit für das {product_name} genannt werden
-- Wenn ein Chunk Informationen über andere Modelle enthält (z.B. E14, E16 Gen 2, P15v, andere ThinkPad-Modelle, andere ZBook-Modelle), IGNORIERE diese komplett
+- Wenn ein Chunk Informationen über andere Modelle enthält (z.B. E14, E16 Gen 2, P15v, L16 Gen 1, andere ThinkPad-Modelle, andere ZBook-Modelle), IGNORIERE diese komplett
 - Wenn ein Chunk mehrere Modelle erwähnt, verwende NUR die Informationen für das {product_name}
+- Wenn ein Chunk ein anderes Modell oder eine andere Generation erwähnt (z.B. "E14 Gen 6" wenn nach "L16 Gen 2" gefragt wird), IGNORIERE den gesamten Chunk
 - Wenn du dir nicht sicher bist, ob eine Information zum {product_name} gehört, erwähne sie NICHT
 - Vermische KEINE Spezifikationen von verschiedenen Modellen oder Generationen
 - Wenn eine Information nicht eindeutig dem {product_name} zugeordnet werden kann, lasse sie weg
-- Prüfe IMMER, ob eine Zahl oder Spezifikation wirklich zum {product_name} gehört, bevor du sie verwendest"""
+- Prüfe IMMER, ob eine Zahl oder Spezifikation wirklich zum {product_name} gehört, bevor du sie verwendest
+- WICHTIG: Wenn ein Chunk sowohl das {product_name} als auch andere Modelle erwähnt, verwende NUR die Informationen, die explizit dem {product_name} zugeordnet sind"""
             else:
                 product_warning = "\n\nWICHTIG: Verwende nur Informationen, die eindeutig dem in der Frage genannten Modell zugeordnet werden können. Vermische keine Informationen von verschiedenen Modellen."
             
             # Detect if question is specifically about RAM/memory
             is_ram_question = any(term in question_lower for term in ["ram", "memory", "speicher", "arbeitsspeicher"])
+            
+            # Detect if question is specifically about processors/CPU
+            is_processor_question = any(term in question_lower for term in ["prozessor", "processor", "cpu", "prozessoren", "processors", "welche prozessoren", "welche processor"])
             
             ram_instructions = ""
             if is_ram_question:
@@ -243,6 +280,19 @@ WICHTIG FÜR RAM/SPEICHER-FRAGEN:
 - Wenn "Up to XGB" angegeben ist, ist das die maximale RAM-Kapazität
 - Gib auch den RAM-Typ an (z.B. DDR4, DDR5) und die Geschwindigkeit (z.B. 2666MHz, 3200MHz) wenn verfügbar
 - Wenn die RAM-Informationen in verschiedenen Chunks stehen, kombiniere sie zu einer vollständigen Antwort"""
+            
+            processor_instructions = ""
+            if is_processor_question:
+                processor_instructions = """
+
+KRITISCH WICHTIG FÜR PROZESSOR-FRAGEN:
+- Suche GRÜNDLICH in ALLEN bereitgestellten Dokumenten nach Prozessor-Informationen, besonders in Tabellen!
+- Durchsuche JEDEN Chunk systematisch, auch Tabellen mit anderen Titeln (z.B. "PERFORMANCE", "Graphics", etc.)
+- Wenn eine Prozessor-Tabelle gefunden wird, liste ALLE Prozessoren auf, die in der Tabelle stehen - KEINE Auswahl!
+- Wenn mehrere Prozessor-Modelle in der Tabelle stehen (z.B. "Core Ultra 5 225H", "Core Ultra 5 225U", "Core Ultra 5 235H", etc.), nenne ALLE Modelle!
+- Gib für jeden Prozessor die vollständigen Spezifikationen an (Cores, Threads, Frequenzen, Cache, etc.) wenn verfügbar
+- Wenn die Prozessor-Informationen über mehrere Chunks verteilt sind, kombiniere sie zu einer vollständigen Liste
+- WICHTIG: Wenn die Frage nach "welche Prozessoren" fragt, liste ALLE auf, die in den Dokumenten stehen - nicht nur eine Auswahl!"""
             
             context_prompt = f"""Du bist ein präziser Dokumenten-Assistent. Beantworte die Frage NUR mit Informationen, die EXPLIZIT in den bereitgestellten Dokumenten stehen.
 
@@ -262,6 +312,8 @@ WICHTIG FÜR ALLE SPEZIFIKATIONEN:
 - Durchsuche JEDEN Chunk systematisch, auch wenn er nicht direkt relevant erscheint
 - WICHTIG FÜR TABELLEN: Prozessoren können auch in Tabellen stehen, die andere Themen behandeln (z.B. GPU-Tabellen, Spezifikations-Tabellen). Durchsuche ALLE Tabellen gründlich, auch wenn der Tabellentitel nicht direkt "Prozessor" oder "CPU" enthält!
 - Ignoriere HTML-Formatierung wie <br>, <p>, etc. - extrahiere den reinen Text-Inhalt!
+- KRITISCH: Wenn ein Chunk mehrere Modelle oder Generationen erwähnt, verwende NUR die Informationen, die explizit dem {product_name} zugeordnet sind. Ignoriere alle anderen Modell-Informationen komplett!
+- Wenn ein Chunk z.B. sowohl "E14 Gen 6" als auch "L16 Gen 2" erwähnt und die Frage nach "L16 Gen 2" ist, verwende NUR die Informationen für "L16 Gen 2"!
 - Achte auf verschiedene Formulierungen und Synonyme:
   * Prozessor/CPU: "Processor", "CPU", "Prozessor", "Intel", "AMD", "Core", "Ultra", "Ryzen", "i3", "i5", "i7", "i9", "i11", "GHz", "MHz", "Cores", "Kerne", "Threads", "P-core", "E-core", "Taktfrequenz", "frequency" - Suche nach KOMPLETTEN Prozessor-Modellnamen wie "Intel Core Ultra 7 265U", "Intel Processor U300E", "13th Generation Intel Core i3-1315U", "Intel Core 3 100U", "Intel Core 5 120U" oder "AMD Ryzen 5 7535U"! Wenn mehrere Prozessor-Optionen angegeben sind, nenne ALLE - auch wenn sie in einer Tabelle mit anderem Titel steht (z.B. GPU-Tabelle)!
   * Storage/Speicher: "Storage", "Speicher", "SSD", "HDD", "M.2", "capacity", "Kapazität", "TB", "GB", "drive", "Laufwerk" - Achte auf "Up to X drives" oder "2x" = multipliziere die Einzelkapazität!
@@ -276,7 +328,7 @@ WICHTIG FÜR ALLE SPEZIFIKATIONEN:
 - Besonders wichtig: Wenn du "nits" oder "cd/m²" siehst, ist das eine Helligkeitsangabe - verwende diese!
 - Wenn du eine Spezifikation in einem Chunk findest, auch wenn sie nicht perfekt formatiert ist, verwende sie trotzdem!
 - KRITISCH: Wenn du Informationen gefunden hast, gib NUR diese Informationen aus. Füge KEIN "Nicht spezifiziert" am Ende hinzu, wenn bereits Informationen vorhanden sind!
-- Nur wenn du wirklich KEINE Informationen in ALLEN Chunks findest (also GAR NICHTS), schreibe "Nicht spezifiziert"{product_warning}{ram_instructions}
+- Nur wenn du wirklich KEINE Informationen in ALLEN Chunks findest (also GAR NICHTS), schreibe "Nicht spezifiziert"{product_warning}{ram_instructions}{processor_instructions}
 
 Dokumente:
 {context}
@@ -441,13 +493,24 @@ WICHTIG FÜR EVALUIERUNG:
             is_important = False
             
             # Same logic as in format_context
+            # Enhanced processor detection: also check for processor model numbers and table structures
             has_processor_keywords = (("processor" in text_lower or "cpu" in text_lower or "prozessor" in text_lower) and 
                 (any(brand in text_lower for brand in ["intel", "amd", "core", "ryzen", "ultra", "i3", "i5", "i7", "i9"]) or
                  any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"])))
             has_gpu_table_with_processors = (("gpu" in text_lower or "graphics" in text_lower or "grafik" in text_lower) and 
                 any(proc_name in text_lower for proc_name in ["u300e", "i3-1315u", "core 3 100u", "core 5 120u", "core 5 220u", "core 7 150u", "core 7 250u", "core ultra 5", "core ultra 7"]))
+            # Check for processor model numbers (e.g., 225H, 225U, 235H, 235U, 245H, 245U)
+            has_processor_models = any(model in text_lower for model in [
+                "225h", "225u", "235h", "235u", "245h", "245u", "255h", "255u",
+                "core ultra 5 225", "core ultra 5 235", "core ultra 5 245",
+                "core ultra 7 155", "core ultra 7 165", "core ultra 7 155h", "core ultra 7 165h"
+            ])
+            # Check for table-like structures that might contain processor information
+            doc_text = doc.get("text", "")
+            has_table_structure = (("|" in doc_text or "---" in doc_text or "table" in text_lower) and 
+                any(keyword in text_lower for keyword in ["processor", "cpu", "core", "ultra", "intel", "amd"]))
             
-            if has_processor_keywords or has_gpu_table_with_processors:
+            if has_processor_keywords or has_gpu_table_with_processors or has_processor_models or has_table_structure:
                 is_important = True
             elif (("memory" in text_lower or "ram" in text_lower or "speicher" in text_lower or "arbeitsspeicher" in text_lower) and 
                   any(unit in text_lower for unit in ["gb", "ddr4", "ddr5", "ddr3", "sodimm"])):
@@ -475,7 +538,35 @@ WICHTIG FÜR EVALUIERUNG:
         # Combine in same order as format_context (important first, then others)
         ordered_docs = important_spec_chunks + other_chunks
         
-        context = self.format_context(ordered_docs)
+        # Log the order of documents for debugging
+        logger.info(f"Ordered {len(ordered_docs)} documents for context. First 10 chunk_ids:")
+        target_chunk_id = "bd9d0fc1-98f4-4ebe-a47c-eed250205951"  # The correct graphics table chunk
+        target_found_at = None
+        for i, doc in enumerate(ordered_docs[:10], 1):
+            chunk_id = doc.get("id", "")
+            chunk_id_short = chunk_id[:8] if chunk_id else "?"
+            page = doc.get("metadata", {}).get("page_number", "?")
+            text_preview = doc.get("text", "")[:80].replace('\n', ' ')
+            logger.info(f"  Position {i}: chunk_id={chunk_id_short}..., page={page}, preview={text_preview}...")
+            # Check if this is the target chunk
+            if chunk_id == target_chunk_id:
+                target_found_at = i
+                logger.info(f"  *** TARGET CHUNK FOUND at position {i} ***")
+        
+        # Check all documents for target chunk
+        if target_found_at is None:
+            for i, doc in enumerate(ordered_docs, 1):
+                if doc.get("id") == target_chunk_id:
+                    target_found_at = i
+                    logger.warning(f"Target chunk found at position {i} (beyond first 10)")
+                    break
+        
+        if target_found_at is None:
+            logger.warning(f"Target chunk {target_chunk_id[:8]}... NOT FOUND in ordered_docs!")
+        
+        # IMPORTANT: preserve_order=True ensures format_context doesn't re-sort the documents
+        # This is critical for source numbering to match between context and filtered sources
+        context = self.format_context(ordered_docs, preserve_order=True)
         result = self.answer(
             question, 
             context, 
@@ -509,16 +600,21 @@ WICHTIG FÜR EVALUIERUNG:
             filtered_sources = []
             for i, doc in enumerate(ordered_docs, 1):
                 if i in source_numbers:
+                    chunk_id = doc.get("id")
+                    chunk_text_preview = doc.get("text", "")[:100] if doc.get("text") else ""
+                    logger.info(f"Mapping source number {i} to chunk_id: {chunk_id[:8]}... (page: {doc.get('metadata', {}).get('page_number')}, text_preview: {chunk_text_preview}...)")
                     filtered_sources.append({
-                        "chunk_id": doc.get("id"),
+                        "chunk_id": chunk_id,
                         "document_id": doc.get("metadata", {}).get("document_id"),
                         "page_number": doc.get("metadata", {}).get("page_number"),
                         "similarity": doc.get("similarity"),
-                        "text": doc.get("text", "")  # Include text directly from doc
+                        "text": doc.get("text", ""),  # Include text directly from doc
+                        "source_number": i  # Preserve original source number from context
                     })
             
             result["sources"] = filtered_sources
-            logger.info(f"Filtered sources: found {len(source_numbers)} referenced sources out of {len(ordered_docs)} total")
+            logger.info(f"Filtered sources: found {len(source_numbers)} referenced sources ({source_numbers}) out of {len(ordered_docs)} total")
+            logger.info(f"Returned chunk_ids: {[s['chunk_id'][:8] + '...' for s in filtered_sources]}")
         else:
             # No source references found - return top sources by similarity (max 10)
             # Sort by similarity (descending) and take top 10

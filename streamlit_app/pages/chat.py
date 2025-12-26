@@ -52,7 +52,9 @@ def show_chat():
                 with st.expander("📚 Quellen anzeigen", expanded=False):
                     for i, source in enumerate(message["sources"], 1):
                         with st.container():
-                            st.markdown(f"### Quelle {i}")
+                            # Use original source number if available, otherwise use index
+                            source_num = source.get('source_number', i)
+                            st.markdown(f"### Quelle {source_num}")
                             
                             # Source metadata
                             if source.get('page_number'):
@@ -63,12 +65,20 @@ def show_chat():
                             # Display chunk text if available
                             if source.get('text'):
                                 st.markdown("**Text-Ausschnitt:**")
-                                # Use chunk_id for unique key, fallback to index + message index
-                                unique_key = f"hist_source_{source.get('chunk_id', f'idx_{i}')}_{st.session_state.messages.index(message)}"
+                                # Create unique key using chunk_id, message index, source index, and source number
+                                # Use hash of message content + chunk_id + indices to ensure uniqueness
+                                message_idx = st.session_state.messages.index(message)
+                                source_num = source.get('source_number', i)
+                                chunk_id = source.get('chunk_id', f'idx_{i}')
+                                # Create a hash-based unique identifier
+                                import hashlib
+                                key_string = f"{message_idx}_{chunk_id}_{i}_{source_num}_{message.get('content', '')[:20]}"
+                                key_hash = hashlib.md5(key_string.encode()).hexdigest()[:8]
+                                unique_key = f"hist_source_{key_hash}_{message_idx}_{i}"
                                 st.text_area(
-                                    label=f"Text aus Quelle {i}",
+                                    label=f"Text aus Quelle {source_num}",
                                     value=source.get('text'),
-                                    height=150,
+                                    height=300,  # Increased height for better table visibility
                                     disabled=True,
                                     label_visibility="collapsed",
                                     key=unique_key
@@ -124,7 +134,9 @@ def show_chat():
                             with st.expander("📚 Quellen anzeigen", expanded=False):
                                 for i, source in enumerate(sources, 1):
                                     with st.container():
-                                        st.markdown(f"### Quelle {i}")
+                                        # Use original source number if available, otherwise use index
+                                        source_num = source.get('source_number', i)
+                                        st.markdown(f"### Quelle {source_num}")
                                         
                                         # Source metadata
                                         if source.get('page_number'):
@@ -135,13 +147,20 @@ def show_chat():
                                         # Display chunk text if available
                                         if source.get('text'):
                                             st.markdown("**Text-Ausschnitt:**")
-                                            # Use chunk_id for unique key, fallback to index + timestamp
+                                            # Create unique key using chunk_id, timestamp, and source index
                                             import time
-                                            unique_key = f"source_{source.get('chunk_id', f'idx_{i}')}_{int(time.time() * 1000)}"
+                                            import hashlib
+                                            chunk_id = source.get('chunk_id', f'idx_{i}')
+                                            source_num = source.get('source_number', i)
+                                            timestamp = int(time.time() * 1000)
+                                            # Create a hash-based unique identifier
+                                            key_string = f"{chunk_id}_{i}_{source_num}_{timestamp}_{answer[:20]}"
+                                            key_hash = hashlib.md5(key_string.encode()).hexdigest()[:8]
+                                            unique_key = f"source_{key_hash}_{i}_{timestamp}"
                                             st.text_area(
-                                                label=f"Text aus Quelle {i}",
+                                                label=f"Text aus Quelle {source_num}",
                                                 value=source.get('text'),
-                                                height=150,
+                                                height=300,  # Increased height for better table visibility
                                                 disabled=True,
                                                 label_visibility="collapsed",
                                                 key=unique_key

@@ -151,22 +151,42 @@ def query_rag(
                 chunk_text_map[chunk_id] = chunk_text
         
         # Format sources with text content
+        # CRITICAL: Always fetch text directly from database to ensure we get the correct chunk
+        # The chunk_id is the source of truth, not the text from retrieved_docs which may be reordered
+        from database.crud import get_chunk_by_id
+        
         sources = []
         for source in result.get("sources", []):
             chunk_id = source.get("chunk_id", "")
-            # Use text from source if available (from filtered sources), otherwise fallback to chunk_text_map
-            chunk_text = source.get("text", "") or chunk_text_map.get(chunk_id, "")
             
-            # Truncate text if too long (max 500 chars for display)
-            if chunk_text and len(chunk_text) > 500:
-                chunk_text = chunk_text[:500] + "..."
+            # Always fetch chunk text from database using chunk_id to ensure correctness
+            chunk_text = ""
+            source_num = source.get("source_number", "?")
+            try:
+                db_chunk = get_chunk_by_id(db, chunk_id)
+                if db_chunk:
+                    chunk_text = db_chunk.text
+                    text_preview = chunk_text[:150].replace('\n', ' ')
+                    logger.info(f"Source {source_num}: Fetched chunk from DB - chunk_id: {chunk_id[:8]}..., page: {db_chunk.page_number}, chunk_index: {db_chunk.chunk_index}, length: {len(chunk_text)}, preview: {text_preview}...")
+                else:
+                    logger.warning(f"Source {source_num}: Chunk not found in database: {chunk_id}")
+                    # Fallback to text from source or chunk_text_map
+                    chunk_text = source.get("text", "") or chunk_text_map.get(chunk_id, "")
+            except Exception as e:
+                logger.error(f"Source {source_num}: Failed to fetch chunk from database: {e}", exc_info=True)
+                # Fallback to text from source or chunk_text_map
+                chunk_text = source.get("text", "") or chunk_text_map.get(chunk_id, "")
+            
+            # Don't truncate text - show full chunk content for better table/spec visibility
+            # The frontend can handle scrolling for long content
             
             sources.append(SourceInfo(
                 chunk_id=chunk_id,
                 document_id=source.get("document_id"),
                 page_number=source.get("page_number"),
                 similarity=None,  # Remove similarity display
-                text=chunk_text
+                text=chunk_text,
+                source_number=source.get("source_number")  # Preserve original source number
             ))
         
         # Save to query history

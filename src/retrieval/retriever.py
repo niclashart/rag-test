@@ -9,6 +9,9 @@ from logging_config.logger import get_logger
 
 logger = get_logger(__name__)
 
+# Cache for document filenames to avoid repeated DB queries
+_document_filename_cache = {}
+
 
 class Retriever:
     """Retriever for document search using vector similarity."""
@@ -268,9 +271,6 @@ class Retriever:
                     
                     # Filter by product name if target product is specified
                     if target_product:
-                        # Check if chunk contains the target product name OR if it's a technical chunk from the right document
-                        product_in_chunk = False
-                        
                         # Check if chunk contains the target product name
                         # Normalize target_product for comparison (lowercase, handle variations)
                         target_product_normalized = target_product.lower()
@@ -280,34 +280,105 @@ class Retriever:
                         if "thinkpad" in query_lower or "think pad" in query_lower:
                             has_product_in_text = has_product_in_text or f"thinkpad {target_product_normalized}" in text_lower
                         
-                        # For queries with generation specified, also accept technical chunks
-                        # even if they don't explicitly mention the model name
-                        # This is important because PERFORMANCE sections and spec tables often don't include the model name
+                        # CRITICAL: For queries with generation specified, filter intelligently
+                        # This prevents mixing specs from different models/generations while allowing relevant chunks
                         if target_gen is not None:
-                            # Check for various technical chunk types
-                            has_performance = "performance" in text_lower
-                            has_core_specs = any(kw in text_lower for kw in ["processor", "cpu", "memory", "ram", "storage", "graphics", "gpu"])
-                            has_display = any(kw in text_lower for kw in ["display", "screen", "bildschirm"])
-                            has_battery = (("battery" in text_lower or "akku" in text_lower) and 
-                                         any(unit in text_lower for unit in ["w", "wh", "capacity", "kapazität", "mah"]))
-                            has_dimensions = (("dimensions" in text_lower or "abmessungen" in text_lower or 
-                                             "weight" in text_lower or "gewicht" in text_lower) and 
-                                            any(unit in text_lower for unit in ["mm", "kg", "inches", "lbs", "pounds", "g"]))
+                            # Check if generation is mentioned in chunk
+                            gen_in_text = (
+                                f"gen {target_gen}" in text_lower or 
+                                f"gen{target_gen}" in text_lower or
+                                f"generation {target_gen}" in text_lower or
+                                f"{target_gen}th generation" in text_lower or
+                                f"{target_gen}th gen" in text_lower
+                            )
                             
-                            is_technical_chunk = (has_performance or has_core_specs or has_display or has_battery or has_dimensions)
-                            # Accept if product in text OR if it's a technical chunk (likely from the correct model/gen doc)
-                            product_in_chunk = has_product_in_text or is_technical_chunk
+                            # Check document filename/metadata for model/generation hints
+                            # First try to get filename from metadata, if not available, get from database cache
+                            doc_source = doc_metadata.get("source", "").lower()
+                            
+                            # If source is not in metadata, try to get filename from database using document_id
+                            if not doc_source and doc_metadata.get("document_id"):
+                                document_id = doc_metadata.get("document_id")
+                                # Check cache first
+                                if document_id not in _document_filename_cache:
+                                    try:
+                                        # Import here to avoid circular dependencies
+                                        from database.database import SessionLocal
+                                        from database.models import Document
+                                        db = SessionLocal()
+                                        try:
+                                            doc = db.query(Document).filter(Document.id == document_id).first()
+                                            if doc:
+                                                _document_filename_cache[document_id] = doc.filename.lower()
+                                            else:
+                                                _document_filename_cache[document_id] = ""
+                                        finally:
+                                            db.close()
+                                    except Exception as e:
+                                        logger.debug(f"Failed to fetch filename for document_id {document_id}: {e}")
+                                        _document_filename_cache[document_id] = ""
+                                
+                                doc_source = _document_filename_cache.get(document_id, "").lower()
+                            
+                            filename_has_model = target_product_normalized in doc_source if doc_source else False
+                            filename_has_gen = (
+                                (f"gen_{target_gen}" in doc_source or 
+                                 f"gen{target_gen}" in doc_source or
+                                 f"generation_{target_gen}" in doc_source) if doc_source else False
+                            )
+                            
+                            # Extract all model patterns from text to check for conflicts
+                            other_models = []
+                            model_pattern_in_text = r'\b([a-z]\d{1,2}|[a-z]{2}\d{1,2})\b'
+                            text_model_matches = re.findall(model_pattern_in_text, text_lower)
+                            for text_model in text_model_matches:
+                                if text_model.lower() != target_product_normalized:
+                                    # Check if this other model has a generation mentioned
+                                    other_gen_pattern = rf'\b(?:gen|generation)\s*(\d+)\b'
+                                    other_gen_matches = re.findall(other_gen_pattern, text_lower)
+                                    if other_gen_matches:
+                                        other_models.append((text_model, other_gen_matches[0]))
+                            
+                            # CRITICAL: Exclude if another model with different generation is explicitly mentioned
+                            has_conflicting_model = any(
+                                model != target_product_normalized and gen != str(target_gen) 
+                                for model, gen in other_models
+                            )
+                            
+                            if has_conflicting_model:
+                                # Chunk mentions another model with different generation - exclude it
+                                logger.debug(f"Filtered out result {i} - conflicting model/generation in chunk (target: {target_product} Gen {target_gen}, found: {other_models})")
+                                continue
+                            
+                            # BALANCED APPROACH: Accept chunk if:
+                            # 1. Model AND generation are in text, OR
+                            # 2. Model is in text AND filename suggests correct model/gen, OR
+                            # 3. Model is in text AND no conflicting models found (for technical chunks from correct doc), OR
+                            # 4. Filename suggests correct model/gen AND no conflicting models (for table chunks that may not repeat model/gen in every row)
+                            # This allows technical chunks (like PERFORMANCE sections) and table chunks that may not explicitly mention generation
+                            product_in_chunk = (
+                                (has_product_in_text and gen_in_text) or  # Explicit model + gen in text
+                                (has_product_in_text and filename_has_model and filename_has_gen) or  # Model in text + filename suggests correct doc
+                                (has_product_in_text and len(other_models) == 0) or  # Model in text, no other models mentioned
+                                (filename_has_model and filename_has_gen and len(other_models) == 0)  # Filename suggests correct doc, no conflicting models (for table chunks)
+                            )
+                            
+                            # Log filtering decisions - use INFO level for important chunks
+                            if not product_in_chunk:
+                                chunk_id_short = doc_id[:8] if doc_id else "?"
+                                # Check if this might be the graphics table chunk
+                                is_graphics_table = ("graphics" in text_lower or "gpu" in text_lower) and ("table" in text_lower or "|" in doc_text or "---" in doc_text)
+                                log_level = logger.info if (is_graphics_table or doc_id == "bd9d0fc1-98f4-4ebe-a47c-eed250205951") else logger.debug
+                                # Show filename from cache if available, otherwise from metadata
+                                displayed_filename = doc_source[:50] if doc_source else (doc_metadata.get('source', '?')[:50] if doc_metadata.get('source') else '?')
+                                log_level(f"Chunk {chunk_id_short}... filtered out - has_product_in_text: {has_product_in_text}, gen_in_text: {gen_in_text}, filename_match: {filename_has_model and filename_has_gen}, other_models: {len(other_models)}, target: {target_product} Gen {target_gen}, filename: {displayed_filename}")
                         else:
                             # Without generation, require explicit product mention
                             product_in_chunk = has_product_in_text
                         
-                        # If product filtering is active but chunk doesn't match, skip it (unless similarity is very high)
-                        # For queries with generation specified and technical chunks, be more lenient
-                        # Lower threshold for technical chunks to ensure they're not filtered out
-                        is_technical = any(kw in text_lower for kw in ["performance", "processor", "cpu", "memory", "ram", "storage", "graphics", "gpu", "display", "screen", "battery", "akku", "dimensions", "weight", "gewicht"])
-                        threshold = 0.20 if (target_gen is not None and is_technical) else 0.25
-                        if not product_in_chunk and similarity < threshold:
-                            logger.debug(f"Filtered out result {i} - product mismatch (target: {target_product}, similarity: {similarity})")
+                        # If product filtering is active but chunk doesn't match, skip it
+                        if not product_in_chunk:
+                            logger.debug(f"Filtered out result {i} - product/generation mismatch (target: {target_product}{f' Gen {target_gen}' if target_gen else ''}, similarity: {similarity})")
                             continue
                     
                     retrieved_docs.append({
