@@ -66,6 +66,7 @@ class QueryHistoryItem(BaseModel):
     answer: Optional[str]
     sources: List[str]
     created_at: str
+    query_metadata: Optional[dict] = None  # Include metadata with response times
 
 
 @router.post("", response_model=QueryResponse)
@@ -84,24 +85,45 @@ def query_rag(
         # The reranker might be prioritizing title chunks over technical specification chunks
         spec_keywords = ["spezifikation", "specification", "specs", "technische", "hardware", 
                         "wieviel", "wie viel", "welche", "was ist"]
-        is_spec_query = any(keyword in request.query.lower() for keyword in spec_keywords)
+        
+        # Detect processor/CPU questions specifically - these often need multiple chunks
+        # because processor tables can span multiple chunks
+        query_lower = request.query.lower()
+        is_processor_query = any(term in query_lower for term in [
+            "prozessor", "prozessoren", "processor", "processors", "cpu", "cpus",
+            "welche prozessor", "welche processor", "prozessor-konfiguration",
+            "prozessoroptionen", "prozessor-optionen"
+        ])
+        
+        # Processor queries are also spec queries
+        is_spec_query = any(keyword in query_lower for keyword in spec_keywords) or is_processor_query
+        
+        logger.info(f"Query classification: is_spec_query={is_spec_query}, is_processor_query={is_processor_query}, use_reranking={request.use_reranking}")
         
         if request.use_reranking and not is_spec_query:
             # Use reranking for non-spec queries
             # Use user_id=1 as default since vector store is global
+            # For processor queries, pass higher n_results to get more chunks
+            n_results_for_retrieval = 50 if is_processor_query else None
             retrieved_docs = retriever.retrieve_with_reranking(
                 user_id=1,
                 query=request.query,
-                reranker=get_reranker()
+                reranker=get_reranker(),
+                n_results=n_results_for_retrieval
             )
         else:
-            # For spec queries, use direct retrieval without reranking
+            # For spec queries (including processor queries), use direct retrieval without reranking
             # This helps find technical chunks that might be ranked lower by the reranker
             # Get even more results for general spec queries to ensure Display, Battery, Dimensions are found
+            # For processor queries, get even more chunks (80-100) because tables can span multiple chunks
+            n_results_for_retrieval = 100 if is_processor_query else 50
+            logger.info(f"Using direct retrieval (no reranking) with n_results={n_results_for_retrieval}")
             retrieved_docs = retriever.retrieve(
                 query=request.query,
-                n_results=50  # Increased to 50 to ensure all spec types are found (Display, Battery, Dimensions, etc.)
+                n_results=n_results_for_retrieval
             )
+        
+        logger.info(f"Retrieved {len(retrieved_docs)} documents for query")
         
         retrieval_time = time.time() - retrieval_start
         
@@ -231,6 +253,17 @@ def get_query_history_endpoint(
 ):
     """Get query history."""
     history = get_query_history(db, limit=limit)
-    return history
+    # Convert to dict format with metadata
+    result = []
+    for item in history:
+        result.append({
+            "id": item.id,
+            "query": item.query,
+            "answer": item.answer,
+            "sources": item.sources or [],
+            "created_at": item.created_at.isoformat() if item.created_at else "",
+            "query_metadata": item.query_metadata or {}
+        })
+    return result
 
 

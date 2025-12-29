@@ -14,7 +14,15 @@ def get_headers():
 
 def show_dashboard():
     """Show dashboard page."""
-    st.title("📁 Dokumente")
+    # Add navigation hint if sidebar might be collapsed
+    col1, col2 = st.columns([5, 1])
+    with col1:
+        st.title("📁 Dokumente")
+    with col2:
+        st.markdown("<br>", unsafe_allow_html=True)  # Spacing
+        if st.button("☰ Menü", help="Öffnet die Sidebar-Navigation"):
+            st.info("Bitte verwenden Sie das ☰ Symbol oben links, um die Sidebar zu öffnen")
+    
     st.markdown("Laden Sie Dokumente hoch und indizieren Sie sie für die RAG-Pipeline")
     
     # File upload - multiple files

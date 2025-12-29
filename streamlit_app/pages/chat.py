@@ -3,6 +3,9 @@ import streamlit as st
 import requests
 import sys
 from pathlib import Path
+import pandas as pd
+from datetime import datetime
+import time
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
@@ -12,23 +15,55 @@ def get_headers():
     """Get headers (no authentication needed)."""
     return {}
 
+def get_query_statistics():
+    """Get query statistics from API."""
+    try:
+        response = requests.get(
+            f"{API_BASE_URL}/api/query/history",
+            headers=get_headers(),
+            params={"limit": 1000},  # Get more history for statistics
+            timeout=10
+        )
+        if response.status_code == 200:
+            history = response.json()
+            return history
+        return []
+    except Exception as e:
+        # Don't show error in sidebar, just return empty list
+        return []
+
 def show_chat():
     """Show chat page."""
     st.title("💬 RAG Chat")
+    
+    # Add important notice about Lenovo laptop format
+    st.info("""
+    **📝 Wichtiger Hinweis:** 
+    Bei Fragen zu Lenovo Laptops müssen diese im folgenden Format angegeben werden:
+    - **"Lenovo ThinkPad E14 Gen 6 (Intel)"** oder
+    - **"Lenovo ThinkPad E14 Gen 6 (AMD)"**
+    
+    Beispiel: "Welche Prozessoren unterstützt das Lenovo ThinkPad E14 Gen 6 (Intel)?"
+    """)
+    
     st.markdown("Stellen Sie Fragen zu den indizierten Dokumenten")
     
-    # Initialize chat history
+    # Initialize chat history and statistics
     if "messages" not in st.session_state:
         st.session_state.messages = []
+    if "query_times" not in st.session_state:
+        st.session_state.query_times = []
+    if "query_timestamps" not in st.session_state:
+        st.session_state.query_timestamps = []
     
-    # Check if user has indexed documents
+    # Sidebar with statistics and controls
     with st.sidebar:
         st.subheader("Informationen")
         try:
             response = requests.get(
                 f"{API_BASE_URL}/api/documents",
                 headers=get_headers(),
-                timeout=30  # Increased timeout for document loading
+                timeout=30
             )
             
             if response.status_code == 200:
@@ -43,6 +78,60 @@ def show_chat():
                     st.info("Bitte indizieren Sie zuerst Dokumente im Dashboard")
         except Exception as e:
             st.error(f"Fehler beim Laden der Dokumente: {str(e)}")
+        
+        st.divider()
+        
+        # Statistics section
+        st.subheader("📊 Statistiken")
+        
+        # Get query history for total count and response times
+        history = get_query_statistics()
+        total_queries = len(history)
+        
+        # Extract response times from history metadata
+        response_times_from_db = []
+        for item in history:
+            metadata = item.get("query_metadata", {})
+            if metadata:
+                total_time = metadata.get("total_time", 0.0)
+                if total_time > 0:
+                    response_times_from_db.append(total_time)
+        
+        # Combine with session state times (for current session)
+        query_times = st.session_state.get("query_times", [])
+        all_times = response_times_from_db + query_times
+        
+        # Display total queries
+        st.metric("Gesamt gestellte Anfragen", total_queries)
+        
+        # Calculate and display average response time
+        if all_times:
+            avg_time = sum(all_times) / len(all_times)
+            st.metric("Durchschnittliche Antwortzeit", f"{avg_time:.2f}s")
+            
+            # Show response time graph (use last 50 for better visualization)
+            if len(all_times) > 1:
+                st.subheader("📈 Antwortzeit-Entwicklung")
+                # Create DataFrame for the graph
+                times_to_show = all_times[-50:] if len(all_times) > 50 else all_times
+                df = pd.DataFrame({
+                    'Anfrage': range(1, len(times_to_show) + 1),
+                    'Antwortzeit (s)': times_to_show
+                })
+                st.line_chart(df.set_index('Anfrage'))
+        else:
+            st.info("Noch keine Statistiken verfügbar")
+        
+        st.divider()
+        
+        # Clear chat history button (permanently visible)
+        st.subheader("⚙️ Einstellungen")
+        if st.button("🗑️ Chat-History löschen", use_container_width=True, type="secondary"):
+            st.session_state.messages = []
+            st.session_state.query_times = []
+            st.session_state.query_timestamps = []
+            st.success("Chat-History gelöscht!")
+            st.rerun()
     
     # Display chat messages
     for message in st.session_state.messages:
@@ -123,6 +212,13 @@ def show_chat():
                         data = response.json()
                         answer = data.get("answer", "")
                         sources = data.get("sources", [])
+                        retrieval_time = data.get("retrieval_time", 0.0)
+                        generation_time = data.get("generation_time", 0.0)
+                        total_time = retrieval_time + generation_time
+                        
+                        # Track response time for statistics
+                        st.session_state.query_times.append(total_time)
+                        st.session_state.query_timestamps.append(time.time())
                         
                         if answer and answer.strip():
                             st.markdown(answer)
@@ -148,7 +244,6 @@ def show_chat():
                                         if source.get('text'):
                                             st.markdown("**Text-Ausschnitt:**")
                                             # Create unique key using chunk_id, timestamp, and source index
-                                            import time
                                             import hashlib
                                             chunk_id = source.get('chunk_id', f'idx_{i}')
                                             source_num = source.get('source_number', i)
@@ -184,9 +279,4 @@ def show_chat():
                         st.error(f"Fehler: {error_msg}")
                 except Exception as e:
                     st.error(f"Fehler: {str(e)}")
-    
-    # Clear chat button
-    if st.button("Chat leeren", use_container_width=True):
-        st.session_state.messages = []
-        st.rerun()
 

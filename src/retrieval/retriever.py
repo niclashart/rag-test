@@ -269,6 +269,23 @@ class Retriever:
                         # Apply boost (cap at 1.0)
                         similarity = min(1.0, similarity + similarity_boost)
                     
+                    # Detect if this is a processor query - we need to be more lenient with filtering
+                    is_processor_query_here = any(term in query_lower for term in [
+                        "prozessor", "prozessoren", "processor", "processors", "cpu", "cpus",
+                        "welche prozessor", "welche processor", "prozessor-konfiguration",
+                        "prozessoroptionen", "prozessor-optionen"
+                    ])
+                    
+                    # Check if this chunk contains processor-related content
+                    is_processor_chunk = (
+                        ("processor" in text_lower or "prozessor" in text_lower or "cpu" in text_lower) and
+                        (any(brand in text_lower for brand in ["intel", "amd", "core", "ryzen", "ultra", "i3", "i5", "i7", "i9"]) or
+                         any(model in text_lower for model in ["ghz", "mhz", "cores", "kerne", "threads", "thread", "p-core", "e-core"]))
+                    ) or (
+                        ("|" in doc_text or "---" in doc_text or "table" in text_lower) and
+                        any(keyword in text_lower for keyword in ["processor", "cpu", "core", "ultra", "intel", "amd"])
+                    )
+                    
                     # Filter by product name if target product is specified
                     if target_product:
                         # Check if chunk contains the target product name
@@ -282,6 +299,7 @@ class Retriever:
                         
                         # CRITICAL: For queries with generation specified, filter intelligently
                         # This prevents mixing specs from different models/generations while allowing relevant chunks
+                        # For processor queries, be more lenient - accept chunks from correct document even if they don't explicitly mention model/gen
                         if target_gen is not None:
                             # Check if generation is mentioned in chunk
                             gen_in_text = (
@@ -355,13 +373,24 @@ class Retriever:
                             # 2. Model is in text AND filename suggests correct model/gen, OR
                             # 3. Model is in text AND no conflicting models found (for technical chunks from correct doc), OR
                             # 4. Filename suggests correct model/gen AND no conflicting models (for table chunks that may not repeat model/gen in every row)
+                            # 5. For processor queries: Filename suggests correct model/gen AND chunk contains processor info (even if model/gen not in text)
                             # This allows technical chunks (like PERFORMANCE sections) and table chunks that may not explicitly mention generation
-                            product_in_chunk = (
-                                (has_product_in_text and gen_in_text) or  # Explicit model + gen in text
-                                (has_product_in_text and filename_has_model and filename_has_gen) or  # Model in text + filename suggests correct doc
-                                (has_product_in_text and len(other_models) == 0) or  # Model in text, no other models mentioned
-                                (filename_has_model and filename_has_gen and len(other_models) == 0)  # Filename suggests correct doc, no conflicting models (for table chunks)
-                            )
+                            if is_processor_query_here and is_processor_chunk:
+                                # For processor queries, be more lenient - accept if filename matches and chunk contains processor info
+                                product_in_chunk = (
+                                    (has_product_in_text and gen_in_text) or  # Explicit model + gen in text
+                                    (has_product_in_text and filename_has_model and filename_has_gen) or  # Model in text + filename suggests correct doc
+                                    (has_product_in_text and len(other_models) == 0) or  # Model in text, no other models mentioned
+                                    (filename_has_model and filename_has_gen and len(other_models) == 0) or  # Filename suggests correct doc, no conflicting models
+                                    (filename_has_model and filename_has_gen and is_processor_chunk and len(other_models) == 0)  # Filename matches + processor chunk + no conflicts
+                                )
+                            else:
+                                product_in_chunk = (
+                                    (has_product_in_text and gen_in_text) or  # Explicit model + gen in text
+                                    (has_product_in_text and filename_has_model and filename_has_gen) or  # Model in text + filename suggests correct doc
+                                    (has_product_in_text and len(other_models) == 0) or  # Model in text, no other models mentioned
+                                    (filename_has_model and filename_has_gen and len(other_models) == 0)  # Filename suggests correct doc, no conflicting models (for table chunks)
+                                )
                             
                             # Log filtering decisions - use INFO level for important chunks
                             if not product_in_chunk:
@@ -463,7 +492,21 @@ class Retriever:
             any(pattern in query_lower for pattern in spec_question_patterns)
         )
         
-        if is_spec_query:
+        # Detect processor/CPU questions specifically - these often need multiple chunks
+        # because processor tables can span multiple chunks
+        is_processor_query = any(term in query_lower for term in [
+            "prozessor", "prozessoren", "processor", "processors", "cpu", "cpus",
+            "welche prozessor", "welche processor", "prozessor-konfiguration",
+            "prozessoroptionen", "prozessor-optionen"
+        ])
+        
+        if is_processor_query:
+            # For processor questions, return significantly more chunks (30-50)
+            # because processor tables are often split across multiple chunks
+            target_k = max(target_k, 50)  # At least 50 chunks for processor queries
+            initial_k = max(target_k * 8, 80)  # Get 8x more candidates
+            logger.info(f"Processor query detected, retrieving {initial_k} candidates, returning top {target_k}")
+        elif is_spec_query:
             # For spec questions, get even more candidates to ensure we find technical chunks
             initial_k = max(target_k * 8, 40)  # Get 8x more for spec questions to ensure technical chunks are found
             logger.info(f"Specification query detected, retrieving {initial_k} candidates")

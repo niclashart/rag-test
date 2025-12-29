@@ -129,11 +129,15 @@ class QAChain:
                     other_chunks.append(doc)
             
             # Combine: important chunks first, then others (keep ALL chunks)
+            # Note: For processor questions, the chunks are already sorted correctly in answer_with_retrieved_docs
+            # when preserve_order=True is used
             all_chunks = important_spec_chunks + other_chunks
         
         # Log which chunks are being formatted and in what order
         target_chunk_id = "bd9d0fc1-98f4-4ebe-a47c-eed250205951"  # The correct graphics table chunk
         target_position_in_context = None
+        
+        logger.info(f"format_context: Formatting {len(all_chunks)} chunks for context")
         
         for i, doc in enumerate(all_chunks, 1):
             chunk_id = doc.get("id", "")
@@ -146,6 +150,11 @@ class QAChain:
                 target_position_in_context = i
                 logger.info(f"format_context: Target graphics table chunk found at position {i} in context")
             
+            # Log processor-related chunks
+            text_lower = text.lower()
+            if any(term in text_lower for term in ["processor", "prozessor", "core ultra", "intel core"]):
+                logger.info(f"format_context: Processor chunk found at position {i} - chunk_id: {chunk_id[:8]}..., text_preview: {text[:100]}...")
+            
             context_parts.append(
                 f"[Quelle {i} - {chunk_id}]:\n{text}\n"
             )
@@ -153,7 +162,10 @@ class QAChain:
         if target_position_in_context is None:
             logger.warning(f"format_context: Target chunk {target_chunk_id[:8]}... NOT FOUND in context!")
         
-        return "\n---\n".join(context_parts)
+        formatted_context = "\n---\n".join(context_parts)
+        logger.info(f"format_context: Created context with {len(context_parts)} chunks, total length: {len(formatted_context)} characters")
+        
+        return formatted_context
     
     def answer(
         self,
@@ -244,6 +256,10 @@ class QAChain:
         elif "zbook 8 16" in question_lower:
             product_name = "HP ZBook 8 16"
         
+        # Log number of chunks being sent to LLM
+        num_chunks = len(context.split("\n---\n")) if context else 0
+        logger.info(f"answer: Sending {num_chunks} chunks to LLM for question: {question[:100]}...")
+        
         # Add current context and question
         if is_spec_question:
             if product_name:
@@ -283,18 +299,79 @@ WICHTIG FÜR RAM/SPEICHER-FRAGEN:
             
             processor_instructions = ""
             if is_processor_question:
-                processor_instructions = """
+                # Count processor-related chunks in context
+                num_chunks = len(context.split("\n---\n")) if context else 0
+                
+                # Count how many chunks contain processor tables
+                processor_table_chunks = []
+                processor_names_found = {}
+                if context:
+                    chunks = context.split("\n---\n")
+                    for i, chunk_text in enumerate(chunks, 1):
+                        chunk_lower = chunk_text.lower()
+                        # Check if this chunk contains a processor table (has | and processor names)
+                        has_table = "|" in chunk_text and ("processor" in chunk_lower or "prozessor" in chunk_lower)
+                        
+                        # Check which specific processors are in this chunk
+                        processors_in_chunk = []
+                        for proc in ["core ultra 7 165u", "core ultra 5 125u", "core ultra 7 155u",
+                                    "core ultra 5 135u", "core ultra 5 125h", "core ultra 7 155h"]:
+                            if proc in chunk_lower:
+                                processors_in_chunk.append(proc.replace("core ultra ", "Core Ultra ").replace("u", "U").replace("h", "H"))
+                        
+                        if has_table and processors_in_chunk:
+                            processor_table_chunks.append(i)
+                            processor_names_found[i] = processors_in_chunk
+                
+                processor_list_str = ""
+                if processor_names_found:
+                    for chunk_num, procs in processor_names_found.items():
+                        processor_list_str += f"\n- Quelle {chunk_num}: {', '.join(procs)}"
+                
+                processor_instructions = f"""
 
-KRITISCH WICHTIG FÜR PROZESSOR-FRAGEN:
+⚠️⚠️⚠️ KRITISCH WICHTIG FÜR PROZESSOR-FRAGEN - DU MUSST ALLE CHUNKS VERWENDEN ⚠️⚠️⚠️
+- Es wurden {num_chunks} Chunks bereitgestellt. Du MUSST ALLE {num_chunks} Chunks durchsuchen und verwenden!
+- WICHTIG: Die Prozessor-Tabelle ist über MEHRERE Chunks verteilt! Ich habe Prozessoren in folgenden Chunks gefunden:{processor_list_str if processor_list_str else '\n- Suche in ALLEN Chunks systematisch!'}
+- ⚠️ DU DARFST NICHT NUR EINEN CHUNK VERWENDEN! ⚠️ Du MUSST ALLE Chunks mit Prozessor-Informationen kombinieren!
+- ⚠️ WENN DU NUR 3 PROZESSOREN FINDEST, SUCHE WEITER! ⚠️ Es gibt MEHR als 3 Prozessoren!
+- Wenn du z.B. in Quelle 13 die Prozessoren "Core Ultra 7 165U, Core Ultra 5 125U, Core Ultra 7 155U" findest, MUSST du AUCH in Quelle 38, Quelle 39, etc. suchen!
 - Suche GRÜNDLICH in ALLEN bereitgestellten Dokumenten nach Prozessor-Informationen, besonders in Tabellen!
-- Durchsuche JEDEN Chunk systematisch, auch Tabellen mit anderen Titeln (z.B. "PERFORMANCE", "Graphics", etc.)
+- Durchsuche JEDEN Chunk systematisch von Anfang bis Ende, auch Tabellen mit anderen Titeln (z.B. "PERFORMANCE", "Graphics", etc.)
+- WICHTIG: Prozessor-Tabellen können über MEHRERE Chunks verteilt sein! Du MUSST ALLE Chunks durchsuchen!
+- Beispiel: Wenn Quelle 13 die Prozessoren "Core Ultra 7 165U, Core Ultra 5 125U, Core Ultra 7 155U" enthält und Quelle 38 die Prozessoren "Core Ultra 5 135U, Core Ultra 5 125H, Core Ultra 7 155H" enthält, musst du ALLE 6 Prozessoren auflisten!
 - Wenn eine Prozessor-Tabelle gefunden wird, liste ALLE Prozessoren auf, die in der Tabelle stehen - KEINE Auswahl!
 - Wenn mehrere Prozessor-Modelle in der Tabelle stehen (z.B. "Core Ultra 5 225H", "Core Ultra 5 225U", "Core Ultra 5 235H", etc.), nenne ALLE Modelle!
+- Wenn Prozessor-Informationen in MEHREREN Chunks stehen (z.B. Quelle 13 enthält Prozessor A, B, C und Quelle 38 enthält Prozessor D, E, F), kombiniere ALLE zu einer vollständigen Liste!
 - Gib für jeden Prozessor die vollständigen Spezifikationen an (Cores, Threads, Frequenzen, Cache, etc.) wenn verfügbar
 - Wenn die Prozessor-Informationen über mehrere Chunks verteilt sind, kombiniere sie zu einer vollständigen Liste
-- WICHTIG: Wenn die Frage nach "welche Prozessoren" fragt, liste ALLE auf, die in den Dokumenten stehen - nicht nur eine Auswahl!"""
+- WICHTIG: Wenn die Frage nach "welche Prozessoren" fragt, liste ALLE auf, die in ALLEN Chunks stehen - nicht nur eine Auswahl!
+- ⚠️ KRITISCH: Auch wenn du bereits 3 Prozessoren gefunden hast, SUCHE WEITER! Es gibt mehr Prozessoren in anderen Chunks! ⚠️
+- WICHTIG: Beginne mit Quelle 1, dann Quelle 2, dann Quelle 3, usw. - durchsuche ALLE Quellen systematisch!
+- KRITISCH: Wenn du Prozessoren in Quelle 13 findest, suche AUCH in Quelle 38, Quelle 39, etc. - die Tabelle kann über mehrere Chunks verteilt sein!
+- ⚠️ WICHTIG: Deine Antwort MUSS Prozessoren aus MEHREREN Quellen enthalten, wenn sie in mehreren Quellen stehen! ⚠️
+- ⚠️ WENN DU NUR 3 PROZESSOREN AUFLISTEST, IST DAS FALSCH! ⚠️ Es gibt 6 Prozessoren! ⚠️"""
+            
+            # Count number of chunks in context
+            num_chunks_in_context = len(context.split("\n---\n")) if context else 0
+            
+            # For processor questions, add a very explicit instruction at the top
+            processor_warning_top = ""
+            if is_processor_question:
+                processor_warning_top = f"""
+
+⚠️⚠️⚠️ KRITISCH WICHTIG FÜR PROZESSOR-FRAGEN ⚠️⚠️⚠️
+Die Prozessor-Tabelle ist über MEHRERE Chunks verteilt! 
+Du MUSST ALLE {num_chunks_in_context} Chunks durchsuchen und verwenden!
+NUR EINEN Chunk zu verwenden ist FALSCH - du MUSST mehrere Chunks kombinieren!
+Wenn du z.B. in Quelle 13 Prozessoren findest, suche AUCH in Quelle 38, 39, etc.!
+⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️⚠️
+
+"""
             
             context_prompt = f"""Du bist ein präziser Dokumenten-Assistent. Beantworte die Frage NUR mit Informationen, die EXPLIZIT in den bereitgestellten Dokumenten stehen.
+{processor_warning_top}
+WICHTIG: Es wurden {num_chunks_in_context} Chunks (Quellen) bereitgestellt. Du MUSST ALLE {num_chunks_in_context} Chunks durchsuchen!
 
 STRENGE REGELN - KEINE ERFINDUNGEN:
 1. Verwende NUR Text, der wortwörtlich oder sinngemäß in den Dokumenten steht
@@ -302,15 +379,17 @@ STRENGE REGELN - KEINE ERFINDUNGEN:
 3. Wenn eine Information NICHT in den Dokumenten steht, schreibe explizit: "Nicht in den Dokumenten angegeben" oder "Nicht spezifiziert"
 4. Verwende KEINE allgemeinen Kenntnisse oder typischen Werte für ähnliche Produkte
 5. Wenn du dir nicht 100% sicher bist, dass eine Information in den Dokumenten steht, erwähne sie NICHT
-6. Zitiere die Quelle (z.B. "Quelle 1") wenn möglich
+6. WICHTIG: Füge KEINE Quellenangaben am Ende der Antwort hinzu (z.B. "Diese Informationen stammen aus den Quellen..."). Die Quellen werden separat angezeigt.
 
 WICHTIG: Nenne zuerst die wichtigsten technischen Spezifikationen (Prozessor, RAM, Storage, Grafik, Display, Akku, Abmessungen/Gewicht, Anschlüsse). 
 Erwähne weniger wichtige Details (Webcam, Mikrofone, LEDs, etc.) erst am Ende oder gar nicht.
 
 WICHTIG FÜR ALLE SPEZIFIKATIONEN:
-- Suche GRÜNDLICH in ALLEN bereitgestellten Chunks nach den Informationen - auch in Chunks mit niedrigerer Ähnlichkeit!
-- Durchsuche JEDEN Chunk systematisch, auch wenn er nicht direkt relevant erscheint
+- Suche GRÜNDLICH in ALLEN {num_chunks_in_context} bereitgestellten Chunks nach den Informationen - auch in Chunks mit niedrigerer Ähnlichkeit!
+- Durchsuche JEDEN Chunk systematisch von Anfang bis Ende, auch wenn er nicht direkt relevant erscheint
+- Beginne mit Quelle 1, dann Quelle 2, dann Quelle 3, usw. - durchsuche ALLE Quellen systematisch!
 - WICHTIG FÜR TABELLEN: Prozessoren können auch in Tabellen stehen, die andere Themen behandeln (z.B. GPU-Tabellen, Spezifikations-Tabellen). Durchsuche ALLE Tabellen gründlich, auch wenn der Tabellentitel nicht direkt "Prozessor" oder "CPU" enthält!
+- KRITISCH FÜR PROZESSOR-TABELLEN: Große Tabellen können über MEHRERE Chunks verteilt sein! Du MUSST ALLE Chunks durchsuchen, um die vollständige Liste zu erhalten! Wenn Quelle 1 die ersten 3 Prozessoren enthält und Quelle 2 die nächsten 3 Prozessoren, musst du BEIDE verwenden!
 - Ignoriere HTML-Formatierung wie <br>, <p>, etc. - extrahiere den reinen Text-Inhalt!
 - KRITISCH: Wenn ein Chunk mehrere Modelle oder Generationen erwähnt, verwende NUR die Informationen, die explizit dem {product_name} zugeordnet sind. Ignoriere alle anderen Modell-Informationen komplett!
 - Wenn ein Chunk z.B. sowohl "E14 Gen 6" als auch "L16 Gen 2" erwähnt und die Frage nach "L16 Gen 2" ist, verwende NUR die Informationen für "L16 Gen 2"!
@@ -330,12 +409,30 @@ WICHTIG FÜR ALLE SPEZIFIKATIONEN:
 - KRITISCH: Wenn du Informationen gefunden hast, gib NUR diese Informationen aus. Füge KEIN "Nicht spezifiziert" am Ende hinzu, wenn bereits Informationen vorhanden sind!
 - Nur wenn du wirklich KEINE Informationen in ALLEN Chunks findest (also GAR NICHTS), schreibe "Nicht spezifiziert"{product_warning}{ram_instructions}{processor_instructions}
 
-Dokumente:
+Dokumente (Es wurden {num_chunks_in_context} Chunks bereitgestellt - du MUSST ALLE durchsuchen!):
 {context}
 
 Frage: {question}
 
-Antwort (NUR dokumentierte Informationen verwenden. Wenn du Informationen gefunden hast, gib NUR diese aus. Füge KEIN "Nicht spezifiziert" hinzu, wenn bereits Informationen vorhanden sind. Nur wenn GAR KEINE Informationen gefunden wurden, schreibe "Nicht spezifiziert"):"""
+Antwort (NUR dokumentierte Informationen verwenden. Wenn du Informationen gefunden hast, gib NUR diese aus. Füge KEIN "Nicht spezifiziert" hinzu, wenn bereits Informationen vorhanden sind. Nur wenn GAR KEINE Informationen gefunden wurden, schreibe "Nicht spezifiziert"):
+- WICHTIG: Füge KEINE Quellenangaben am Ende der Antwort hinzu (z.B. "Diese Informationen stammen aus den Quellen..." oder ähnliche Texte). Die Quellen werden separat angezeigt.
+
+KRITISCH FÜR PROZESSOR-FRAGEN - STRUKTURIERTE ANWEISUNG:
+1. SCHRITT 1: Durchsuche SYSTEMATISCH ALLE {num_chunks_in_context} Chunks von Anfang bis Ende
+2. SCHRITT 2: Identifiziere ALLE Chunks, die Prozessor-Tabellen enthalten (suche nach "|" und Prozessor-Namen)
+3. SCHRITT 3: Extrahiere ALLE Prozessoren aus JEDEM gefundenen Chunk
+4. SCHRITT 4: Kombiniere ALLE Prozessoren aus ALLEN Chunks zu einer vollständigen Liste
+5. SCHRITT 5: Liste ALLE Prozessoren auf - auch wenn sie in verschiedenen Chunks stehen!
+
+WICHTIGE REGELN:
+- Die Prozessor-Tabelle ist über MEHRERE Chunks verteilt! Du MUSST ALLE Chunks durchsuchen!
+- Beispiel: Wenn du in Quelle 13 die Prozessoren "Core Ultra 7 165U, Core Ultra 5 125U, Core Ultra 7 155U" findest, suche AUCH in Quelle 38, Quelle 39, etc. nach weiteren Prozessoren!
+- Wenn die Frage nach mehreren Prozessoren fragt und du Prozessoren in MEHREREN Chunks findest (z.B. 3 Prozessoren in Quelle 13 und 3 Prozessoren in Quelle 38), liste ALLE Prozessoren aus ALLEN Chunks auf!
+- Beginne deine Antwort mit einer systematischen Durchsuchung aller {num_chunks_in_context} Chunks!
+- Wenn du Prozessoren in mehreren Chunks findest, kombiniere sie zu einer vollständigen Liste!
+- WICHTIG: Auch wenn du bereits 3 Prozessoren gefunden hast, suche WEITER in den anderen Chunks - es gibt mehr Prozessoren!
+- KRITISCH: Deine Antwort MUSS Prozessoren aus MEHREREN Quellen enthalten, wenn sie in mehreren Quellen stehen!
+- WICHTIG: Füge KEINE Quellenangaben am Ende der Antwort hinzu (z.B. "Diese Informationen stammen aus den Quellen..."). Die Quellen werden separat angezeigt!"""
         else:
             context_prompt = f"""Basierend auf den folgenden Dokumenten, beantworte die Frage.
 
@@ -379,12 +476,27 @@ WICHTIG FÜR EVALUIERUNG:
         
         messages.append(HumanMessage(content=context_prompt))
         
+        # For processor questions, increase max_tokens to allow listing all processors
+        original_max_tokens = self.llm.max_tokens
+        is_processor_question = any(term in question.lower() for term in [
+            "prozessor", "prozessoren", "processor", "processors", "cpu", "cpus",
+            "welche prozessor", "welche processor"
+        ])
+        if is_processor_question:
+            # Increase max_tokens for processor questions to allow listing all processors
+            self.llm.max_tokens = max(original_max_tokens, 3000)
+            logger.info(f"Increased max_tokens to {self.llm.max_tokens} for processor question")
+        
         # Get answer from LLM
         try:
-            logger.info(f"Calling LLM", num_messages=len(messages), context_length=len(context), eval_mode=eval_mode)
+            logger.info(f"Calling LLM", num_messages=len(messages), context_length=len(context), eval_mode=eval_mode, max_tokens=self.llm.max_tokens)
             logger.debug(f"LLM Prompt", messages=[m.content for m in messages])
             
             response = self.llm.invoke(messages)
+            
+            # Restore original max_tokens
+            if is_processor_question:
+                self.llm.max_tokens = original_max_tokens
             
             # Stelle max_tokens wieder her wenn eval_mode verwendet wurde
             if eval_mode and self.eval_max_tokens:
@@ -482,15 +594,26 @@ WICHTIG FÜR EVALUIERUNG:
             # Reorder: important chunks first, then others (but keep ALL chunks, don't limit)
             retrieved_docs = important_chunks + other_chunks
         
+        # Detect if this is a processor question
+        question_lower = question.lower()
+        is_processor_question_here = any(term in question_lower for term in [
+            "prozessor", "prozessoren", "processor", "processors", "cpu", "cpus",
+            "welche prozessor", "welche processor"
+        ])
+        
         # IMPORTANT: Reorder documents to match format_context order
         # format_context sorts documents (important_spec_chunks first, then others)
         # We need the same order here to correctly map source numbers
+        # For processor questions, prioritize processor chunks even more strongly
+        processor_chunks = []
         important_spec_chunks = []
         other_chunks = []
         
         for doc in retrieved_docs:
             text_lower = doc.get("text", "").lower()
+            doc_text = doc.get("text", "")
             is_important = False
+            is_processor_chunk = False
             
             # Same logic as in format_context
             # Enhanced processor detection: also check for processor model numbers and table structures
@@ -503,14 +626,28 @@ WICHTIG FÜR EVALUIERUNG:
             has_processor_models = any(model in text_lower for model in [
                 "225h", "225u", "235h", "235u", "245h", "245u", "255h", "255u",
                 "core ultra 5 225", "core ultra 5 235", "core ultra 5 245",
-                "core ultra 7 155", "core ultra 7 165", "core ultra 7 155h", "core ultra 7 165h"
+                "core ultra 7 155", "core ultra 7 165", "core ultra 7 155h", "core ultra 7 165h",
+                "core ultra 5 125u", "core ultra 5 135u", "core ultra 5 125h",
+                "core ultra 7 155u", "core ultra 7 165u", "core ultra 7 155h"
             ])
             # Check for table-like structures that might contain processor information
-            doc_text = doc.get("text", "")
             has_table_structure = (("|" in doc_text or "---" in doc_text or "table" in text_lower) and 
                 any(keyword in text_lower for keyword in ["processor", "cpu", "core", "ultra", "intel", "amd"]))
             
-            if has_processor_keywords or has_gpu_table_with_processors or has_processor_models or has_table_structure:
+            # For processor questions, check if this is specifically a processor table chunk
+            if is_processor_question_here:
+                # Check if this chunk contains processor table rows
+                has_processor_table = (
+                    ("|" in doc_text and "processor" in text_lower) or
+                    (has_table_structure and has_processor_models) or
+                    (has_table_structure and has_processor_keywords)
+                )
+                if has_processor_table:
+                    is_processor_chunk = True
+            
+            if is_processor_chunk and is_processor_question_here:
+                processor_chunks.append(doc)
+            elif has_processor_keywords or has_gpu_table_with_processors or has_processor_models or has_table_structure:
                 is_important = True
             elif (("memory" in text_lower or "ram" in text_lower or "speicher" in text_lower or "arbeitsspeicher" in text_lower) and 
                   any(unit in text_lower for unit in ["gb", "ddr4", "ddr5", "ddr3", "sodimm"])):
@@ -535,8 +672,20 @@ WICHTIG FÜR EVALUIERUNG:
             else:
                 other_chunks.append(doc)
         
-        # Combine in same order as format_context (important first, then others)
-        ordered_docs = important_spec_chunks + other_chunks
+        # For processor questions, put processor chunks FIRST, then other important chunks, then others
+        # This ensures the LLM sees processor chunks at the beginning of the context
+        if is_processor_question_here:
+            ordered_docs = processor_chunks + important_spec_chunks + other_chunks
+            logger.info(f"For processor question: Reordered {len(retrieved_docs)} docs - {len(processor_chunks)} processor chunks first, then {len(important_spec_chunks)} important chunks, then {len(other_chunks)} others")
+            
+            # Log which processors are in which chunks
+            for i, doc in enumerate(processor_chunks[:5], 1):  # Log first 5 processor chunks
+                chunk_id = doc.get("id", "")[:16]
+                text_preview = doc.get("text", "")[:150].replace('\n', ' ')
+                logger.info(f"  Processor chunk {i}: chunk_id={chunk_id}..., preview={text_preview}...")
+        else:
+            # Combine in same order as format_context (important first, then others)
+            ordered_docs = important_spec_chunks + other_chunks
         
         # Log the order of documents for debugging
         logger.info(f"Ordered {len(ordered_docs)} documents for context. First 10 chunk_ids:")
@@ -566,6 +715,7 @@ WICHTIG FÜR EVALUIERUNG:
         
         # IMPORTANT: preserve_order=True ensures format_context doesn't re-sort the documents
         # This is critical for source numbering to match between context and filtered sources
+        # The documents are already sorted correctly in ordered_docs (processor chunks first for processor questions)
         context = self.format_context(ordered_docs, preserve_order=True)
         result = self.answer(
             question, 

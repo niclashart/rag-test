@@ -5,41 +5,41 @@
 {"id": 5, "question": "Wie hoch ist die Display-Helligkeit (in nits) des Dell Pro 16 PC16250?", "ground_truth": "300 nits"}
 {"id": 6, "question": "Welche Grafikkarte ist im Dell Pro 16 PC16250 verbaut?", "ground_truth": "Intel UHD Graphics / Intel Graphics"}
 {"id": 7, "question": "Wie viel wiegt das Dell Pro 16 PC16250 in kg?", "ground_truth": "1.92 kg"}
-{"id": 8, "question": "Welche Prozessoren unterstützt das Lenovo ThinkPad E14 Gen 6 mit genauen Typen?", "ground_truth": "AMD Ryzen™ 3 7335U, AMD Ryzen™ 5 7535HS, AMD Ryzen™ 5 7535U, AMD Ryzen™ 7 7735HS, AMD Ryzen™ 7 7735U"}
-{"id": 9, "question": "Wieviel maximalen Arbeitsspeicher hat das Lenovo Thinkpad E14 Gen 6?", "ground_truth": "64 GB"}
-{"id": 10, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E14 Gen 6?", "ground_truth": "DDR5"}
-{"id": 11, "question": "Wieviel maximale Speicherkapazität hat das Lenovo Thinkpad E14 Gen 6?", "ground_truth": "2 TB"}
-{"id": 12, "question": "Welche Display-Helligkeit hat das Lenovo Thinkpad E14 Gen 6?", "ground_truth": "300 nits"}
-{"id": 13, "question": "Welche Grafikkarte ist im Lenovo Thinkpad E14 Gen 6 verbaut?", "ground_truth": "AMD Radeon 660M, AMD Radeon 680M"}
-{"id": 14, "question": "Welche Betriebssysteme unterstützt das Lenovo Thinkpad E14 Gen 6?", "ground_truth": "Windows 11 Pro, Windows 11 Home, Windows 11 Home Single Language, kein vorinstalliertes Betriebssystem"}
+{"id": 8, "question": "Welche Prozessoren unterstützt das Lenovo ThinkPad E14 Gen 6 (AMD) mit genauen Typen?", "ground_truth": "AMD Ryzen™ 3 7335U, AMD Ryzen™ 5 7535HS, AMD Ryzen™ 5 7535U, AMD Ryzen™ 7 7735HS, AMD Ryzen™ 7 7735U"}
+{"id": 9, "question": "Wieviel maximalen Arbeitsspeicher hat das Lenovo Thinkpad E14 Gen 6 (AMD)?", "ground_truth": "64 GB"}
+{"id": 10, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E14 Gen 6 (AMD)?", "ground_truth": "DDR5"}
+{"id": 11, "question": "Wieviel maximale Speicherkapazität hat das Lenovo Thinkpad E14 Gen 6 (AMD)?", "ground_truth": "2 TB"}
+{"id": 12, "question": "Welche Display-Helligkeit hat das Lenovo Thinkpad E14 Gen 6 (AMD)?", "ground_truth": "300 nits"}
+{"id": 13, "question": "Welche Grafikkarte ist im Lenovo Thinkpad E14 Gen 6 (AMD) verbaut?", "ground_truth": "AMD Radeon 660M, AMD Radeon 680M"}
+{"id": 14, "question": "Welche Betriebssysteme unterstützt das Lenovo Thinkpad E14 Gen 6 (AMD)?", "ground_truth": "Windows 11 Pro, Windows 11 Home, Windows 11 Home Single Language, kein vorinstalliertes Betriebssystem"}
 {"id": 15, "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L16 Gen 2?", "ground_truth": "Intel® Core™ Ultra 5 225H, Intel® Core™ Ultra 5 225U, Intel® Core™ Ultra 5 235H, Intel® Core™ Ultra 5 235U, Intel® Core™ Ultra 7 255H, Intel® Core™ Ultra 7 255U, Intel® Core™ Ultra 7 265U"}
 {"id": 16, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L16 Gen 2?", "ground_truth": "64 GB"}
 {"id": 17, "question": "Welche RAM-Typ unterstützt das Lenovo Thinkpad L16 Gen 2?", "ground_truth": "DDR5"}
 {"id": 18, "question": "Welche Grafikkarte ist im Lenovo Thinkpad L16 Gen 2 verbaut?", "ground_truth": "Intel® UHD Graphics / Intel® Iris® Xe Graphics"}
-{"id": 19, "question": "", "ground_truth": ""}
-{"id": 20, "question": "", "ground_truth": ""}
-{"id": 21, "question": "", "ground_truth": ""}
-{"id": 22, "question": "", "ground_truth": ""}
-{"id": 23, "question": "", "ground_truth": ""}
-{"id": 24, "question": "", "ground_truth": ""}
-{"id": 25, "question": "", "ground_truth": ""}
-{"id": 26, "question": "", "ground_truth": ""}
-{"id": 27, "question": "", "ground_truth": ""}
-{"id": 28, "question": "", "ground_truth": ""}
-{"id": 29, "question": "", "ground_truth": ""}
-{"id": 30, "question": "", "ground_truth": ""}
-{"id": 31, "question": "", "ground_truth": ""}
-{"id": 32, "question": "", "ground_truth": ""}
-{"id": 33, "question": "", "ground_truth": ""}
-{"id": 34, "question": "", "ground_truth": ""}
-{"id": 35, "question": "", "ground_truth": ""}
-{"id": 36, "question": "", "ground_truth": ""}
-{"id": 37, "question": "", "ground_truth": ""}
-{"id": 38, "question": "", "ground_truth": ""}
-{"id": 39, "question": "", "ground_truth": ""}
-{"id": 40, "question": "", "ground_truth": ""}
-{"id": 41, "question": "", "ground_truth": ""}
-{"id": 42, "question": "", "ground_truth": ""}
+{"id": 19, "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad E14 Gen 6 (Intel)?", "ground_truth": "Intel Core Ultra 7 165U, Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 5 135U, Intel Core Ultra 5 125H, Intel Core Ultra 7 155H"}
+{"id": 20, "question": "Welceh Grafikkarte ist im Lenovo Thinkpad E14 Gen 6 (Intel) verbaut?", "ground_truth": "Intel Arc Graphics, Intel Graphics"}
+{"id": 21, "question": "Wieviel maximalen Arbeitsspeciher unterstützt das Lenovo Thinkpad E14 Gen 6 (Intel)?", "ground_truth": "64 GB"}
+{"id": 22, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E14 Gen 6 (Intel)?", "ground_truth": "DDR5-5600"}
+{"id": 23, "question": "Über welchen Chipset verfügt das Lenovo Thinkpad E14 Gen 6 (Intel)?", "ground_truth": "Intel SoC (System on Chip)"}
+{"id": 24, "question": "Über welchen Audio-Chip verfügt das Lenovo Thinkpad E14 Gen 6 (Intel)?", "ground_truth": "High Definition (HD) Audio, Senary SN5141 codec"}
+{"id": 25, "question": "Welches Startgewicht hat das Lenovo Thinkpad E14 Gen 6 (Intel)?", "ground_truth": "Ab 1.44 kg"}
+{"id": 26, "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad E14 Gen 7 (AMD)?", "ground_truth": "AMD Ryzen 3 210, AMD Ryzen 5 220, AMD Ryzen 5 230, AMD Ryzen 5 PRO 215, AMD Ryzen 5 PRO 230, AMD Ryzen 7 250"}
+{"id": 27, "question": "Welche NPU ist im Lenovo Thinkpad E14 Gen 7 (AMD) integriert?", "ground_truth": "AMD Ryzen AI"}
+{"id": 28, "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad E14 Gen 7 (AMD)?", "ground_truth": "AMD Radeon 740M, AMD Radeon 760M, AMD Radeon 780M"}
+{"id": 29, "question": "Über wieviel maximalen Arbeitsspeicher verfügt das Lenovo Thinkpad E14 Gen 7 (AMD)?", "ground_truth": "64 GB"}
+{"id": 30, "question": "Welche Farben für das Case gibt es für das Lenovo Thinkpad E14 Gen 7 (AMD)?", "ground_truth": "Schwarz, Grau"}
+{"id": 31, "question": "Was ist das Mindestgewicht des Lenovo Thinkpad E14 Gen 7 (AMD)?", "ground_truth": "1.41 kg"}
+{"id": 32, "question": "Über welche integrierte NPU verfügt das Lenovo Thinkpad E14 Gen 7 (Intel)?", "ground_truth": "Intel AI Boost"}
+{"id": 33, "question": "Wieviel maximale Speicherkapazität hat das Lenovo Thinkpad E14 Gen 7 (Intel)?", "ground_truth": "1 TB"}
+{"id": 34, "question": "Über welche Storage-Security verfügt das Lenovo Thinkpad E14 Gen 7 (Intel)?", "ground_truth": "Opal 2.0"}
+{"id": 35, "question": "Wie hoch ist die Screen-to-Body Ratio des Lenovo Thinkpad E14 Gen 7 (Intel)?", "ground_truth": "90%"}
+{"id": 36, "question": "Verfügt das Lenovo Thinkpad E14 Gen 7 (Intel) über NFC Support?", "ground_truth": "Nein"}
+{"id": 37, "question": "Welche Prozessor-Konfigurationen hat das Lenovo Thinkpad E16 Gen 2 (AMD)?", "ground_truth": "AMD Ryzen 3 7335U, AMD Ryzen 5 7535HS, AMD Ryzen 5 7535U, AMD Ryzen 7 7735HS, AMD Ryzen 7 7735U"}
+{"id": 38, "question": "Welche maximale Frequenz hat der AMD Ryzen 3 7335U im Lenovo Thinkpad E16 Gen 2 (AMD)?", "ground_truth": "4.3 GHz"}
+{"id": 39, "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad E16 Gen 2 (AMD)?", "ground_truth": "AMD Radeon 660M, AMD Radeon 680M"}
+{"id": 40, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E16 Gen 2 (AMD)?", "ground_truth": "DDR5-4800"}
+{"id": 41, "question": "Welche Display-Auflösungsmöglichkeiten (Typ) hat das Lenovo Thinkpad E16 Gen 2 (AMD)?", "ground_truth": "WUXGA, WQXGA"}
+{"id": 42, "question": "Wie ist die Scree-to-Body Ratio des Lenovo Thinkpad E16 Gen 2 (AMD)?", "ground_truth": "90.7 %"}
 {"id": 43, "question": "", "ground_truth": ""}
 {"id": 44, "question": "", "ground_truth": ""}
 {"id": 45, "question": "", "ground_truth": ""}
