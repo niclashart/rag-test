@@ -687,6 +687,46 @@ WICHTIG FÜR EVALUIERUNG:
             # Combine in same order as format_context (important first, then others)
             ordered_docs = important_spec_chunks + other_chunks
         
+        # Limit the number of chunks to avoid exceeding token limits
+        # Estimate: ~4 characters per token, max context ~100k tokens for gpt-4o-mini
+        # Reserve ~20k tokens for prompt/system messages, leaving ~80k for context
+        # With ~1200 chars per chunk, that's ~66 chunks max, but be conservative
+        MAX_CHUNKS = 50  # Conservative limit to stay well under token limit
+        if len(ordered_docs) > MAX_CHUNKS:
+            logger.warning(f"Limiting chunks from {len(ordered_docs)} to {MAX_CHUNKS} to avoid token limit")
+            # For processor questions, prioritize processor chunks and important chunks
+            if is_processor_question_here:
+                # Keep all processor chunks, then fill remaining slots with important chunks
+                num_processor = len(processor_chunks)
+                num_important = len(important_spec_chunks)
+                remaining_slots = MAX_CHUNKS - num_processor
+                
+                if remaining_slots > 0:
+                    # Take as many important chunks as possible
+                    limited_important = important_spec_chunks[:min(remaining_slots, num_important)]
+                    remaining_slots -= len(limited_important)
+                    
+                    # Fill remaining slots with other chunks
+                    limited_other = other_chunks[:remaining_slots] if remaining_slots > 0 else []
+                    
+                    ordered_docs = processor_chunks + limited_important + limited_other
+                    logger.info(f"Limited to {len(ordered_docs)} chunks: {num_processor} processor + {len(limited_important)} important + {len(limited_other)} other")
+                else:
+                    # If processor chunks alone exceed limit, keep only top processor chunks
+                    ordered_docs = processor_chunks[:MAX_CHUNKS]
+                    logger.warning(f"Processor chunks alone exceed limit, keeping only top {MAX_CHUNKS} processor chunks")
+            else:
+                # For non-processor questions, keep important chunks first, then others
+                num_important = len(important_spec_chunks)
+                if num_important >= MAX_CHUNKS:
+                    ordered_docs = important_spec_chunks[:MAX_CHUNKS]
+                    logger.info(f"Limited to top {MAX_CHUNKS} important chunks")
+                else:
+                    remaining_slots = MAX_CHUNKS - num_important
+                    limited_other = other_chunks[:remaining_slots]
+                    ordered_docs = important_spec_chunks + limited_other
+                    logger.info(f"Limited to {len(ordered_docs)} chunks: {num_important} important + {len(limited_other)} other")
+        
         # Log the order of documents for debugging
         logger.info(f"Ordered {len(ordered_docs)} documents for context. First 10 chunk_ids:")
         target_chunk_id = "bd9d0fc1-98f4-4ebe-a47c-eed250205951"  # The correct graphics table chunk
@@ -717,6 +757,33 @@ WICHTIG FÜR EVALUIERUNG:
         # This is critical for source numbering to match between context and filtered sources
         # The documents are already sorted correctly in ordered_docs (processor chunks first for processor questions)
         context = self.format_context(ordered_docs, preserve_order=True)
+        
+        # Additional safety check: Estimate tokens and reduce if necessary
+        # Rough estimate: ~4 characters per token, but be conservative with ~3.5
+        estimated_tokens = len(context) / 3.5
+        MAX_CONTEXT_TOKENS = 100000  # Leave buffer below 128k limit
+        
+        if estimated_tokens > MAX_CONTEXT_TOKENS:
+            logger.warning(f"Context too large: {estimated_tokens:.0f} estimated tokens, reducing chunks")
+            # Reduce chunks further if needed - just take fewer chunks from ordered_docs
+            # Calculate how many chunks we can keep based on size
+            target_chars = MAX_CONTEXT_TOKENS * 3.5
+            current_chars = sum(len(doc.get("text", "")) for doc in ordered_docs)
+            
+            if current_chars > target_chars:
+                # Calculate how many chunks we can keep
+                avg_chunk_size = current_chars / len(ordered_docs) if ordered_docs else 0
+                max_chunks_by_size = int(target_chars / avg_chunk_size) if avg_chunk_size > 0 else MAX_CHUNKS
+                max_chunks_by_size = max(10, min(max_chunks_by_size, MAX_CHUNKS))  # At least 10, at most MAX_CHUNKS
+                
+                if len(ordered_docs) > max_chunks_by_size:
+                    logger.warning(f"Further reducing from {len(ordered_docs)} to {max_chunks_by_size} chunks based on size")
+                    # Simply take the first N chunks (they're already prioritized)
+                    ordered_docs = ordered_docs[:max_chunks_by_size]
+                    
+                    # Re-format context with reduced chunks
+                    context = self.format_context(ordered_docs, preserve_order=True)
+                    logger.info(f"Reformatted context with {len(ordered_docs)} chunks, estimated {len(context) / 3.5:.0f} tokens")
         result = self.answer(
             question, 
             context, 
