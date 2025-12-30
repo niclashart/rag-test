@@ -58,42 +58,42 @@
 {"id": 58, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E16 Gen 3 (Intel)?", "ground_truth": "DDR5-5200, DDR5-5600"}
 {"id": 59, "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad E16 Gen 3 (Intel)?", "ground_truth": "1.63 kg"}
 {"id": 60, "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad E16 Gen 3 (Intel)?", "ground_truth": "90.7 %"}
-{"id": 61, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 62, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 63, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 64, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 65, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 66, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 67, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 68, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 69, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 70, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 71, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 72, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 73, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 74, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 75, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 76, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 77, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 78, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 79, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 80, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 81, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 82, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 83, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 84, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 85, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 86, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 87, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 88, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 89, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 90, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 91, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 92, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 93, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 94, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 95, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 96, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+{"id": 61, "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?", "ground_truth": "Intel Core Ultra 7 165U. Intel COre Ultra 5 125U, Intel Core Iltra 7 155U, Intel Core Ultra 5 135U"}
+{"id": 62, "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?", "ground_truth": "Intel Graphics"}
+{"id": 63, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?", "ground_truth": "8 GB, 16 GB, 32 GB"}
+{"id": 64, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?", "ground_truth": "LPDDR5-6400"}
+{"id": 65, "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?", "ground_truth": "1.32 kg"}
+{"id": 66, "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?", "ground_truth": "83.5%"}
+{"id": 67, "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L13 Gen 4 (AMD)?", "ground_truth": "AMD Ryzen 3 7330U, AMD Ryzen 5 PRO 7530U, AMD Ryzen 7 PRO 7730U"}
+{"id": 68, "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L13 Gen 4 (AMD)?", "ground_truth": "AMD Radeon Graphics"}
+{"id": 69, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L13 Gen 4 (AMD)?", "ground_truth": "8 GB, 16 GB, 32 GB"}
+{"id": 70, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L13 Gen 4 (AMD)?", "ground_truth": "DDR4-3200"}
+{"id": 71, "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad L13 Gen 4 (AMD)?", "ground_truth": "1.26 kg"}
+{"id": 72, "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L13 Gen 4 (AMD)?", "ground_truth": "82.7%"}
+{"id": 73, "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L13 Gen 6 (Intel)?", "ground_truth": "Intel Core Ultra 5 225U, Intel Core Ultra 5 235U, Intel Core Ultra 7 255U, Intel Core Ultra 7 265U"}
+{"id": 74, "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L13 Gen 6 (Intel)?", "ground_truth": "Intel Graphics"}
+{"id": 75, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L13 Gen 6 (Intel)?", "ground_truth": "16 GB, 32 GB"}
+{"id": 76, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L13 Gen 6 (Intel)?", "ground_truth": "LPDDR5x-7467"}
+{"id": 77, "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad L13 Gen 6 (Intel)?", "ground_truth": "1.21 kg"}
+{"id": 78, "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L13 Gen 6 (Intel)?", "ground_truth": "84.7%"}
+{"id": 79, "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L14 Gen 5 (Intel)?", "ground_truth": "Intel Core Ultra 7 165U, Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 5 135U, Intel Core Ultra 5 125H, Intel Core Ultra 7 155H, Intel Core Ultra 5 135H"}
+{"id": 80, "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L14 Gen 5 (Intel)?", "ground_truth": "Intel Arc Graphics, Intel Graphics"}
+{"id": 81, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L14 Gen 5 (Intel)?", "ground_truth": "64 GB"}
+{"id": 82, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L14 Gen 5 (Intel)?", "ground_truth": "DDR5-5600"}
+{"id": 83, "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad L14 Gen 5 (Intel)?", "ground_truth": "1.36 kg"}
+{"id": 84, "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L14 Gen 5 (Intel)?", "ground_truth": "85.5%"}
+{"id": 85, "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?", "ground_truth": "AMD Ryzen 3 PRO 7335U, AMD Ryzen 5 PRO 7535U, AMD Ryzen 7 PRO 7735U"}
+{"id": 86, "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?", "ground_truth": "AMD Radeon 660M, AMD Radeon 680M"}
+{"id": 87, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?", "ground_truth": "64 GB"}
+{"id": 88, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?", "ground_truth": "DDR5-4800"}
+{"id": 89, "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad L16 Gen 1 (AMD)?", "ground_truth": "1.77 kg"}
+{"id": 90, "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L16 Gen 1 (AMD)?", "ground_truth": "87%"}
+{"id": 91, "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L16 Gen 2 (Intel)?", "ground_truth": "Intel Core Ultra 5 225H, Intel Core Ultra 5 225U, Intel Core Ultra 5 235H, Intel Core Ultra 5 235U, Intel Core Ultra 7 255H, Intel Core Ultra 7 255U, Intel Core Ultra 7 265U"}
+{"id": 92, "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L16 Gen 2 (Intel)?", "ground_truth": "Intel Arc 130T GPU, Intel ARC 140T GPU, Intel Graphics"}
+{"id": 93, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L16 Gen 2 (Intel)?", "ground_truth": "64 GB"}
+{"id": 94, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L16 Gen 2 (Intel)?", "ground_truth": "DDR5-5600"}
+{"id": 95, "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad L16 Gen 2 (Intel)?", "ground_truth": "1.79 kg"}
+{"id": 96, "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L16 Gen 2 (Intel)?", "ground_truth": "87%"}
 {"id": 97, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
 {"id": 98, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
 {"id": 99, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
