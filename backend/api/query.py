@@ -95,16 +95,22 @@ def query_rag(
             "prozessoroptionen", "prozessor-optionen"
         ])
         
-        # Processor queries are also spec queries
-        is_spec_query = any(keyword in query_lower for keyword in spec_keywords) or is_processor_query
+        # Detect screen-to-body ratio questions - these may need more chunks to find the ratio information
+        is_screen_to_body_query = any(term in query_lower for term in [
+            "screen-to-body", "screen to body", "screen-to-body ratio", "screen to body ratio",
+            "bezel", "display bezel", "screen bezel"
+        ])
         
-        logger.info(f"Query classification: is_spec_query={is_spec_query}, is_processor_query={is_processor_query}, use_reranking={request.use_reranking}")
+        # Processor queries and screen-to-body queries are also spec queries
+        is_spec_query = any(keyword in query_lower for keyword in spec_keywords) or is_processor_query or is_screen_to_body_query
+        
+        logger.info(f"Query classification: is_spec_query={is_spec_query}, is_processor_query={is_processor_query}, is_screen_to_body_query={is_screen_to_body_query}, use_reranking={request.use_reranking}")
         
         if request.use_reranking and not is_spec_query:
             # Use reranking for non-spec queries
             # Use user_id=1 as default since vector store is global
-            # For processor queries, pass higher n_results to get more chunks
-            n_results_for_retrieval = 50 if is_processor_query else None
+            # For processor queries or screen-to-body queries, pass higher n_results to get more chunks
+            n_results_for_retrieval = 50 if (is_processor_query or is_screen_to_body_query) else None
             retrieved_docs = retriever.retrieve_with_reranking(
                 user_id=1,
                 query=request.query,
@@ -112,11 +118,17 @@ def query_rag(
                 n_results=n_results_for_retrieval
             )
         else:
-            # For spec queries (including processor queries), use direct retrieval without reranking
+            # For spec queries (including processor queries and screen-to-body queries), use direct retrieval without reranking
             # This helps find technical chunks that might be ranked lower by the reranker
             # Get even more results for general spec queries to ensure Display, Battery, Dimensions are found
             # For processor queries, get even more chunks (80-100) because tables can span multiple chunks
-            n_results_for_retrieval = 100 if is_processor_query else 50
+            # For screen-to-body queries, also get more chunks (50-80) to find ratio information
+            if is_processor_query:
+                n_results_for_retrieval = 100
+            elif is_screen_to_body_query:
+                n_results_for_retrieval = 80
+            else:
+                n_results_for_retrieval = 50
             logger.info(f"Using direct retrieval (no reranking) with n_results={n_results_for_retrieval}")
             retrieved_docs = retriever.retrieve(
                 query=request.query,

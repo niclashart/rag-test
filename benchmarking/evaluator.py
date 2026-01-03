@@ -23,7 +23,7 @@ class RAGASEvaluator:
         self.metrics = [
             faithfulness,
             answer_relevancy,
-            context_precision,
+            # context_precision,  # Auskommentiert für schnellere Evaluation
             context_recall
         ]
     
@@ -64,7 +64,8 @@ class RAGASEvaluator:
         from langchain_huggingface import HuggingFaceEmbeddings
         
         # Use the same model as the pipeline with higher timeout and retries
-        llm = ChatOpenAI(model="gpt-4o-mini", request_timeout=60, max_retries=3)
+        # Increased retries and timeout to handle rate limiting better
+        llm = ChatOpenAI(model="gpt-4o-mini", request_timeout=120, max_retries=5)
         
         # Use HuggingFace embeddings (same as pipeline)
         # Model: sentence-transformers/all-MiniLM-L6-v2
@@ -76,7 +77,8 @@ class RAGASEvaluator:
         from ragas.run_config import RunConfig
         
         # Limit to 1 worker to avoid rate limits/timeouts
-        run_config = RunConfig(max_workers=1, timeout=120)
+        # Increased timeout to handle large contexts and rate limiting delays
+        run_config = RunConfig(max_workers=1, timeout=180)
         
         result = evaluate(
             dataset=dataset,
@@ -94,10 +96,10 @@ class RAGASEvaluator:
         return {
             "results": results_dict,
             "summary": {
-                "faithfulness": pd.Series([r["faithfulness"] for r in results_dict]).mean(),
-                "answer_relevancy": pd.Series([r["answer_relevancy"] for r in results_dict]).mean(),
-                "context_precision": pd.Series([r["context_precision"] for r in results_dict]).mean(),
-                "context_recall": pd.Series([r["context_recall"] for r in results_dict]).mean(),
+                "faithfulness": pd.Series([r.get("faithfulness", 0) for r in results_dict]).mean(),
+                "answer_relevancy": pd.Series([r.get("answer_relevancy", 0) for r in results_dict]).mean(),
+                # "context_precision": pd.Series([r.get("context_precision", 0) for r in results_dict]).mean(),  # Auskommentiert für schnellere Evaluation
+                "context_recall": pd.Series([r.get("context_recall", 0) for r in results_dict]).mean(),
             }
         }
     

@@ -46,7 +46,9 @@ class QAChain:
             model_name=model_name,
             temperature=temperature,
             max_tokens=max_tokens,
-            openai_api_key=os.getenv("OPENAI_API_KEY")
+            openai_api_key=os.getenv("OPENAI_API_KEY"),
+            max_retries=5,  # Increased retries to handle rate limiting
+            request_timeout=120  # Increased timeout for large contexts
         )
         
         self.system_prompt = system_prompt
@@ -279,11 +281,20 @@ Die Frage bezieht sich AUSSCHLIESSLICH auf das {product_name}.
             else:
                 product_warning = "\n\nWICHTIG: Verwende nur Informationen, die eindeutig dem in der Frage genannten Modell zugeordnet werden können. Vermische keine Informationen von verschiedenen Modellen."
             
+            # Count number of chunks in context (needed for instructions)
+            num_chunks_in_context = len(context.split("\n---\n")) if context else 0
+            
             # Detect if question is specifically about RAM/memory
             is_ram_question = any(term in question_lower for term in ["ram", "memory", "speicher", "arbeitsspeicher"])
             
             # Detect if question is specifically about processors/CPU
             is_processor_question = any(term in question_lower for term in ["prozessor", "processor", "cpu", "prozessoren", "processors", "welche prozessoren", "welche processor"])
+            
+            # Detect if question is specifically about screen-to-body ratio
+            is_screen_to_body_question = any(term in question_lower for term in [
+                "screen-to-body", "screen to body", "screen-to-body ratio", "screen to body ratio",
+                "bezel", "display bezel", "screen bezel"
+            ])
             
             ram_instructions = ""
             if is_ram_question:
@@ -296,6 +307,29 @@ WICHTIG FÜR RAM/SPEICHER-FRAGEN:
 - Wenn "Up to XGB" angegeben ist, ist das die maximale RAM-Kapazität
 - Gib auch den RAM-Typ an (z.B. DDR4, DDR5) und die Geschwindigkeit (z.B. 2666MHz, 3200MHz) wenn verfügbar
 - Wenn die RAM-Informationen in verschiedenen Chunks stehen, kombiniere sie zu einer vollständigen Antwort"""
+            
+            screen_to_body_instructions = ""
+            if is_screen_to_body_question:
+                screen_to_body_instructions = f"""
+
+⚠️⚠️⚠️ KRITISCH WICHTIG FÜR SCREEN-TO-BODY RATIO-FRAGEN ⚠️⚠️⚠️
+- Die Screen-to-Body Ratio Information kann als PROZENTSATZ angegeben sein, auch mit Dezimalstellen (z.B. "85.5%", "87.2%", "88.5%")!
+- Suche in ALLEN {num_chunks_in_context} bereitgestellten Chunks nach:
+  * Expliziten Erwähnungen: "Screen-to-Body Ratio", "Screen to Body Ratio"
+  * PROZENTANGABEN in Display-Kontext: "85%", "85.5%", "86%", "87%", "88%", "88.5%", "89%", "90%", "91%", "92%", "93%", "94%", "95%"
+- WICHTIG: Wenn du "Screen-to-Body Ratio" explizit erwähnt siehst (auch ohne direktes Prozentzeichen daneben), suche in diesem Chunk nach der Prozentangabe!
+- WICHTIG: Wenn du eine Prozentangabe in der Nähe von Display-, Screen-, Panel- oder Bildschirm-Informationen findest, ist das wahrscheinlich die Screen-to-Body Ratio!
+- Die Information kann in verschiedenen Formulierungen stehen:
+  * Als explizite "Screen-to-Body Ratio: 85.5%" oder "Screen-to-Body Ratio: 85%"
+  * Als einfacher Prozentsatz in Display-Spezifikationen: "Display: 14 inch, 85.5%"
+  * Als separater Punkt unter einer Display-Tabelle: "Screen-to-Body Ratio: 85.5%"
+  * Als Teil einer Tabelle oder Liste von Display-Spezifikationen
+  * In der Nähe von Display-Größen, Auflösungen oder Panel-Informationen
+- ⚠️ WICHTIG: Durchsuche JEDEN Chunk systematisch nach "Screen-to-Body Ratio" UND nach PROZENTANGABEN (auch mit Dezimalstellen wie "85.5%")!
+- ⚠️ Wenn du "Screen-to-Body Ratio" findest, suche in diesem Chunk nach der zugehörigen Prozentangabe (kann auch in der nächsten Zeile stehen)!
+- ⚠️ Wenn du eine Prozentangabe findest (z.B. "85%" oder "85.5%"), gib diese als Screen-to-Body Ratio an, auch wenn sie nicht explizit so bezeichnet ist!
+- ⚠️ NUR wenn du wirklich KEINE "Screen-to-Body Ratio" Erwähnung UND KEINE Prozentangabe in Display-Kontext findest, schreibe "Nicht in den Dokumenten angegeben"!
+- Wenn die Information in verschiedenen Chunks steht, kombiniere sie zu einer vollständigen Antwort"""
             
             processor_instructions = ""
             if is_processor_question:
@@ -397,6 +431,7 @@ WICHTIG FÜR ALLE SPEZIFIKATIONEN:
   * Prozessor/CPU: "Processor", "CPU", "Prozessor", "Intel", "AMD", "Core", "Ultra", "Ryzen", "i3", "i5", "i7", "i9", "i11", "GHz", "MHz", "Cores", "Kerne", "Threads", "P-core", "E-core", "Taktfrequenz", "frequency" - Suche nach KOMPLETTEN Prozessor-Modellnamen wie "Intel Core Ultra 7 265U", "Intel Processor U300E", "13th Generation Intel Core i3-1315U", "Intel Core 3 100U", "Intel Core 5 120U" oder "AMD Ryzen 5 7535U"! Wenn mehrere Prozessor-Optionen angegeben sind, nenne ALLE - auch wenn sie in einer Tabelle mit anderem Titel steht (z.B. GPU-Tabelle)!
   * Storage/Speicher: "Storage", "Speicher", "SSD", "HDD", "M.2", "capacity", "Kapazität", "TB", "GB", "drive", "Laufwerk" - Achte auf "Up to X drives" oder "2x" = multipliziere die Einzelkapazität!
   * Display: "Display", "Screen", "Bildschirm", "Panel", "LCD", "IPS", "OLED", "Resolution", "Auflösung", "FHD", "UHD", "4K", "1920x1080", "2560x1440", "3840x2160"
+  * Screen-to-Body Ratio: "Screen-to-Body Ratio", "Screen to Body Ratio", "Bezel", "Display Bezel", "Screen Bezel", "Ratio", "%" (Prozentangaben) - Suche nach Prozentangaben in Display-Kontext (z.B. "85%", "87%", "90%") oder nach Begriffen wie "bezel", "screen-to-body", "display bezel"! Diese Information kann auch als Prozentsatz ohne explizite Nennung von "Screen-to-Body Ratio" angegeben sein!
   * Display-Helligkeit/Brightness: "Brightness", "Helligkeit", "nits", "cd/m²", "cd/m2", "luminance", "Luminanz" - Zahlen mit "nits" oder "cd/m²" sind Helligkeitsangaben! Suche besonders nach "300 nits" oder ähnlichen Zahlen mit "nits"!
   * Akku/Battery: "Battery", "Akku", "Batterie", "Power Adapter", "Power Supply", "W", "Wh", "Watt", "capacity", "Kapazität", "life", "Laufzeit", "hours", "Stunden", "mAh"
   * Abmessungen/Dimensions: "Dimensions", "Abmessungen", "Size", "WxDxH", "Width x Depth x Height", "mm", "inches", "cm", "Length", "Länge", "Width", "Breite", "Height", "Höhe", "Depth", "Tiefe"
@@ -407,7 +442,7 @@ WICHTIG FÜR ALLE SPEZIFIKATIONEN:
 - Besonders wichtig: Wenn du "nits" oder "cd/m²" siehst, ist das eine Helligkeitsangabe - verwende diese!
 - Wenn du eine Spezifikation in einem Chunk findest, auch wenn sie nicht perfekt formatiert ist, verwende sie trotzdem!
 - KRITISCH: Wenn du Informationen gefunden hast, gib NUR diese Informationen aus. Füge KEIN "Nicht spezifiziert" am Ende hinzu, wenn bereits Informationen vorhanden sind!
-- Nur wenn du wirklich KEINE Informationen in ALLEN Chunks findest (also GAR NICHTS), schreibe "Nicht spezifiziert"{product_warning}{ram_instructions}{processor_instructions}
+- Nur wenn du wirklich KEINE Informationen in ALLEN Chunks findest (also GAR NICHTS), schreibe "Nicht spezifiziert"{product_warning}{ram_instructions}{screen_to_body_instructions}{processor_instructions}
 
 Dokumente (Es wurden {num_chunks_in_context} Chunks bereitgestellt - du MUSST ALLE durchsuchen!):
 {context}
@@ -661,6 +696,18 @@ WICHTIG FÜR EVALUIERUNG:
                 is_important = True
             elif (("dimensions" in text_lower or "abmessungen" in text_lower) and any(unit in text_lower for unit in ["mm", "inches", "cm"])):
                 is_important = True
+            # Screen-to-Body Ratio chunks - prioritize these highly
+            # Check for explicit mention first
+            if "screen-to-body" in text_lower or "screen to body" in text_lower:
+                is_important = True
+            elif (("bezel" in text_lower or "display bezel" in text_lower or "screen bezel" in text_lower) and
+                  (any(ratio_term in text_lower for ratio_term in ["ratio", "%"]) or
+                   any(pct in text_lower for pct in ["85%", "85.5%", "86%", "87%", "88%", "88.5%", "89%", "90%", "91%", "92%", "93%", "94%", "95%"]))):
+                is_important = True
+            elif (("display" in text_lower or "screen" in text_lower) and
+                  any(pct in text_lower for pct in ["85%", "85.5%", "86%", "87%", "88%", "88.5%", "89%", "90%", "91%", "92%", "93%", "94%", "95%"])):
+                # Display chunks with percentage - likely screen-to-body ratio
+                is_important = True
             elif (("display" in text_lower or "screen" in text_lower) and any(unit in text_lower for unit in ["nits", "inch", "resolution", "fhd", "uhd", "4k"])):
                 is_important = True
             elif (("graphics" in text_lower or "gpu" in text_lower or "grafik" in text_lower) and 
@@ -688,10 +735,11 @@ WICHTIG FÜR EVALUIERUNG:
             ordered_docs = important_spec_chunks + other_chunks
         
         # Limit the number of chunks to avoid exceeding token limits
-        # Estimate: ~4 characters per token, max context ~100k tokens for gpt-4o-mini
-        # Reserve ~20k tokens for prompt/system messages, leaving ~80k for context
-        # With ~1200 chars per chunk, that's ~66 chunks max, but be conservative
-        MAX_CHUNKS = 50  # Conservative limit to stay well under token limit
+        # Estimate: ~4 characters per token, max context ~128k tokens for gpt-4o-mini
+        # Reserve ~30k tokens for prompt/system messages, leaving ~98k for context
+        # With ~1200 chars per chunk, that's ~81 chunks max, but be conservative
+        # For evaluation, use fewer chunks to avoid rate limits and token errors
+        MAX_CHUNKS = 30 if eval_mode else 50  # Reduced for evaluation to avoid token limit errors
         if len(ordered_docs) > MAX_CHUNKS:
             logger.warning(f"Limiting chunks from {len(ordered_docs)} to {MAX_CHUNKS} to avoid token limit")
             # For processor questions, prioritize processor chunks and important chunks
@@ -761,7 +809,8 @@ WICHTIG FÜR EVALUIERUNG:
         # Additional safety check: Estimate tokens and reduce if necessary
         # Rough estimate: ~4 characters per token, but be conservative with ~3.5
         estimated_tokens = len(context) / 3.5
-        MAX_CONTEXT_TOKENS = 100000  # Leave buffer below 128k limit
+        # For evaluation, use stricter limits to avoid token errors
+        MAX_CONTEXT_TOKENS = 80000 if eval_mode else 100000  # Reduced for evaluation to avoid 128k limit errors
         
         if estimated_tokens > MAX_CONTEXT_TOKENS:
             logger.warning(f"Context too large: {estimated_tokens:.0f} estimated tokens, reducing chunks")
@@ -847,6 +896,10 @@ WICHTIG FÜR EVALUIERUNG:
             } for doc in top_sources]
             
             logger.info(f"No source references found in answer, returning top {len(top_sources)} sources by similarity")
+        
+        # Return the actual chunks used for answer generation (for RAGAS evaluation)
+        # This ensures RAGAS evaluates with the same chunks that were used to generate the answer
+        result["used_chunks"] = ordered_docs
         
         return result
 

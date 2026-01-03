@@ -2,6 +2,7 @@ import sys
 import os
 import asyncio
 import json
+import time
 from typing import List, Dict, Optional
 from pathlib import Path
 from datetime import datetime
@@ -29,7 +30,8 @@ def load_gold_standard(file_path: str) -> Dict:
 def run_evaluation_from_file(
     gold_standard_path: str,
     use_reranking: bool = True,
-    save_results: bool = True
+    save_results: bool = True,
+    limit: Optional[int] = None
 ) -> Dict:
     """
     Führt Evaluation basierend auf Goldstandard-Datei durch.
@@ -38,6 +40,7 @@ def run_evaluation_from_file(
         gold_standard_path: Pfad zur Goldstandard-JSON-Datei
         use_reranking: Ob Reranking verwendet werden soll
         save_results: Ob Ergebnisse gespeichert werden sollen
+        limit: Optional limit für Anzahl der Fragen (z.B. 20 für erste 20 Fragen)
     
     Returns:
         Dictionary mit Evaluations-Ergebnissen
@@ -46,8 +49,14 @@ def run_evaluation_from_file(
     logger.info(f"Loading gold standard from {gold_standard_path}")
     gold_standard = load_gold_standard(gold_standard_path)
     
-    questions = [q["question"] for q in gold_standard["questions"]]
-    ground_truths = [q.get("ground_truth") for q in gold_standard["questions"]]
+    # Limitiere auf die ersten N Fragen, falls limit gesetzt
+    questions_to_process = gold_standard["questions"]
+    if limit is not None and limit > 0:
+        questions_to_process = questions_to_process[:limit]
+        logger.info(f"Limited evaluation to first {limit} questions (out of {len(gold_standard['questions'])} total)")
+    
+    questions = [q["question"] for q in questions_to_process]
+    ground_truths = [q.get("ground_truth") for q in questions_to_process]
     
     # 2. Initialisiere RAG-Komponenten
     logger.info("Initializing RAG components...")
@@ -64,6 +73,11 @@ def run_evaluation_from_file(
     
     for i, question in enumerate(questions):
         logger.info(f"Processing question {i+1}/{len(questions)}: {question[:60]}...")
+        
+        # Add delay to avoid rate limiting (except for first question)
+        if i > 0:
+            delay = 1.0  # 1.0 second between questions to avoid rate limiting
+            time.sleep(delay)
         
         try:
             # Retrieve - mirror logic from backend/api/query.py
@@ -84,22 +98,14 @@ def run_evaluation_from_file(
             else:
                 # For spec queries, use direct retrieval without reranking
                 # This helps find technical chunks that might be ranked lower by the reranker
-                # Get even more results for general spec queries to ensure Display, Battery, Dimensions are found
-                n_results = 50 if is_spec_query else None
+                # For evaluation, use fewer results to avoid token limit errors
+                n_results = 30 if is_spec_query else 15  # Reduced for evaluation
                 retrieved_docs = retriever.retrieve(
                     query=question,
                     n_results=n_results
                 )
             
-            context_text_list = [doc["text"] for doc in retrieved_docs]
-            
-            # Log context size for debugging
-            total_chars = sum(len(text) for text in context_text_list)
-            logger.info(f"Retrieved {len(context_text_list)} chunks. Total context size: {total_chars} chars")
-            
-            contexts.append(context_text_list)
-            
-            # Generate Answer
+            # Generate Answer first to get the actual chunks used
             # Verwende eval_mode wenn Ground Truth vorhanden ist
             ground_truth = ground_truths[i] if i < len(ground_truths) and ground_truths[i] else None
             result = qa_chain.answer_with_retrieved_docs(
@@ -110,6 +116,17 @@ def run_evaluation_from_file(
                 ground_truth=ground_truth
             )
             answers.append(result.get("answer", ""))
+            
+            # Use the actual chunks that were used for answer generation (not all retrieved_docs)
+            # This ensures RAGAS evaluates with the same chunks that generated the answer
+            used_chunks = result.get("used_chunks", retrieved_docs)
+            context_text_list = [doc["text"] for doc in used_chunks]
+            
+            # Log context size for debugging
+            total_chars = sum(len(text) for text in context_text_list)
+            logger.info(f"Using {len(context_text_list)} chunks for RAGAS (same as answer generation). Total context size: {total_chars} chars")
+            
+            contexts.append(context_text_list)
             
         except Exception as e:
             logger.error(f"Error processing question {i+1}: {e}", exc_info=True)
@@ -152,12 +169,18 @@ def run_evaluation_from_file(
                     "question": q.get("question"),
                     "ground_truth": q.get("ground_truth"),
                     "answer": answers[i],
-                    "contexts": contexts[i],
+                    # "contexts": contexts[i],  # Entfernt um Dateigröße zu reduzieren
                     "category": q.get("category")
                 }
-                for i, q in enumerate(gold_standard["questions"])
+                for i, q in enumerate(questions_to_process)
             ],
-            "evaluation_results": results
+            "evaluation_results": {
+                "results": [
+                    {k: v for k, v in res.items() if k != "retrieved_contexts"}
+                    for res in results["results"]
+                ],
+                "summary": results["summary"]
+            }
         }
         
         with open(json_path, 'w', encoding='utf-8') as f:
@@ -294,6 +317,12 @@ if __name__ == "__main__":
         action="store_true",
         help="Don't save results to file"
     )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Limit evaluation to first N questions (e.g., --limit 20)"
+    )
     
     args = parser.parse_args()
     
@@ -301,7 +330,8 @@ if __name__ == "__main__":
         run_evaluation_from_file(
             gold_standard_path=args.gold_standard,
             use_reranking=not args.no_reranking,
-            save_results=not args.no_save
+            save_results=not args.no_save,
+            limit=args.limit
         )
     else:
         run_evaluation()

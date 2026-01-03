@@ -119,6 +119,12 @@ class Retriever:
                 additional_keywords = "weight Weight Gewicht kg lbs pounds kilogram starting at mechanical dimensions size mass specifications"
             elif any(term in query_lower_for_spec for term in ["abmessung", "dimension", "größe", "maße", "breite", "höhe", "tiefe"]):
                 additional_keywords = "dimensions Dimensions Abmessungen WxDxH width height depth mm inches mechanical size specifications"
+            # Screen-to-Body Ratio specific - CHECK THIS BEFORE general display
+            elif any(term in query_lower_for_spec for term in ["screen-to-body", "screen to body", "screen-to-body ratio", "screen to body ratio", "bezel", "display bezel", "screen bezel", "ratio"]):
+                # Emphasize "Screen-to-Body Ratio" strongly and add percentage variations
+                # Emphasize "Screen-to-Body Ratio" strongly and add percentage variations
+                # Also add display-related keywords to find display specification chunks
+                additional_keywords = "Screen-to-Body Ratio Screen to Body Ratio screen-to-body ratio screen to body ratio bezel display bezel screen bezel ratio percentage % 85% 85.5% 86% 87% 88% 88.5% 89% 90% 91% 92% 93% 94% 95% display Display screen Screen panel Panel specifications specifications table Table WUXGA FHD resolution brightness nits"
             # Display specific (not brightness)
             elif any(term in query_lower_for_spec for term in ["display", "bildschirm", "screen", "monitor", "auflösung", "resolution"]):
                 additional_keywords = "display Display screen panel IPS LCD OLED FHD UHD resolution inch inches nits brightness specifications"
@@ -232,6 +238,19 @@ class Retriever:
                             similarity_boost = 0.24  # Very strong boost for processor chunks with model info or GPU tables with processors
                         elif any(keyword in text_lower for keyword in ["processor", "cpu", "memory", "ram", "storage", "graphics", "gpu"]) and len(doc_text) > 200:
                             similarity_boost = 0.20  # Strong boost for technical keywords in substantial chunks
+                        # Screen-to-Body Ratio chunks - check FIRST before general display chunks
+                        # Boost if "Screen-to-Body Ratio" is explicitly mentioned OR if there's a percentage near display info
+                        elif ("screen-to-body" in text_lower or "screen to body" in text_lower):
+                            # If explicitly mentioned, boost strongly regardless of percentage format
+                            similarity_boost = 0.45  # Very strong boost for explicit screen-to-body ratio mentions
+                        elif (("bezel" in text_lower or "display bezel" in text_lower or "screen bezel" in text_lower) and
+                              (any(ratio_term in text_lower for ratio_term in ["ratio", "%"]) or
+                               any(pct in text_lower for pct in ["85%", "85.5%", "87%", "88%", "88.5%", "89%", "90%", "91%", "92%", "93%", "94%", "95%"]))):
+                            similarity_boost = 0.40  # Very strong boost for bezel/ratio chunks
+                        elif (("display" in text_lower or "screen" in text_lower or "bildschirm" in text_lower) and
+                              any(pct in text_lower for pct in ["85%", "85.5%", "86%", "87%", "88%", "88.5%", "89%", "90%", "91%", "92%", "93%", "94%", "95%"])):
+                            # Display chunks with percentage - likely screen-to-body ratio
+                            similarity_boost = 0.38  # Strong boost for display chunks with percentage
                         # Display chunks - check for display keywords AND measurements/units
                         # Prioritize chunks with brightness/nits information even more
                         elif ("display" in text_lower or "screen" in text_lower or "bildschirm" in text_lower) and (
@@ -276,6 +295,12 @@ class Retriever:
                         "prozessoroptionen", "prozessor-optionen"
                     ])
                     
+                    # Detect if this is a screen-to-body ratio query - we need to be more lenient with filtering
+                    is_screen_to_body_query_here = any(term in query_lower for term in [
+                        "screen-to-body", "screen to body", "screen-to-body ratio", "screen to body ratio",
+                        "bezel", "display bezel", "screen bezel"
+                    ])
+                    
                     # Check if this chunk contains processor-related content
                     is_processor_chunk = (
                         ("processor" in text_lower or "prozessor" in text_lower or "cpu" in text_lower) and
@@ -285,6 +310,30 @@ class Retriever:
                         ("|" in doc_text or "---" in doc_text or "table" in text_lower) and
                         any(keyword in text_lower for keyword in ["processor", "cpu", "core", "ultra", "intel", "amd"])
                     )
+                    
+                    # Check if this chunk contains screen-to-body ratio or display-related content
+                    # For screen-to-body queries, accept chunks with:
+                    # 1. Explicit "Screen-to-Body Ratio" mention, OR
+                    # 2. Display/Screen keywords + percentage, OR
+                    # 3. Just Display/Screen keywords (for general display chunks that might contain the info)
+                    is_display_chunk = False
+                    if is_screen_to_body_query_here:
+                        # For screen-to-body queries, be more lenient
+                        is_display_chunk = (
+                            ("screen-to-body" in text_lower or "screen to body" in text_lower) or  # Explicit mention
+                            (("display" in text_lower or "screen" in text_lower or "bildschirm" in text_lower) and
+                             ("%" in doc_text or
+                              any(pct in text_lower for pct in ["85%", "85.5%", "86%", "87%", "88%", "88.5%", "89%", "90%", "91%", "92%", "93%", "94%", "95%"]))) or  # Display with percentage
+                            ("display" in text_lower or "screen" in text_lower or "bildschirm" in text_lower)  # General display chunks
+                        )
+                    else:
+                        # For other queries, only check for explicit display info
+                        is_display_chunk = (
+                            ("display" in text_lower or "screen" in text_lower or "bildschirm" in text_lower) and
+                            (("screen-to-body" in text_lower or "screen to body" in text_lower) or
+                             "%" in doc_text or
+                             any(pct in text_lower for pct in ["85%", "85.5%", "86%", "87%", "88%", "88.5%", "89%", "90%", "91%", "92%", "93%", "94%", "95%"]))
+                        )
                     
                     # Filter by product name if target product is specified
                     if target_product:
@@ -374,6 +423,7 @@ class Retriever:
                             # 3. Model is in text AND no conflicting models found (for technical chunks from correct doc), OR
                             # 4. Filename suggests correct model/gen AND no conflicting models (for table chunks that may not repeat model/gen in every row)
                             # 5. For processor queries: Filename suggests correct model/gen AND chunk contains processor info (even if model/gen not in text)
+                            # 6. For screen-to-body ratio queries: Filename suggests correct model/gen AND chunk contains display/screen-to-body info (even if model/gen not in text)
                             # This allows technical chunks (like PERFORMANCE sections) and table chunks that may not explicitly mention generation
                             if is_processor_query_here and is_processor_chunk:
                                 # For processor queries, be more lenient - accept if filename matches and chunk contains processor info
@@ -383,6 +433,21 @@ class Retriever:
                                     (has_product_in_text and len(other_models) == 0) or  # Model in text, no other models mentioned
                                     (filename_has_model and filename_has_gen and len(other_models) == 0) or  # Filename suggests correct doc, no conflicting models
                                     (filename_has_model and filename_has_gen and is_processor_chunk and len(other_models) == 0)  # Filename matches + processor chunk + no conflicts
+                                )
+                            elif is_screen_to_body_query_here:
+                                # For screen-to-body ratio queries, be VERY lenient - accept display chunks from correct document
+                                # Accept if:
+                                # 1. Filename matches (most important - ensures correct document)
+                                # 2. Display chunk from correct document (even without explicit model/gen in text)
+                                # 3. Explicit model/gen in text
+                                # This is necessary because display specs often don't repeat model/gen in every chunk
+                                product_in_chunk = (
+                                    (filename_has_model and filename_has_gen) or  # Filename matches - accept all chunks from correct document
+                                    (has_product_in_text and gen_in_text) or  # Explicit model + gen in text
+                                    (has_product_in_text and filename_has_model and filename_has_gen) or  # Model in text + filename suggests correct doc
+                                    (has_product_in_text and len(other_models) == 0) or  # Model in text, no other models mentioned
+                                    (filename_has_model and filename_has_gen and is_display_chunk) or  # Filename matches + display chunk (even with conflicts)
+                                    (filename_has_model and filename_has_gen and len(other_models) == 0)  # Filename suggests correct doc, no conflicting models
                                 )
                             else:
                                 product_in_chunk = (
@@ -423,13 +488,27 @@ class Retriever:
             # Sort by similarity (highest first) if we applied boosts
             # For spec queries, prioritize important spec types (Display, Battery, Dimensions) even if similarity is slightly lower
             if is_spec_query:
+                # Check if this is a screen-to-body ratio query (outside sort_key to avoid repeated checks)
+                is_screen_to_body_query = any(term in query_lower for term in [
+                    "screen-to-body", "screen to body", "screen-to-body ratio", "screen to body ratio",
+                    "bezel", "display bezel", "screen bezel"
+                ])
+                
                 def sort_key(doc):
                     similarity = doc.get("similarity", 0)
                     text_lower = doc.get("text", "").lower()
+                    text = doc.get("text", "")
                     
                     # Priority boost for important spec types
                     priority = 0
-                    if "performance" in text_lower and len(doc.get("text", "")) > 200:
+                    
+                    # HIGHEST PRIORITY: Explicit Screen-to-Body Ratio mentions (for screen-to-body queries)
+                    if is_screen_to_body_query and ("screen-to-body" in text_lower or "screen to body" in text_lower):
+                        priority = 1000  # Very high priority - should be at the top
+                    elif is_screen_to_body_query and ("display" in text_lower or "screen" in text_lower) and "%" in text:
+                        # Display chunks with percentage for screen-to-body queries
+                        priority = 500  # High priority
+                    elif "performance" in text_lower and len(doc.get("text", "")) > 200:
                         priority = 1000  # Highest priority
                     # Processor chunks with model names get very high priority
                     elif (("processor" in text_lower or "cpu" in text_lower or "prozessor" in text_lower) and 
@@ -500,12 +579,23 @@ class Retriever:
             "prozessoroptionen", "prozessor-optionen"
         ])
         
+        # Detect screen-to-body ratio questions - these may need more chunks to find the ratio information
+        is_screen_to_body_query = any(term in query_lower for term in [
+            "screen-to-body", "screen to body", "screen-to-body ratio", "screen to body ratio",
+            "bezel", "display bezel", "screen bezel"
+        ])
+        
         if is_processor_query:
             # For processor questions, return significantly more chunks (30-50)
             # because processor tables are often split across multiple chunks
             target_k = max(target_k, 50)  # At least 50 chunks for processor queries
             initial_k = max(target_k * 8, 80)  # Get 8x more candidates
             logger.info(f"Processor query detected, retrieving {initial_k} candidates, returning top {target_k}")
+        elif is_screen_to_body_query:
+            # For screen-to-body ratio questions, get more chunks to find ratio information
+            target_k = max(target_k, 40)  # At least 40 chunks for screen-to-body queries
+            initial_k = max(target_k * 8, 60)  # Get 8x more candidates
+            logger.info(f"Screen-to-body ratio query detected, retrieving {initial_k} candidates, returning top {target_k}")
         elif is_spec_query:
             # For spec questions, get even more candidates to ensure we find technical chunks
             initial_k = max(target_k * 8, 40)  # Get 8x more for spec questions to ensure technical chunks are found

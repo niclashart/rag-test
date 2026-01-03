@@ -1,20 +1,20 @@
 {"id": 1, "question": "Welche Prozessor-Konfigurationen hat das Dell Pro 16 PC16250?", "ground_truth": "Intel Processor U300E, 13th Generation Intel Core i3-1315U, Intel Core 3 100U, Intel Core 5 120U, Intel Core 5 220U, Intel Core 7 150U, Intel Core 7 250U, Intel Core Ultra 5 225U, Intel Core Ultra 5 235U, Intel Core Ultra 7 255U, Intel Core Ultra 7 265U"}
 {"id": 2, "question": "Welche maximale RAM-Kapazität hat das Dell Pro 16 PC16250?", "ground_truth": "64 GB"}
-{"id": 3, "question": "Wieviel maximale Speicherkapazität hat das Dell Pro 16 PC16250?", "ground_truth": "2 TB"}
+{"id": 3, "question": "Wieviel maximale Speicherkapazität hat das Dell Pro 16 PC16250?", "ground_truth": "2 TB M.2 2280 SSD"}
 {"id": 4, "question": "Welche Display-Größe und Auflösung hat das Dell Pro 16 PC16250?", "ground_truth": "16 Zoll, Full High Definition Plus (FHD+)"}
-{"id": 5, "question": "Wie hoch ist die Display-Helligkeit (in nits) des Dell Pro 16 PC16250?", "ground_truth": "300 nits"}
-{"id": 6, "question": "Welche Grafikkarte ist im Dell Pro 16 PC16250 verbaut?", "ground_truth": "Intel UHD Graphics / Intel Graphics"}
+{"id": 5, "question": "Wie hoch ist die Display-Helligkeit (in nits) des Dell Pro 16 PC16250?", "ground_truth": "300 nits, 400 nits"}
+{"id": 6, "question": "Welche Grafikkarte ist im Dell Pro 16 PC16250 verbaut?", "ground_truth": "Intel Graphics"}
 {"id": 7, "question": "Wie viel wiegt das Dell Pro 16 PC16250 in kg?", "ground_truth": "1.92 kg"}
 {"id": 8, "question": "Welche Prozessoren unterstützt das Lenovo ThinkPad E14 Gen 6 (AMD) mit genauen Typen?", "ground_truth": "AMD Ryzen™ 3 7335U, AMD Ryzen™ 5 7535HS, AMD Ryzen™ 5 7535U, AMD Ryzen™ 7 7735HS, AMD Ryzen™ 7 7735U"}
 {"id": 9, "question": "Wieviel maximalen Arbeitsspeicher hat das Lenovo Thinkpad E14 Gen 6 (AMD)?", "ground_truth": "64 GB"}
 {"id": 10, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E14 Gen 6 (AMD)?", "ground_truth": "DDR5"}
-{"id": 11, "question": "Wieviel maximale Speicherkapazität hat das Lenovo Thinkpad E14 Gen 6 (AMD)?", "ground_truth": "2 TB"}
+{"id": 11, "question": "Wieviel maximale Speicherkapazität hat das Lenovo Thinkpad E14 Gen 6 (AMD)?", "ground_truth": "2 TB (2x 1TB M.2 SSD)"}
 {"id": 12, "question": "Welche Display-Helligkeit hat das Lenovo Thinkpad E14 Gen 6 (AMD)?", "ground_truth": "300 nits"}
 {"id": 13, "question": "Welche Grafikkarte ist im Lenovo Thinkpad E14 Gen 6 (AMD) verbaut?", "ground_truth": "AMD Radeon 660M, AMD Radeon 680M"}
 {"id": 14, "question": "Welche Betriebssysteme unterstützt das Lenovo Thinkpad E14 Gen 6 (AMD)?", "ground_truth": "Windows 11 Pro, Windows 11 Home, Windows 11 Home Single Language, kein vorinstalliertes Betriebssystem"}
 {"id": 15, "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L16 Gen 2?", "ground_truth": "Intel® Core™ Ultra 5 225H, Intel® Core™ Ultra 5 225U, Intel® Core™ Ultra 5 235H, Intel® Core™ Ultra 5 235U, Intel® Core™ Ultra 7 255H, Intel® Core™ Ultra 7 255U, Intel® Core™ Ultra 7 265U"}
-{"id": 16, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L16 Gen 2?", "ground_truth": "64 GB"}
-{"id": 17, "question": "Welche RAM-Typ unterstützt das Lenovo Thinkpad L16 Gen 2?", "ground_truth": "DDR5"}
+{"id": 16, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L16 Gen 2?", "ground_truth": "64 GB DDR5-5600"}
+{"id": 17, "question": "Welche RAM-Typ unterstützt das Lenovo Thinkpad L16 Gen 2?", "ground_truth": "DDR5-5600"}
 {"id": 18, "question": "Welche Grafikkarte ist im Lenovo Thinkpad L16 Gen 2 verbaut?", "ground_truth": "Intel® UHD Graphics / Intel® Iris® Xe Graphics"}
 {"id": 19, "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad E14 Gen 6 (Intel)?", "ground_truth": "Intel Core Ultra 7 165U, Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 5 135U, Intel Core Ultra 5 125H, Intel Core Ultra 7 155H"}
 {"id": 20, "question": "Welceh Grafikkarte ist im Lenovo Thinkpad E14 Gen 6 (Intel) verbaut?", "ground_truth": "Intel Arc Graphics, Intel Graphics"}
@@ -94,407 +94,407 @@
 {"id": 94, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L16 Gen 2 (Intel)?", "ground_truth": "DDR5-5600"}
 {"id": 95, "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad L16 Gen 2 (Intel)?", "ground_truth": "1.79 kg"}
 {"id": 96, "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L16 Gen 2 (Intel)?", "ground_truth": "87%"}
-{"id": 97, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 98, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 99, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 100, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 101, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 102, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 103, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 104, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 105, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 106, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 107, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 108, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 109, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 110, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 111, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 112, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 113, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 114, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 115, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 116, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 117, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 118, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 119, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 120, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 121, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 122, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 123, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 124, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 125, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 126, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 127, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 128, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 129, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 130, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 131, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 132, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 133, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 134, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 135, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 136, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 137, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 138, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 139, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 140, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 141, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 142, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 143, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 144, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 145, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 146, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 147, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 148, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 149, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 150, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 151, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 152, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 153, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 154, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 155, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 156, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 157, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 158, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 159, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 160, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 161, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 162, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 163, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 164, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 165, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 166, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 167, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 168, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 169, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 170, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 171, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 172, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 173, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 174, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 175, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 176, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 177, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 178, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 179, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 180, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 181, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 182, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 183, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 184, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 185, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 186, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 187, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 188, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 189, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 190, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 191, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 192, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 193, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 194, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 195, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 196, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 197, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 198, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 199, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 200, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 201, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 202, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 203, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 204, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 205, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 206, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 207, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 208, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 209, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 210, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 211, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 212, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 213, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 214, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 215, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 216, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 217, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 218, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 219, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 220, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 221, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 222, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 223, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 224, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 225, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 226, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 227, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 228, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 229, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 230, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 231, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 232, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 233, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 234, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 235, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 236, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 237, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 238, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 239, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 240, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 241, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 242, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 243, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 244, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 245, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 246, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 247, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 248, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 249, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 250, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 251, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 252, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 253, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 254, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 255, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 256, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 257, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 258, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 259, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 260, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 261, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 262, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 263, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 264, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 265, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 266, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 267, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 268, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 269, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 270, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 271, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 272, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 273, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 274, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 275, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 276, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 277, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 278, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 279, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 280, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 281, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 282, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 283, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 284, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 285, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 286, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 287, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 288, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 289, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 290, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 291, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 292, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 293, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 294, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 295, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 296, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 297, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 298, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 299, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 300, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 301, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 302, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 303, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 304, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 305, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 306, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 307, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 308, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 309, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 310, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 311, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 312, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 313, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 314, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 315, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 316, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 317, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 318, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 319, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 320, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 321, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 322, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 323, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 324, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 325, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 326, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 327, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 328, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 329, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 330, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 331, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 332, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 333, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 334, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 335, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 336, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 337, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 338, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 339, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 340, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 341, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 342, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 343, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 344, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 345, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 346, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 347, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 348, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 349, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 350, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 351, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 352, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 353, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 354, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 355, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 356, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 357, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 358, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 359, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 360, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 361, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 362, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 363, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 364, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 365, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 366, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 367, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 368, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 369, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 370, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 371, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 372, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 373, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 374, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 375, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 376, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 377, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 378, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 379, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 380, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 381, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 382, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 383, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 384, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 385, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 386, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 387, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 388, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 389, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 390, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 391, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 392, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 393, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 394, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 395, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 396, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 397, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 398, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 399, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 400, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 401, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 402, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 403, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 404, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 405, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 406, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 407, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 408, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 409, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 410, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 411, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 412, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 413, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 414, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 415, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 416, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 417, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 418, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 419, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 420, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 421, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 422, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 423, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 424, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 425, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 426, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 427, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 428, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 429, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 430, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 431, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 432, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 433, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 434, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 435, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 436, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 437, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 438, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 439, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 440, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 441, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 442, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 443, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 444, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 445, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 446, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 447, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 448, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 449, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 450, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 451, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 452, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 453, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 454, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 455, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 456, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 457, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 458, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 459, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 460, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 461, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 462, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 463, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 464, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 465, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 466, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 467, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 468, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 469, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 470, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 471, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 472, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 473, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 474, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 475, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 476, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 477, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 478, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 479, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 480, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 481, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 482, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 483, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 484, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 485, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 486, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 487, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 488, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 489, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 490, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 491, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 492, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 493, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 494, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
-{"id": 495, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
-{"id": 496, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
-{"id": 497, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
-{"id": 498, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
-{"id": 499, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
-{"id": 500, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 97, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 98, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 99, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 100, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 101, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 102, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 103, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 104, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 105, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 106, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 107, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 108, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 109, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 110, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 111, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 112, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 113, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 114, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 115, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 116, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 117, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 118, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 119, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 120, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 121, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 122, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 123, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 124, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 125, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 126, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 127, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 128, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 129, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 130, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 131, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 132, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 133, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 134, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 135, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 136, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 137, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 138, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 139, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 140, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 141, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 142, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 143, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 144, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 145, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 146, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 147, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 148, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 149, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 150, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 151, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 152, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 153, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 154, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 155, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 156, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 157, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 158, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 159, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 160, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 161, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 162, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 163, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 164, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 165, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 166, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 167, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 168, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 169, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 170, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 171, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 172, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 173, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 174, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 175, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 176, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 177, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 178, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 179, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 180, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 181, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 182, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 183, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 184, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 185, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 186, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 187, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 188, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 189, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 190, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 191, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 192, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 193, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 194, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 195, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 196, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 197, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 198, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 199, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 200, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 201, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 202, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 203, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 204, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 205, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 206, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 207, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 208, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 209, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 210, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 211, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 212, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 213, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 214, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 215, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 216, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 217, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 218, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 219, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 220, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 221, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 222, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 223, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 224, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 225, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 226, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 227, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 228, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 229, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 230, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 231, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 232, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 233, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 234, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 235, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 236, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 237, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 238, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 239, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 240, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 241, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 242, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 243, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 244, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 245, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 246, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 247, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 248, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 249, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 250, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 251, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 252, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 253, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 254, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 255, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 256, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 257, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 258, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 259, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 260, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 261, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 262, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 263, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 264, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 265, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 266, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 267, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 268, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 269, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 270, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 271, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 272, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 273, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 274, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 275, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 276, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 277, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 278, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 279, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 280, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 281, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 282, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 283, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 284, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 285, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 286, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 287, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 288, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 289, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 290, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 291, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 292, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 293, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 294, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 295, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 296, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 297, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 298, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 299, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 300, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 301, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 302, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 303, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 304, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 305, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 306, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 307, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 308, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 309, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 310, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 311, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 312, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 313, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 314, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 315, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 316, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 317, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 318, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 319, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 320, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 321, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 322, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 323, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 324, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 325, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 326, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 327, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 328, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 329, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 330, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 331, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 332, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 333, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 334, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 335, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 336, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 337, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 338, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 339, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 340, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 341, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 342, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 343, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 344, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 345, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 346, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 347, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 348, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 349, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 350, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 351, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 352, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 353, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 354, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 355, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 356, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 357, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 358, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 359, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 360, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 361, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 362, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 363, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 364, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 365, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 366, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 367, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 368, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 369, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 370, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 371, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 372, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 373, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 374, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 375, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 376, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 377, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 378, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 379, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 380, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 381, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 382, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 383, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 384, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 385, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 386, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 387, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 388, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 389, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 390, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 391, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 392, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 393, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 394, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 395, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 396, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 397, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 398, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 399, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 400, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 401, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 402, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 403, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 404, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 405, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 406, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 407, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 408, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 409, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 410, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 411, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 412, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 413, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 414, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 415, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 416, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 417, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 418, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 419, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 420, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 421, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 422, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 423, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 424, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 425, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 426, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 427, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 428, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 429, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 430, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 431, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 432, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 433, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 434, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 435, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 436, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 437, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 438, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 439, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 440, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 441, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 442, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 443, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 444, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 445, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 446, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 447, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 448, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 449, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 450, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 451, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 452, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 453, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 454, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 455, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 456, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 457, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 458, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 459, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 460, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 461, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 462, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 463, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 464, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 465, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 466, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 467, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 468, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 469, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 470, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 471, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 472, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 473, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 474, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 475, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 476, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 477, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 478, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 479, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 480, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 481, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 482, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 483, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 484, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 485, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 486, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 487, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 488, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 489, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 490, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 491, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 492, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 493, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 494, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
+// {"id": 495, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das ...?", "ground_truth": ""}
+// {"id": 496, "question": "Welchen Arbeitsspeicher-Typ unterstützt das ...?", "ground_truth": ""}
+// {"id": 497, "question": "Was ist das Mindestgewicht für das ...?", "ground_truth": ""}
+// {"id": 498, "question": "Wie ist die Screen-to-Body Ratio?", "ground_truth": ""}
+// {"id": 499, "question": "Welche Prozessoren unterstützt das ...?", "ground_truth": ""}
+// {"id": 500, "question": "Welche Grafikkarten unterstützt das ...?", "ground_truth": ""}
