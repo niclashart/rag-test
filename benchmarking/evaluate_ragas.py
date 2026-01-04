@@ -76,7 +76,7 @@ def run_evaluation_from_file(
         
         # Add delay to avoid rate limiting (except for first question)
         if i > 0:
-            delay = 1.0  # 1.0 second between questions to avoid rate limiting
+            delay = 3.0  # 3.0 second between questions to avoid rate limiting
             time.sleep(delay)
         
         try:

@@ -40,6 +40,11 @@ matplotlib
 plotly
 datasets
 
+# Data Visualization
+scikit-learn
+umap-learn
+kaleido
+
 # Logging
 structlog
 loguru
