@@ -21,7 +21,22 @@ class Embedder:
     
     def embed_text(self, text: str) -> List[float]:
         """Embed a single text string."""
-        return self.model.encode(text, convert_to_numpy=True).tolist()
+        try:
+            return self.model.encode(text, convert_to_numpy=True).tolist()
+        except Exception as e:
+            # If CUDA error occurs, try to truncate text and retry
+            if "cuda" in str(e).lower() or "CUDA" in str(e):
+                logger.warning(f"CUDA error during embedding, attempting to truncate text: {e}")
+                # Get max sequence length and truncate text
+                max_seq_length = getattr(self.model, 'max_seq_length', 256)
+                # Rough estimate: ~4 chars per token, use 90% of max
+                max_chars = int(max_seq_length * 0.9 * 4)
+                if len(text) > max_chars:
+                    truncated_text = text[:max_chars]
+                    logger.info(f"Truncating text from {len(text)} to {len(truncated_text)} characters")
+                    return self.model.encode(truncated_text, convert_to_numpy=True).tolist()
+            # Re-raise if truncation didn't help or it's a different error
+            raise
     
     def embed_texts(self, texts: List[str]) -> List[List[float]]:
         """Embed a list of texts."""

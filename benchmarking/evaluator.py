@@ -3,6 +3,7 @@ from ragas import evaluate
 from ragas.metrics import (
     faithfulness,
     answer_relevancy,
+    answer_correctness,
     context_precision,
     context_recall
 )
@@ -20,11 +21,16 @@ class RAGASEvaluator:
     
     def __init__(self):
         """Initialize evaluator."""
-        self.metrics = [
+        # Basis-Metriken, die immer verwendet werden
+        self.base_metrics = [
             faithfulness,
             answer_relevancy,
             # context_precision,  # Auskommentiert für schnellere Evaluation
             context_recall
+        ]
+        # Metriken, die Ground Truth benötigen
+        self.ground_truth_metrics = [
+            answer_correctness
         ]
     
     def evaluate_rag(
@@ -50,8 +56,16 @@ class RAGASEvaluator:
             "contexts": contexts
         }
         
-        if ground_truths:
+        # Determine which metrics to use based on availability of ground truth
+        has_ground_truth = ground_truths and any(gt for gt in ground_truths if gt and gt.strip())
+        
+        if has_ground_truth:
             data["ground_truth"] = ground_truths
+            metrics_to_use = self.base_metrics + self.ground_truth_metrics
+            logger.info("Using metrics with ground truth: including answer_correctness")
+        else:
+            metrics_to_use = self.base_metrics
+            logger.info("Using base metrics only (no ground truth available)")
         
         dataset = Dataset.from_dict(data)
         
@@ -82,7 +96,7 @@ class RAGASEvaluator:
         
         result = evaluate(
             dataset=dataset,
-            metrics=self.metrics,
+            metrics=metrics_to_use,
             llm=llm,
             embeddings=embeddings,
             raise_exceptions=False,
@@ -93,14 +107,22 @@ class RAGASEvaluator:
         results_dict = result.to_pandas().to_dict(orient="records")
         
         logger.info("RAGAS evaluation completed")
+        
+        # Build summary with available metrics
+        summary = {
+            "faithfulness": pd.Series([r.get("faithfulness", 0) for r in results_dict]).mean(),
+            "answer_relevancy": pd.Series([r.get("answer_relevancy", 0) for r in results_dict]).mean(),
+            # "context_precision": pd.Series([r.get("context_precision", 0) for r in results_dict]).mean(),  # Auskommentiert für schnellere Evaluation
+            "context_recall": pd.Series([r.get("context_recall", 0) for r in results_dict]).mean(),
+        }
+        
+        # Add answer_correctness if ground truth was available
+        if has_ground_truth:
+            summary["answer_correctness"] = pd.Series([r.get("answer_correctness", 0) for r in results_dict]).mean()
+        
         return {
             "results": results_dict,
-            "summary": {
-                "faithfulness": pd.Series([r.get("faithfulness", 0) for r in results_dict]).mean(),
-                "answer_relevancy": pd.Series([r.get("answer_relevancy", 0) for r in results_dict]).mean(),
-                # "context_precision": pd.Series([r.get("context_precision", 0) for r in results_dict]).mean(),  # Auskommentiert für schnellere Evaluation
-                "context_recall": pd.Series([r.get("context_recall", 0) for r in results_dict]).mean(),
-            }
+            "summary": summary
         }
     
     def evaluate_from_queries(

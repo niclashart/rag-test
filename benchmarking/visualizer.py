@@ -94,7 +94,17 @@ class BenchmarkVisualizer:
         save_path: Optional[str] = None
     ) -> go.Figure:
         """Compare multiple benchmark runs."""
-        metrics = ["faithfulness", "answer_relevancy", "context_precision", "context_recall"]
+        # Base metrics that are always available
+        base_metrics = ["faithfulness", "answer_relevancy", "context_recall"]
+        # Check if answer_correctness is available in any result
+        has_answer_correctness = any(
+            "answer_correctness" in result.get("summary", {}) 
+            for result in results_list
+        )
+        
+        metrics = base_metrics.copy()
+        if has_answer_correctness:
+            metrics.append("answer_correctness")
         
         fig = go.Figure()
         
@@ -130,49 +140,96 @@ class BenchmarkVisualizer:
         summary = results.get("summary", {})
         results_list = results.get("results", [])
         
-        # Create subplots
-        fig = make_subplots(
-            rows=2, cols=2,
-            subplot_titles=("Metrics Overview", "Faithfulness Distribution", 
-                          "Answer Relevancy Distribution", "Context Metrics"),
-            specs=[[{"type": "bar"}, {"type": "histogram"}],
-                   [{"type": "histogram"}, {"type": "bar"}]]
-        )
+        # Check if answer_correctness is available
+        has_answer_correctness = "answer_correctness" in summary
+        
+        # Determine layout based on available metrics
+        if has_answer_correctness:
+            # Create subplots with answer_correctness
+            fig = make_subplots(
+                rows=2, cols=3,
+                subplot_titles=("Metrics Overview", "Faithfulness Distribution", 
+                              "Answer Relevancy Distribution", 
+                              "Answer Correctness Distribution", "Context Recall", "Context Metrics"),
+                specs=[[{"type": "bar"}, {"type": "histogram"}, {"type": "histogram"}],
+                       [{"type": "histogram"}, {"type": "bar"}, {"type": "bar"}]]
+            )
+        else:
+            # Original layout without answer_correctness
+            fig = make_subplots(
+                rows=2, cols=2,
+                subplot_titles=("Metrics Overview", "Faithfulness Distribution", 
+                              "Answer Relevancy Distribution", "Context Metrics"),
+                specs=[[{"type": "bar"}, {"type": "histogram"}],
+                       [{"type": "histogram"}, {"type": "bar"}]]
+            )
         
         # Metrics overview
         metrics = list(summary.keys())
         values = list(summary.values())
         fig.add_trace(
-            go.Bar(x=metrics, y=values, name="Scores"),
+            go.Bar(x=metrics, y=values, name="Scores", text=[f"{v:.3f}" for v in values], textposition='outside'),
             row=1, col=1
         )
         
         # Faithfulness distribution
         faithfulness_values = [r.get("faithfulness", 0) for r in results_list]
         fig.add_trace(
-            go.Histogram(x=faithfulness_values, name="Faithfulness"),
+            go.Histogram(x=faithfulness_values, name="Faithfulness", nbinsx=20),
             row=1, col=2
         )
         
         # Answer relevancy distribution
         relevancy_values = [r.get("answer_relevancy", 0) for r in results_list]
-        fig.add_trace(
-            go.Histogram(x=relevancy_values, name="Answer Relevancy"),
-            row=2, col=1
-        )
+        if has_answer_correctness:
+            fig.add_trace(
+                go.Histogram(x=relevancy_values, name="Answer Relevancy", nbinsx=20),
+                row=1, col=3
+            )
+        else:
+            fig.add_trace(
+                go.Histogram(x=relevancy_values, name="Answer Relevancy", nbinsx=20),
+                row=2, col=1
+            )
         
-        # Context metrics
-        context_metrics = ["context_precision", "context_recall"]
-        context_values = [summary.get(m, 0) for m in context_metrics]
-        fig.add_trace(
-            go.Bar(x=context_metrics, y=context_values, name="Context"),
-            row=2, col=2
-        )
+        # Answer correctness distribution (if available)
+        if has_answer_correctness:
+            correctness_values = [r.get("answer_correctness", 0) for r in results_list]
+            fig.add_trace(
+                go.Histogram(x=correctness_values, name="Answer Correctness", nbinsx=20),
+                row=2, col=1
+            )
+            
+            # Context recall
+            context_recall_value = summary.get("context_recall", 0)
+            fig.add_trace(
+                go.Bar(x=["Context Recall"], y=[context_recall_value], name="Context Recall", 
+                      text=[f"{context_recall_value:.3f}"], textposition='outside'),
+                row=2, col=2
+            )
+            
+            # Other metrics bar
+            other_metrics = [m for m in metrics if m not in ["context_recall", "answer_correctness"]]
+            other_values = [summary.get(m, 0) for m in other_metrics]
+            fig.add_trace(
+                go.Bar(x=other_metrics, y=other_values, name="Other Metrics",
+                      text=[f"{v:.3f}" for v in other_values], textposition='outside'),
+                row=2, col=3
+            )
+        else:
+            # Context metrics (original layout)
+            context_metrics = ["context_recall"]
+            context_values = [summary.get(m, 0) for m in context_metrics]
+            fig.add_trace(
+                go.Bar(x=context_metrics, y=context_values, name="Context",
+                      text=[f"{v:.3f}" for v in context_values], textposition='outside'),
+                row=2, col=2
+            )
         
         fig.update_layout(
             title_text="RAGAS Benchmarking Dashboard",
             template="plotly_white",
-            height=800
+            height=800 if not has_answer_correctness else 900
         )
         
         if save_path:

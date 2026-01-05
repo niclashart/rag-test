@@ -212,6 +212,7 @@ def run_evaluation_from_file(
     
     print("\nDetailed Results:")
     print("-" * 60)
+    has_answer_correctness = "answer_correctness" in results["summary"]
     for i, res in enumerate(results["results"]):
         q_data = gold_standard["questions"][i]
         print(f"\nQ{q_data.get('id', i+1)}: {res.get('question', 'N/A')[:60]}...")
@@ -219,7 +220,8 @@ def run_evaluation_from_file(
         print(f"  Answer: {res.get('answer', 'N/A')[:60]}...")
         print(f"  Faithfulness:      {res.get('faithfulness', 0.0):.4f}")
         print(f"  Answer Relevancy:  {res.get('answer_relevancy', 0.0):.4f}")
-        print(f"  Context Precision: {res.get('context_precision', 0.0):.4f}")
+        if has_answer_correctness:
+            print(f"  Answer Correctness: {res.get('answer_correctness', 0.0):.4f}")
         print(f"  Context Recall:    {res.get('context_recall', 0.0):.4f}")
     
     print("\n" + "="*60)

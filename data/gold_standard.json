@@ -82,7 +82,7 @@
 {"id": 82, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L14 Gen 5 (Intel)?", "ground_truth": "DDR5-5600"}
 {"id": 83, "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad L14 Gen 5 (Intel)?", "ground_truth": "1.36 kg"}
 {"id": 84, "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L14 Gen 5 (Intel)?", "ground_truth": "85.5%"}
-{"id": 85, "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?", "ground_truth": "AMD Ryzen 3 PRO 7335U, AMD Ryzen 5 PRO 7535U, AMD Ryzen 7 PRO 7735U"}
+{"id": 85, "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?", "ground_truth": "AMD Ryzen™ 3 PRO 7335U, AMD Ryzen™ 5 PRO 7535U, AMD Ryzen™ 7 PRO 7735U"}
 {"id": 86, "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?", "ground_truth": "AMD Radeon 660M, AMD Radeon 680M"}
 {"id": 87, "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?", "ground_truth": "64 GB"}
 {"id": 88, "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?", "ground_truth": "DDR5-4800"}

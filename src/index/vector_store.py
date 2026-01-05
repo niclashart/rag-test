@@ -5,6 +5,7 @@ from typing import List, Dict, Optional
 import os
 from pathlib import Path
 from logging_config.logger import get_logger
+import hashlib
 
 logger = get_logger(__name__)
 
@@ -12,18 +13,41 @@ logger = get_logger(__name__)
 class VectorStore:
     """ChromaDB vector store wrapper."""
     
-    def __init__(self, db_path: str = None, collection_name: str = None):
-        """Initialize ChromaDB client."""
+    def __init__(self, db_path: str = None, collection_name: str = None, embedding_model: str = None):
+        """Initialize ChromaDB client.
+        
+        Args:
+            db_path: Path to ChromaDB database directory
+            collection_name: Explicit collection name (if None, will be generated from model)
+            embedding_model: Embedding model name (if None, will be read from EMBEDDING_MODEL env var)
+        """
         if db_path is None:
             db_path = os.getenv("CHROMA_DB_PATH", "./data/chroma_db")
+        
+        # Get embedding model name from environment if not provided
+        if embedding_model is None:
+            embedding_model = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+        
+        # Generate collection name based on model if not explicitly provided
         if collection_name is None:
-            collection_name = os.getenv("CHROMA_COLLECTION_NAME", "documents")
+            # Check if explicit collection name is set in env
+            explicit_collection = os.getenv("CHROMA_COLLECTION_NAME")
+            if explicit_collection:
+                collection_name = explicit_collection
+            else:
+                # Create a safe collection name from model name
+                # Replace slashes and special chars with underscores
+                safe_model_name = embedding_model.replace("/", "_").replace("-", "_").replace(":", "_")
+                # Use hash to keep name short but unique
+                model_hash = hashlib.md5(embedding_model.encode()).hexdigest()[:8]
+                collection_name = f"documents_{safe_model_name}_{model_hash}"
         
         # Create directory if it doesn't exist
         Path(db_path).mkdir(parents=True, exist_ok=True)
         
         self.db_path = db_path
         self.collection_name = collection_name
+        self.embedding_model = embedding_model
         
         # Initialize ChromaDB client
         self.client = chromadb.PersistentClient(
@@ -31,7 +55,7 @@ class VectorStore:
             settings=Settings(anonymized_telemetry=False)
         )
         
-        logger.info(f"Initialized ChromaDB at {db_path}")
+        logger.info(f"Initialized ChromaDB at {db_path} with collection '{collection_name}' for model '{embedding_model}'")
     
     def get_collection(self):
         """Get or create the global collection."""

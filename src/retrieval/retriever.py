@@ -152,6 +152,28 @@ class Retriever:
             
             expanded_query = f"{query} {product_emphasis} {additional_keywords} {generation_keywords} {performance_keywords}"
             spec_type = "RAM/memory" if additional_keywords else "general specs"
+            
+            # Truncate query if too long to avoid CUDA errors
+            # Get max sequence length from model (default 256 for all-MiniLM-L6-v2)
+            max_seq_length = getattr(self.embedder.model, 'max_seq_length', 256)
+            # Reserve some tokens for safety (use ~90% of max)
+            safe_max_length = int(max_seq_length * 0.9)
+            
+            # Tokenize to check length (rough estimate: ~4 chars per token for German/English)
+            estimated_tokens = len(expanded_query) // 4
+            if estimated_tokens > safe_max_length:
+                # Prioritize: original query + product keywords + additional keywords
+                # Truncate performance_keywords if needed
+                priority_part = f"{query} {product_emphasis} {additional_keywords} {generation_keywords}"
+                remaining_length = safe_max_length * 4 - len(priority_part)
+                if remaining_length > 0:
+                    truncated_performance = performance_keywords[:remaining_length]
+                    expanded_query = f"{priority_part} {truncated_performance}"
+                else:
+                    # If even priority part is too long, just use query + product emphasis
+                    expanded_query = f"{query} {product_emphasis}"
+                logger.warning(f"Query truncated from {estimated_tokens} to ~{safe_max_length} tokens to avoid CUDA error")
+            
             logger.info(f"Expanded specification query (product: {product_keywords}, spec_type: {spec_type}): {expanded_query[:200]}...")
             query_embedding = self.embedder.embed_text(expanded_query)
         else:
