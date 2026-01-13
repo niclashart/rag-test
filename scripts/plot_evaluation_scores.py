@@ -112,8 +112,14 @@ def plot_metrics_over_questions(data: dict, output_path: str = None):
         print("No results found in data")
         return None
     
-    # Extract metrics
-    metrics = ["faithfulness", "answer_relevancy", "context_recall"]
+    # Extract metrics - check if answer_correctness is available
+    base_metrics = ["faithfulness", "answer_relevancy", "context_recall"]
+    has_answer_correctness = any("answer_correctness" in r for r in results)
+    
+    metrics = base_metrics.copy()
+    if has_answer_correctness:
+        metrics.append("answer_correctness")
+    
     available_metrics = [m for m in metrics if any(m in r for r in results)]
     
     if not available_metrics:
@@ -131,9 +137,9 @@ def plot_metrics_over_questions(data: dict, output_path: str = None):
     
     fig, ax = plt.subplots(figsize=(14, 6))
     
-    colors = ['#1f77b4', '#ff7f0e', '#2ca02c']
-    markers = ['o', 's', '^']
-    linestyles = ['-', '--', '-.']
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
+    markers = ['o', 's', '^', 'D']
+    linestyles = ['-', '--', '-.', ':']
     
     x_pos = np.arange(len(question_labels))
     
@@ -256,10 +262,20 @@ def create_comprehensive_dashboard(data: dict, output_path: str = None):
         questions = data.get("questions", [])
         question_labels = [f"Q{q.get('id', i+1)}" for i, q in enumerate(questions)] if questions else [f"Q{i+1}" for i in range(len(results))]
         
-        available_metrics = ["faithfulness", "answer_relevancy", "context_recall"]
-        plot_colors = ['#1f77b4', '#ff7f0e', '#2ca02c']
-        markers = ['o', 's', '^']
-        linestyles = ['-', '--', '-.']
+        # Check if answer_correctness is available
+        base_metrics = ["faithfulness", "answer_relevancy", "context_recall"]
+        has_answer_correctness = any("answer_correctness" in r for r in results)
+        
+        available_metrics = base_metrics.copy()
+        if has_answer_correctness:
+            available_metrics.append("answer_correctness")
+        
+        # Filter to only include metrics that are actually in the results
+        available_metrics = [m for m in available_metrics if any(m in r for r in results)]
+        
+        plot_colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']
+        markers = ['o', 's', '^', 'D']
+        linestyles = ['-', '--', '-.', ':']
         
         x_pos = np.arange(len(question_labels))
         
@@ -267,9 +283,9 @@ def create_comprehensive_dashboard(data: dict, output_path: str = None):
             if any(metric in r for r in results):
                 values = [r.get(metric, 0) * 100 for r in results]
                 ax3.plot(x_pos, values, 
-                         marker=markers[i], 
-                         linestyle=linestyles[i],
-                         color=plot_colors[i],
+                         marker=markers[i % len(markers)], 
+                         linestyle=linestyles[i % len(linestyles)],
+                         color=plot_colors[i % len(plot_colors)],
                          linewidth=2,
                          markersize=8,
                          label=metric.replace('_', ' ').title())

@@ -121,3 +121,13 @@ if __name__ == "__main__":
     
     reindex_all_documents(clear_existing=args.clear_existing)
 
+
+
+
+
+
+
+
+
+
+

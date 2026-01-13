@@ -610,17 +610,18 @@ class Retriever:
         if is_processor_query:
             # For processor questions, return significantly more chunks (30-50)
             # because processor tables are often split across multiple chunks
-            target_k = max(target_k, 50)  # At least 50 chunks for processor queries
-            initial_k = max(target_k * 8, 80)  # Get 8x more candidates
+            target_k = max(target_k, 10)  # At least 50 chunks for processor queries
+            initial_k = max(target_k * 2, 20)  # Get 8x more candidates
             logger.info(f"Processor query detected, retrieving {initial_k} candidates, returning top {target_k}")
         elif is_screen_to_body_query:
             # For screen-to-body ratio questions, get more chunks to find ratio information
-            target_k = max(target_k, 40)  # At least 40 chunks for screen-to-body queries
-            initial_k = max(target_k * 8, 60)  # Get 8x more candidates
+            target_k = max(target_k, 10)  # At least 40 chunks for screen-to-body queries
+            initial_k = max(target_k * 2, 20)  # Get 8x more candidates
             logger.info(f"Screen-to-body ratio query detected, retrieving {initial_k} candidates, returning top {target_k}")
         elif is_spec_query:
-            # For spec questions, get even more candidates to ensure we find technical chunks
-            initial_k = max(target_k * 8, 40)  # Get 8x more for spec questions to ensure technical chunks are found
+            
+            target_k = max(target_k , 15)# For spec questions, get even more candidates to ensure we find technical chunks
+            initial_k = max(target_k * 2, 40)  # Get 8x more for spec questions to ensure technical chunks are found
             logger.info(f"Specification query detected, retrieving {initial_k} candidates")
         else:
             initial_k = max(target_k * 3, 10)  # Get 3x more for reranking, minimum 10

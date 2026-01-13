@@ -9,7 +9,7 @@ retrieval:
   top_k: 5  # Reduced from 20 to 5 to avoid Ragas timeouts during evaluation
   similarity_threshold: 0.0  # Low threshold - reranking will handle relevance
   use_reranking: true
-  rerank_top_k: 15  # Return top 15 after reranking (more results for spec questions to ensure technical chunks are included)
+  rerank_top_k: 7  # Return top 15 after reranking (more results for spec questions to ensure technical chunks are included)
 
 qa:
   temperature: 0.3  # Lower temperature to reduce hallucinations and stick to facts
