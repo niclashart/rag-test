@@ -1,0 +1,1463 @@
+{
+  "dataset_info": {
+    "name": "Gold Standard Dataset",
+    "description": "Loaded from JSONL format",
+    "version": "1.0",
+    "created_at": "2026-01-05T19:12:27.075888",
+    "evaluated_at": "2026-01-05T20:16:02.360296",
+    "num_questions": 90,
+    "use_reranking": true
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "Welche Prozessor-Konfigurationen hat das Dell Pro 16 PC16250?",
+      "ground_truth": "Intel Processor U300E, 13th Generation Intel Core i3-1315U, Intel Core 3 100U, Intel Core 5 120U, Intel Core 5 220U, Intel Core 7 150U, Intel Core 7 250U, Intel Core Ultra 5 225U, Intel Core Ultra 5 235U, Intel Core Ultra 7 255U, Intel Core Ultra 7 265U",
+      "answer": "Intel Processor U300E, 13th Generation Intel Core i3-1315U, Intel Core 3 100U, Intel Core 5 120U, Intel Core 5 220U, Intel Core 7 150U, Intel Core 7 250U, Intel Core Ultra 5 225U, Intel Core Ultra 5 235U, Intel Core Ultra 7 255U, Intel Core Ultra 7 265U",
+      "category": null
+    },
+    {
+      "id": 2,
+      "question": "Welche maximale RAM-Kapazität hat das Dell Pro 16 PC16250?",
+      "ground_truth": "64 GB",
+      "answer": "Nicht spezifiziert",
+      "category": null
+    },
+    {
+      "id": 3,
+      "question": "Wieviel maximale Speicherkapazität hat das Dell Pro 16 PC16250?",
+      "ground_truth": "2 TB M.2 2280 SSD",
+      "answer": "2 TB M.2 2280 SSD",
+      "category": null
+    },
+    {
+      "id": 4,
+      "question": "Welche Display-Größe und Auflösung hat das Dell Pro 16 PC16250?",
+      "ground_truth": "16 Zoll, Full High Definition Plus (FHD+)",
+      "answer": "Nicht in den Dokumenten angegeben",
+      "category": null
+    },
+    {
+      "id": 5,
+      "question": "Wie hoch ist die Display-Helligkeit (in nits) des Dell Pro 16 PC16250?",
+      "ground_truth": "300 nits, 400 nits",
+      "answer": "Nicht spezifiziert",
+      "category": null
+    },
+    {
+      "id": 6,
+      "question": "Welche Grafikkarte ist im Dell Pro 16 PC16250 verbaut?",
+      "ground_truth": "Intel Graphics",
+      "answer": "Intel Graphics",
+      "category": null
+    },
+    {
+      "id": 7,
+      "question": "Wie viel wiegt das Dell Pro 16 PC16250 in kg?",
+      "ground_truth": "1.92 kg",
+      "answer": "Nicht spezifiziert",
+      "category": null
+    },
+    {
+      "id": 8,
+      "question": "Welche Prozessoren unterstützt das Lenovo ThinkPad E14 Gen 6 (AMD) mit genauen Typen?",
+      "ground_truth": "AMD Ryzen™ 3 7335U, AMD Ryzen™ 5 7535HS, AMD Ryzen™ 5 7535U, AMD Ryzen™ 7 7735HS, AMD Ryzen™ 7 7735U",
+      "answer": "AMD Ryzen™ 3 7335U, AMD Ryzen™ 5 7535HS, AMD Ryzen™ 5 7535U, AMD Ryzen™ 7 7735HS, AMD Ryzen™ 7 7735U",
+      "category": null
+    },
+    {
+      "id": 9,
+      "question": "Wieviel maximalen Arbeitsspeicher hat das Lenovo Thinkpad E14 Gen 6 (AMD)?",
+      "ground_truth": "64 GB",
+      "answer": "16 GB DDR5",
+      "category": null
+    },
+    {
+      "id": 10,
+      "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E14 Gen 6 (AMD)?",
+      "ground_truth": "DDR5",
+      "answer": "DDR5",
+      "category": null
+    },
+    {
+      "id": 11,
+      "question": "Wieviel maximale Speicherkapazität hat das Lenovo Thinkpad E14 Gen 6 (AMD)?",
+      "ground_truth": "2 TB (2x 1TB M.2 SSD)",
+      "answer": "2 TB (2x 1TB M.2 SSD)",
+      "category": null
+    },
+    {
+      "id": 12,
+      "question": "Welche Display-Helligkeit hat das Lenovo Thinkpad E14 Gen 6 (AMD)?",
+      "ground_truth": "300 nits",
+      "answer": "300 nits",
+      "category": null
+    },
+    {
+      "id": 13,
+      "question": "Welche Grafikkarte ist im Lenovo Thinkpad E14 Gen 6 (AMD) verbaut?",
+      "ground_truth": "AMD Radeon 660M, AMD Radeon 680M",
+      "answer": "AMD Radeon 660M, AMD Radeon 680M",
+      "category": null
+    },
+    {
+      "id": 14,
+      "question": "Welche Betriebssysteme unterstützt das Lenovo Thinkpad E14 Gen 6 (AMD)?",
+      "ground_truth": "Windows 11 Pro, Windows 11 Home, Windows 11 Home Single Language, kein vorinstalliertes Betriebssystem",
+      "answer": "Windows 11 Pro, Windows 11 Home, Windows 11 Home Single Language, kein vorinstalliertes Betriebssystem",
+      "category": null
+    },
+    {
+      "id": 15,
+      "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L16 Gen 2?",
+      "ground_truth": "Intel® Core™ Ultra 5 225H, Intel® Core™ Ultra 5 225U, Intel® Core™ Ultra 5 235H, Intel® Core™ Ultra 5 235U, Intel® Core™ Ultra 7 255H, Intel® Core™ Ultra 7 255U, Intel® Core™ Ultra 7 265U",
+      "answer": "Intel® Core™ Ultra 5 225H, Intel® Core™ Ultra 5 225U, Intel® Core™ Ultra 5 235H, Intel® Core™ Ultra 5 235U, Intel® Core™ Ultra 7 255H, Intel® Core™ Ultra 7 255U, Intel® Core™ Ultra 7 265U",
+      "category": null
+    },
+    {
+      "id": 16,
+      "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L16 Gen 2?",
+      "ground_truth": "64 GB DDR5-5600",
+      "answer": "Up to 64GB DDR5-5600",
+      "category": null
+    },
+    {
+      "id": 17,
+      "question": "Welche RAM-Typ unterstützt das Lenovo Thinkpad L16 Gen 2?",
+      "ground_truth": "DDR5-5600",
+      "answer": "DDR5-5600",
+      "category": null
+    },
+    {
+      "id": 18,
+      "question": "Welche Grafikkarte ist im Lenovo Thinkpad L16 Gen 2 verbaut?",
+      "ground_truth": "Intel® UHD Graphics / Intel® Iris® Xe Graphics",
+      "answer": "Intel® Arc™ 130T GPU, Intel® Graphics",
+      "category": null
+    },
+    {
+      "id": 19,
+      "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad E14 Gen 6 (Intel)?",
+      "ground_truth": "Intel Core Ultra 7 165U, Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 5 135U, Intel Core Ultra 5 125H, Intel Core Ultra 7 155H",
+      "answer": "Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 7 165U, Intel Core Ultra 5 135U, Intel Core Ultra 7 265U, Intel Core Ultra 5 235U",
+      "category": null
+    },
+    {
+      "id": 20,
+      "question": "Welceh Grafikkarte ist im Lenovo Thinkpad E14 Gen 6 (Intel) verbaut?",
+      "ground_truth": "Intel Arc Graphics, Intel Graphics",
+      "answer": "Intel Iris Xe Graphics, Intel Graphics",
+      "category": null
+    },
+    {
+      "id": 21,
+      "question": "Wieviel maximalen Arbeitsspeciher unterstützt das Lenovo Thinkpad E14 Gen 6 (Intel)?",
+      "ground_truth": "64 GB",
+      "answer": "64 GB DDR5-5600",
+      "category": null
+    },
+    {
+      "id": 22,
+      "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E14 Gen 6 (Intel)?",
+      "ground_truth": "DDR5-5600",
+      "answer": "DDR4, DDR5",
+      "category": null
+    },
+    {
+      "id": 23,
+      "question": "Über welchen Chipset verfügt das Lenovo Thinkpad E14 Gen 6 (Intel)?",
+      "ground_truth": "Intel SoC (System on Chip)",
+      "answer": "Intel SoC (System on Chip)",
+      "category": null
+    },
+    {
+      "id": 24,
+      "question": "Über welchen Audio-Chip verfügt das Lenovo Thinkpad E14 Gen 6 (Intel)?",
+      "ground_truth": "High Definition (HD) Audio, Senary SN5141 codec",
+      "answer": "High Definition (HD) Audio, Senary SN6141 codec",
+      "category": null
+    },
+    {
+      "id": 25,
+      "question": "Welches Startgewicht hat das Lenovo Thinkpad E14 Gen 6 (Intel)?",
+      "ground_truth": "Ab 1.44 kg",
+      "answer": "Ab 1.42 kg...",
+      "category": null
+    },
+    {
+      "id": 26,
+      "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad E14 Gen 7 (AMD)?",
+      "ground_truth": "AMD Ryzen 3 210, AMD Ryzen 5 220, AMD Ryzen 5 230, AMD Ryzen 5 PRO 215, AMD Ryzen 5 PRO 230, AMD Ryzen 7 250",
+      "answer": "AMD Ryzen 3 210, AMD Ryzen 5 220, AMD Ryzen 5 230, AMD Ryzen 5 PRO 215, AMD Ryzen 5 PRO 230, AMD Ryzen 7 250",
+      "category": null
+    },
+    {
+      "id": 27,
+      "question": "Welche NPU ist im Lenovo Thinkpad E14 Gen 7 (AMD) integriert?",
+      "ground_truth": "AMD Ryzen AI",
+      "answer": "AMD Ryzen AI, bis zu 16 TOPS",
+      "category": null
+    },
+    {
+      "id": 28,
+      "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad E14 Gen 7 (AMD)?",
+      "ground_truth": "AMD Radeon 740M, AMD Radeon 760M, AMD Radeon 780M",
+      "answer": "AMD Radeon 740M, AMD Radeon 760M, AMD Radeon 780M",
+      "category": null
+    },
+    {
+      "id": 29,
+      "question": "Über wieviel maximalen Arbeitsspeicher verfügt das Lenovo Thinkpad E14 Gen 7 (AMD)?",
+      "ground_truth": "64 GB",
+      "answer": "64 GB DDR5-5600",
+      "category": null
+    },
+    {
+      "id": 30,
+      "question": "Welche Farben für das Case gibt es für das Lenovo Thinkpad E14 Gen 7 (AMD)?",
+      "ground_truth": "Schwarz, Grau",
+      "answer": "Schwarz, Grau",
+      "category": null
+    },
+    {
+      "id": 31,
+      "question": "Was ist das Mindestgewicht des Lenovo Thinkpad E14 Gen 7 (AMD)?",
+      "ground_truth": "1.41 kg",
+      "answer": "1.34 kg",
+      "category": null
+    },
+    {
+      "id": 32,
+      "question": "Über welche integrierte NPU verfügt das Lenovo Thinkpad E14 Gen 7 (Intel)?",
+      "ground_truth": "Intel AI Boost",
+      "answer": "Intel AI Boost, bis zu 12 TOPS",
+      "category": null
+    },
+    {
+      "id": 33,
+      "question": "Wieviel maximale Speicherkapazität hat das Lenovo Thinkpad E14 Gen 7 (Intel)?",
+      "ground_truth": "1 TB",
+      "answer": "1 TB M.2 SSD",
+      "category": null
+    },
+    {
+      "id": 34,
+      "question": "Über welche Storage-Security verfügt das Lenovo Thinkpad E14 Gen 7 (Intel)?",
+      "ground_truth": "Opal 2.0",
+      "answer": "Opal 2.0",
+      "category": null
+    },
+    {
+      "id": 35,
+      "question": "Wie hoch ist die Screen-to-Body Ratio des Lenovo Thinkpad E14 Gen 7 (Intel)?",
+      "ground_truth": "90%",
+      "answer": "90%",
+      "category": null
+    },
+    {
+      "id": 36,
+      "question": "Verfügt das Lenovo Thinkpad E14 Gen 7 (Intel) über NFC Support?",
+      "ground_truth": "Nein",
+      "answer": "Nein",
+      "category": null
+    },
+    {
+      "id": 37,
+      "question": "Welche Prozessor-Konfigurationen hat das Lenovo Thinkpad E16 Gen 2 (AMD)?",
+      "ground_truth": "AMD Ryzen 3 7335U, AMD Ryzen 5 7535HS, AMD Ryzen 5 7535U, AMD Ryzen 7 7735HS, AMD Ryzen 7 7735U",
+      "answer": "AMD Ryzen 3 7335U, AMD Ryzen 5 7535HS, AMD Ryzen 5 7535U, AMD Ryzen 7 7735HS, AMD Ryzen 7 7735U",
+      "category": null
+    },
+    {
+      "id": 38,
+      "question": "Welche maximale Frequenz hat der AMD Ryzen 3 7335U im Lenovo Thinkpad E16 Gen 2 (AMD)?",
+      "ground_truth": "4.3 GHz",
+      "answer": "4.3 GHz",
+      "category": null
+    },
+    {
+      "id": 39,
+      "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad E16 Gen 2 (AMD)?",
+      "ground_truth": "AMD Radeon 660M, AMD Radeon 680M",
+      "answer": "AMD Radeon 660M, AMD Radeon 680M",
+      "category": null
+    },
+    {
+      "id": 40,
+      "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E16 Gen 2 (AMD)?",
+      "ground_truth": "DDR5-4800",
+      "answer": "DDR5-4800, DDR5-5600",
+      "category": null
+    },
+    {
+      "id": 41,
+      "question": "Welche Display-Auflösungsmöglichkeiten (Typ) hat das Lenovo Thinkpad E16 Gen 2 (AMD)?",
+      "ground_truth": "WUXGA, WQXGA",
+      "answer": "WUXGA (1920x1200), WQXGA (2560x1600)",
+      "category": null
+    },
+    {
+      "id": 42,
+      "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad E16 Gen 2 (AMD)?",
+      "ground_truth": "90.7 %",
+      "answer": "90.7 %",
+      "category": null
+    },
+    {
+      "id": 43,
+      "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad E16 Gen 2 (Intel)?",
+      "ground_truth": "Intel Core Ultra 7 165U, Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 5 135U, Intel Core Ultra 5 125H, Intel Core Ultra 7 155H",
+      "answer": "Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 7 165U, Intel Core Ultra 5 135U, Intel Core Ultra 5 125H, Intel Core Ultra 7 155H",
+      "category": null
+    },
+    {
+      "id": 44,
+      "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad E16 Gen 2 (Intel)?",
+      "ground_truth": "Intel Arc Graphics, Intel Graphics",
+      "answer": "Intel Arc Graphics, Intel Graphics",
+      "category": null
+    },
+    {
+      "id": 45,
+      "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad E16 Gen 2 (Intel)?",
+      "ground_truth": "64 GB",
+      "answer": "64 GB DDR5-5600",
+      "category": null
+    },
+    {
+      "id": 46,
+      "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E16 Gen 2 (Intel)?",
+      "ground_truth": "DDR5-5600",
+      "answer": "DDR5-5600",
+      "category": null
+    },
+    {
+      "id": 47,
+      "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad E16 Gen 2 (Intel)?",
+      "ground_truth": "1.78 kg",
+      "answer": "1.71 kg",
+      "category": null
+    },
+    {
+      "id": 48,
+      "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad E16 Gen 3 (AMD)?",
+      "ground_truth": "AMD Ryzen 3 210, AMD Ryzen 5 220, AMD Ryzen 5 230, AMD Ryzen 5 PRO 215, AMD Ryzen 5 PRO 230, AMD Ryzen 7 250",
+      "answer": "AMD Ryzen™ 3 210, AMD Ryzen™ 5 220, AMD Ryzen™ 5 230, AMD Ryzen™ 5 PRO 215, AMD Ryzen™ 5 PRO 230, AMD Ryzen™ 7 250",
+      "category": null
+    },
+    {
+      "id": 49,
+      "question": "Welche Prozessoren des Lenovo Thinkpad E16 Gen 3 (AMD) unterstützen AMD Ryzen AI?",
+      "ground_truth": "AMD Ryzen 5 230, AMD Ryzen 5 PRO 230, AMD Ryzen 7 250",
+      "answer": "AMD Ryzen 5 230, AMD Ryzen 7 250",
+      "category": null
+    },
+    {
+      "id": 50,
+      "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad E16 Gen 3 (AMD)?",
+      "ground_truth": "AMD Radeon 740M, AMD Radeon 760M, AMD Radeon 780M",
+      "answer": "AMD Radeon 740M, AMD Radeon 760M, AMD Radeon 780M",
+      "category": null
+    },
+    {
+      "id": 51,
+      "question": "Wieviel maximalen Arbeitsspeicher hat das Lenovo Thinkpad E16 Gen 3 (AMD)?",
+      "ground_truth": "64 GB",
+      "answer": "64 GB DDR5-5600",
+      "category": null
+    },
+    {
+      "id": 52,
+      "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E16 Gen 3 (AMD)?",
+      "ground_truth": "DDR5-5600",
+      "answer": "DDR5-5600",
+      "category": null
+    },
+    {
+      "id": 53,
+      "question": "Wieviel maximale Speicher-Kapazität hat das Lenovo Thinkpad E16 Gen 3 (AMD)?",
+      "ground_truth": "1 TB",
+      "answer": "2 TB",
+      "category": null
+    },
+    {
+      "id": 54,
+      "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad E16 Gen 3 (AMD)?",
+      "ground_truth": "90.7%",
+      "answer": "90.7%",
+      "category": null
+    },
+    {
+      "id": 55,
+      "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad E16 Gen 3 (Intel)?",
+      "ground_truth": "Intel Core 3 100U (RPL), Intel Core 5 210H (RPL), Intel Core 5 220U (RPL), Intel Core Ultra 7 240H (RPL), Intel Core 7 250U (RPL), Intel Core Ultra 5 225U (ARL), Intel Core Ultra 5 225U (ARL), Intel Core Ultra 7 255H (ARL), Intel Core Ultra 7 265U (ARL), Intel Core Ultra 5 235U (ARL)",
+      "answer": "Intel Core 3 100U (RPL), Intel Core 5 210H (RPL), Intel Core 5 220U (RPL), Intel Core 7 240H (RPL), Intel Core 7 250U (RPL), Intel Core Ultra 5 225U (ARL), Intel Core Ultra 7 265U (ARL)",
+      "category": null
+    },
+    {
+      "id": 56,
+      "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad E16 Gen 3 (Intel)?",
+      "ground_truth": "Intel Arc 130T GPU, Intel Arc 140T GPU, Intel Graphics",
+      "answer": "Intel Arc 130T GPU, Intel Arc 140T GPU, Intel Graphics",
+      "category": null
+    },
+    {
+      "id": 57,
+      "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad E16 Gen 3 (Intel)?",
+      "ground_truth": "64 GB",
+      "answer": "64 GB DDR5-5600",
+      "category": null
+    },
+    {
+      "id": 58,
+      "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E16 Gen 3 (Intel)?",
+      "ground_truth": "DDR5-5200, DDR5-5600",
+      "answer": "DDR5-5200, DDR5-5600",
+      "category": null
+    },
+    {
+      "id": 59,
+      "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad E16 Gen 3 (Intel)?",
+      "ground_truth": "1.63 kg",
+      "answer": "1.63 kg",
+      "category": null
+    },
+    {
+      "id": 60,
+      "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad E16 Gen 3 (Intel)?",
+      "ground_truth": "90.7 %",
+      "answer": "90.7 %",
+      "category": null
+    },
+    {
+      "id": 61,
+      "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?",
+      "ground_truth": "Intel Core Ultra 7 165U. Intel COre Ultra 5 125U, Intel Core Iltra 7 155U, Intel Core Ultra 5 135U",
+      "answer": "Intel Core Ultra 7 165U, Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 5 135U",
+      "category": null
+    },
+    {
+      "id": 62,
+      "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?",
+      "ground_truth": "Intel Graphics",
+      "answer": "Intel® Graphics",
+      "category": null
+    },
+    {
+      "id": 63,
+      "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?",
+      "ground_truth": "8 GB, 16 GB, 32 GB",
+      "answer": "8 GB, 16 GB, 32 GB",
+      "category": null
+    },
+    {
+      "id": 64,
+      "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?",
+      "ground_truth": "LPDDR5-6400",
+      "answer": "LPDDR5-6400, LPDDR5x-7467",
+      "category": null
+    },
+    {
+      "id": 65,
+      "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?",
+      "ground_truth": "1.32 kg",
+      "answer": "1.32 kg",
+      "category": null
+    },
+    {
+      "id": 66,
+      "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?",
+      "ground_truth": "83.5%",
+      "answer": "83.5%",
+      "category": null
+    },
+    {
+      "id": 67,
+      "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L13 Gen 4 (AMD)?",
+      "ground_truth": "AMD Ryzen 3 7330U, AMD Ryzen 5 PRO 7530U, AMD Ryzen 7 PRO 7730U",
+      "answer": "AMD Ryzen™ 3 7330U, AMD Ryzen™ 5 PRO 7530U, AMD Ryzen™ 7 PRO 7730U",
+      "category": null
+    },
+    {
+      "id": 68,
+      "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L13 Gen 4 (AMD)?",
+      "ground_truth": "AMD Radeon Graphics",
+      "answer": "AMD Radeon™ Graphics",
+      "category": null
+    },
+    {
+      "id": 69,
+      "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L13 Gen 4 (AMD)?",
+      "ground_truth": "8 GB, 16 GB, 32 GB",
+      "answer": "8 GB, 16 GB, 32 GB",
+      "category": null
+    },
+    {
+      "id": 70,
+      "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L13 Gen 4 (AMD)?",
+      "ground_truth": "DDR4-3200",
+      "answer": "DDR4-3200",
+      "category": null
+    },
+    {
+      "id": 71,
+      "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad L13 Gen 4 (AMD)?",
+      "ground_truth": "1.26 kg",
+      "answer": "1.26 kg",
+      "category": null
+    },
+    {
+      "id": 72,
+      "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L13 Gen 4 (AMD)?",
+      "ground_truth": "82.7%",
+      "answer": "82.7%",
+      "category": null
+    },
+    {
+      "id": 73,
+      "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L13 Gen 6 (Intel)?",
+      "ground_truth": "Intel Core Ultra 5 225U, Intel Core Ultra 5 235U, Intel Core Ultra 7 255U, Intel Core Ultra 7 265U",
+      "answer": "Intel Core Ultra 5 225U, Intel Core Ultra 5 235U, Intel Core Ultra 7 255U, Intel Core Ultra 7 265U",
+      "category": null
+    },
+    {
+      "id": 74,
+      "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L13 Gen 6 (Intel)?",
+      "ground_truth": "Intel Graphics",
+      "answer": "Intel Graphics",
+      "category": null
+    },
+    {
+      "id": 75,
+      "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L13 Gen 6 (Intel)?",
+      "ground_truth": "16 GB, 32 GB",
+      "answer": "16 GB, 32 GB",
+      "category": null
+    },
+    {
+      "id": 76,
+      "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L13 Gen 6 (Intel)?",
+      "ground_truth": "LPDDR5x-7467",
+      "answer": "LPDDR5x-7467, LPDDR5x-8533",
+      "category": null
+    },
+    {
+      "id": 77,
+      "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad L13 Gen 6 (Intel)?",
+      "ground_truth": "1.21 kg",
+      "answer": "1.21 kg",
+      "category": null
+    },
+    {
+      "id": 78,
+      "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L13 Gen 6 (Intel)?",
+      "ground_truth": "84.7%",
+      "answer": "82.7%",
+      "category": null
+    },
+    {
+      "id": 79,
+      "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L14 Gen 5 (Intel)?",
+      "ground_truth": "Intel Core Ultra 7 165U, Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 5 135U, Intel Core Ultra 5 125H, Intel Core Ultra 7 155H, Intel Core Ultra 5 135H",
+      "answer": "Intel Core Ultra 7 165U, Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 5 135U, Intel Core Ultra 5 125H, Intel Core Ultra 7 155H",
+      "category": null
+    },
+    {
+      "id": 80,
+      "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L14 Gen 5 (Intel)?",
+      "ground_truth": "Intel Arc Graphics, Intel Graphics",
+      "answer": "Intel Arc Graphics, Intel Graphics",
+      "category": null
+    },
+    {
+      "id": 81,
+      "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L14 Gen 5 (Intel)?",
+      "ground_truth": "64 GB",
+      "answer": "64 GB DDR5-5600",
+      "category": null
+    },
+    {
+      "id": 82,
+      "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L14 Gen 5 (Intel)?",
+      "ground_truth": "DDR5-5600",
+      "answer": "DDR5-5600",
+      "category": null
+    },
+    {
+      "id": 83,
+      "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad L14 Gen 5 (Intel)?",
+      "ground_truth": "1.36 kg",
+      "answer": "1.36 kg",
+      "category": null
+    },
+    {
+      "id": 84,
+      "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L14 Gen 5 (Intel)?",
+      "ground_truth": "85.5%",
+      "answer": "85.5%",
+      "category": null
+    },
+    {
+      "id": 85,
+      "question": "Welche Prozessoren unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?",
+      "ground_truth": "AMD Ryzen™ 3 PRO 7335U, AMD Ryzen™ 5 PRO 7535U, AMD Ryzen™ 7 PRO 7735U",
+      "answer": "AMD Ryzen™ 3 PRO 7335U, AMD Ryzen™ 5 PRO 7535U, AMD Ryzen™ 7 PRO 7735U",
+      "category": null
+    },
+    {
+      "id": 86,
+      "question": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?",
+      "ground_truth": "AMD Radeon 660M, AMD Radeon 680M",
+      "answer": "AMD Radeon 660M, AMD Radeon 680M",
+      "category": null
+    },
+    {
+      "id": 87,
+      "question": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?",
+      "ground_truth": "64 GB",
+      "answer": "64 GB DDR5-4800",
+      "category": null
+    },
+    {
+      "id": 88,
+      "question": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?",
+      "ground_truth": "DDR5-4800",
+      "answer": "DDR5-5600, DDR5-4800",
+      "category": null
+    },
+    {
+      "id": 89,
+      "question": "Was ist das Mindestgewicht für das Lenovo Thinkpad L16 Gen 1 (AMD)?",
+      "ground_truth": "1.77 kg",
+      "answer": "1.77 kg",
+      "category": null
+    },
+    {
+      "id": 90,
+      "question": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L16 Gen 1 (AMD)?",
+      "ground_truth": "87%",
+      "answer": "87%",
+      "category": null
+    }
+  ],
+  "evaluation_results": {
+    "results": [
+      {
+        "user_input": "Welche Prozessor-Konfigurationen hat das Dell Pro 16 PC16250?",
+        "response": "Intel Processor U300E, 13th Generation Intel Core i3-1315U, Intel Core 3 100U, Intel Core 5 120U, Intel Core 5 220U, Intel Core 7 150U, Intel Core 7 250U, Intel Core Ultra 5 225U, Intel Core Ultra 5 235U, Intel Core Ultra 7 255U, Intel Core Ultra 7 265U",
+        "reference": "Intel Processor U300E, 13th Generation Intel Core i3-1315U, Intel Core 3 100U, Intel Core 5 120U, Intel Core 5 220U, Intel Core 7 150U, Intel Core 7 250U, Intel Core Ultra 5 225U, Intel Core Ultra 5 235U, Intel Core Ultra 7 255U, Intel Core Ultra 7 265U",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche maximale RAM-Kapazität hat das Dell Pro 16 PC16250?",
+        "response": "Nicht spezifiziert",
+        "reference": "64 GB",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.0,
+        "context_recall": 0.0,
+        "answer_correctness": 0.023125849751712703
+      },
+      {
+        "user_input": "Wieviel maximale Speicherkapazität hat das Dell Pro 16 PC16250?",
+        "response": "2 TB M.2 2280 SSD",
+        "reference": "2 TB M.2 2280 SSD",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Display-Größe und Auflösung hat das Dell Pro 16 PC16250?",
+        "response": "Nicht in den Dokumenten angegeben",
+        "reference": "16 Zoll, Full High Definition Plus (FHD+)",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.0,
+        "context_recall": 0.0,
+        "answer_correctness": 0.013303808926225222
+      },
+      {
+        "user_input": "Wie hoch ist die Display-Helligkeit (in nits) des Dell Pro 16 PC16250?",
+        "response": "Nicht spezifiziert",
+        "reference": "300 nits, 400 nits",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9100974419,
+        "context_recall": 0.0,
+        "answer_correctness": 0.03990043761336079
+      },
+      {
+        "user_input": "Welche Grafikkarte ist im Dell Pro 16 PC16250 verbaut?",
+        "response": "Intel Graphics",
+        "reference": "Intel Graphics",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wie viel wiegt das Dell Pro 16 PC16250 in kg?",
+        "response": "Nicht spezifiziert",
+        "reference": "1.92 kg",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.0,
+        "context_recall": 0.0,
+        "answer_correctness": 0.032114229570107525
+      },
+      {
+        "user_input": "Welche Prozessoren unterstützt das Lenovo ThinkPad E14 Gen 6 (AMD) mit genauen Typen?",
+        "response": "AMD Ryzen™ 3 7335U, AMD Ryzen™ 5 7535HS, AMD Ryzen™ 5 7535U, AMD Ryzen™ 7 7735HS, AMD Ryzen™ 7 7735U",
+        "reference": "AMD Ryzen™ 3 7335U, AMD Ryzen™ 5 7535HS, AMD Ryzen™ 5 7535U, AMD Ryzen™ 7 7735HS, AMD Ryzen™ 7 7735U",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wieviel maximalen Arbeitsspeicher hat das Lenovo Thinkpad E14 Gen 6 (AMD)?",
+        "response": "16 GB DDR5",
+        "reference": "64 GB",
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.42876822276031507,
+        "context_recall": 1.0,
+        "answer_correctness": 0.14712833313679774
+      },
+      {
+        "user_input": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E14 Gen 6 (AMD)?",
+        "response": "DDR5",
+        "reference": "DDR5",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wieviel maximale Speicherkapazität hat das Lenovo Thinkpad E14 Gen 6 (AMD)?",
+        "response": "2 TB (2x 1TB M.2 SSD)",
+        "reference": "2 TB (2x 1TB M.2 SSD)",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Display-Helligkeit hat das Lenovo Thinkpad E14 Gen 6 (AMD)?",
+        "response": "300 nits",
+        "reference": "300 nits",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Grafikkarte ist im Lenovo Thinkpad E14 Gen 6 (AMD) verbaut?",
+        "response": "AMD Radeon 660M, AMD Radeon 680M",
+        "reference": "AMD Radeon 660M, AMD Radeon 680M",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Betriebssysteme unterstützt das Lenovo Thinkpad E14 Gen 6 (AMD)?",
+        "response": "Windows 11 Pro, Windows 11 Home, Windows 11 Home Single Language, kein vorinstalliertes Betriebssystem",
+        "reference": "Windows 11 Pro, Windows 11 Home, Windows 11 Home Single Language, kein vorinstalliertes Betriebssystem",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Prozessoren unterstützt das Lenovo Thinkpad L16 Gen 2?",
+        "response": "Intel® Core™ Ultra 5 225H, Intel® Core™ Ultra 5 225U, Intel® Core™ Ultra 5 235H, Intel® Core™ Ultra 5 235U, Intel® Core™ Ultra 7 255H, Intel® Core™ Ultra 7 255U, Intel® Core™ Ultra 7 265U",
+        "reference": "Intel® Core™ Ultra 5 225H, Intel® Core™ Ultra 5 225U, Intel® Core™ Ultra 5 235H, Intel® Core™ Ultra 5 235U, Intel® Core™ Ultra 7 255H, Intel® Core™ Ultra 7 255U, Intel® Core™ Ultra 7 265U",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L16 Gen 2?",
+        "response": "Up to 64GB DDR5-5600",
+        "reference": "64 GB DDR5-5600",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9200542558,
+        "context_recall": 1.0,
+        "answer_correctness": 0.7285540043592416
+      },
+      {
+        "user_input": "Welche RAM-Typ unterstützt das Lenovo Thinkpad L16 Gen 2?",
+        "response": "DDR5-5600",
+        "reference": "DDR5-5600",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Grafikkarte ist im Lenovo Thinkpad L16 Gen 2 verbaut?",
+        "response": "Intel® Arc™ 130T GPU, Intel® Graphics",
+        "reference": "Intel® UHD Graphics / Intel® Iris® Xe Graphics",
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.218704564339907,
+        "context_recall": 0.0,
+        "answer_correctness": 0.16648093659810542
+      },
+      {
+        "user_input": "Welche Prozessoren unterstützt das Lenovo Thinkpad E14 Gen 6 (Intel)?",
+        "response": "Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 7 165U, Intel Core Ultra 5 135U, Intel Core Ultra 7 265U, Intel Core Ultra 5 235U",
+        "reference": "Intel Core Ultra 7 165U, Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 5 135U, Intel Core Ultra 5 125H, Intel Core Ultra 7 155H",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.41667420418880813,
+        "context_recall": 0.5,
+        "answer_correctness": 0.7446196230611006
+      },
+      {
+        "user_input": "Welceh Grafikkarte ist im Lenovo Thinkpad E14 Gen 6 (Intel) verbaut?",
+        "response": "Intel Iris Xe Graphics, Intel Graphics",
+        "reference": "Intel Arc Graphics, Intel Graphics",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.33283215565738467,
+        "context_recall": 1.0,
+        "answer_correctness": 0.5706786454623893
+      },
+      {
+        "user_input": "Wieviel maximalen Arbeitsspeciher unterstützt das Lenovo Thinkpad E14 Gen 6 (Intel)?",
+        "response": "64 GB DDR5-5600",
+        "reference": "64 GB",
+        "faithfulness": 0.6666666666666666,
+        "answer_relevancy": 0.4207455743266096,
+        "context_recall": 1.0,
+        "answer_correctness": 0.534758360142619
+      },
+      {
+        "user_input": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E14 Gen 6 (Intel)?",
+        "response": "DDR4, DDR5",
+        "reference": "DDR5-5600",
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.32997979086298396,
+        "context_recall": 1.0,
+        "answer_correctness": 0.1946957020185583
+      },
+      {
+        "user_input": "Über welchen Chipset verfügt das Lenovo Thinkpad E14 Gen 6 (Intel)?",
+        "response": "Intel SoC (System on Chip)",
+        "reference": "Intel SoC (System on Chip)",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Über welchen Audio-Chip verfügt das Lenovo Thinkpad E14 Gen 6 (Intel)?",
+        "response": "High Definition (HD) Audio, Senary SN6141 codec",
+        "reference": "High Definition (HD) Audio, Senary SN5141 codec",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9527943425,
+        "context_recall": 1.0,
+        "answer_correctness": 0.6041062568023208
+      },
+      {
+        "user_input": "Welches Startgewicht hat das Lenovo Thinkpad E14 Gen 6 (Intel)?",
+        "response": "Ab 1.42 kg...",
+        "reference": "Ab 1.44 kg",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9285006294,
+        "context_recall": 1.0,
+        "answer_correctness": 0.23960857760466053
+      },
+      {
+        "user_input": "Welche Prozessoren unterstützt das Lenovo Thinkpad E14 Gen 7 (AMD)?",
+        "response": "AMD Ryzen 3 210, AMD Ryzen 5 220, AMD Ryzen 5 230, AMD Ryzen 5 PRO 215, AMD Ryzen 5 PRO 230, AMD Ryzen 7 250",
+        "reference": "AMD Ryzen 3 210, AMD Ryzen 5 220, AMD Ryzen 5 230, AMD Ryzen 5 PRO 215, AMD Ryzen 5 PRO 230, AMD Ryzen 7 250",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche NPU ist im Lenovo Thinkpad E14 Gen 7 (AMD) integriert?",
+        "response": "AMD Ryzen AI, bis zu 16 TOPS",
+        "reference": "AMD Ryzen AI",
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.39244279121130193,
+        "context_recall": 1.0,
+        "answer_correctness": 0.6882912903070313
+      },
+      {
+        "user_input": "Welche Grafikkarten unterstützt das Lenovo Thinkpad E14 Gen 7 (AMD)?",
+        "response": "AMD Radeon 740M, AMD Radeon 760M, AMD Radeon 780M",
+        "reference": "AMD Radeon 740M, AMD Radeon 760M, AMD Radeon 780M",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Über wieviel maximalen Arbeitsspeicher verfügt das Lenovo Thinkpad E14 Gen 7 (AMD)?",
+        "response": "64 GB DDR5-5600",
+        "reference": "64 GB",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9961738374,
+        "context_recall": 1.0,
+        "answer_correctness": 0.659758360142619
+      },
+      {
+        "user_input": "Welche Farben für das Case gibt es für das Lenovo Thinkpad E14 Gen 7 (AMD)?",
+        "response": "Schwarz, Grau",
+        "reference": "Schwarz, Grau",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 0.8500000000000001
+      },
+      {
+        "user_input": "Was ist das Mindestgewicht des Lenovo Thinkpad E14 Gen 7 (AMD)?",
+        "response": "1.34 kg",
+        "reference": "1.41 kg",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.05273216252985735,
+        "context_recall": 1.0,
+        "answer_correctness": 0.23417386395050774
+      },
+      {
+        "user_input": "Über welche integrierte NPU verfügt das Lenovo Thinkpad E14 Gen 7 (Intel)?",
+        "response": "Intel AI Boost, bis zu 12 TOPS",
+        "reference": "Intel AI Boost",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9089524231,
+        "context_recall": 1.0,
+        "answer_correctness": 0.6858358578583641
+      },
+      {
+        "user_input": "Wieviel maximale Speicherkapazität hat das Lenovo Thinkpad E14 Gen 7 (Intel)?",
+        "response": "1 TB M.2 SSD",
+        "reference": "1 TB",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9213872008,
+        "context_recall": 1.0,
+        "answer_correctness": 0.6660944204299668
+      },
+      {
+        "user_input": "Über welche Storage-Security verfügt das Lenovo Thinkpad E14 Gen 7 (Intel)?",
+        "response": "Opal 2.0",
+        "reference": "Opal 2.0",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wie hoch ist die Screen-to-Body Ratio des Lenovo Thinkpad E14 Gen 7 (Intel)?",
+        "response": "90%",
+        "reference": "90%",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Verfügt das Lenovo Thinkpad E14 Gen 7 (Intel) über NFC Support?",
+        "response": "Nein",
+        "reference": "Nein",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Prozessor-Konfigurationen hat das Lenovo Thinkpad E16 Gen 2 (AMD)?",
+        "response": "AMD Ryzen 3 7335U, AMD Ryzen 5 7535HS, AMD Ryzen 5 7535U, AMD Ryzen 7 7735HS, AMD Ryzen 7 7735U",
+        "reference": "AMD Ryzen 3 7335U, AMD Ryzen 5 7535HS, AMD Ryzen 5 7535U, AMD Ryzen 7 7735HS, AMD Ryzen 7 7735U",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche maximale Frequenz hat der AMD Ryzen 3 7335U im Lenovo Thinkpad E16 Gen 2 (AMD)?",
+        "response": "4.3 GHz",
+        "reference": "4.3 GHz",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Grafikkarten unterstützt das Lenovo Thinkpad E16 Gen 2 (AMD)?",
+        "response": "AMD Radeon 660M, AMD Radeon 680M",
+        "reference": "AMD Radeon 660M, AMD Radeon 680M",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E16 Gen 2 (AMD)?",
+        "response": "DDR5-4800, DDR5-5600",
+        "reference": "DDR5-4800",
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.32346356512538876,
+        "context_recall": 0.0,
+        "answer_correctness": 0.7265595743696953
+      },
+      {
+        "user_input": "Welche Display-Auflösungsmöglichkeiten (Typ) hat das Lenovo Thinkpad E16 Gen 2 (AMD)?",
+        "response": "WUXGA (1920x1200), WQXGA (2560x1600)",
+        "reference": "WUXGA, WQXGA",
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.1644956671037293,
+        "context_recall": 1.0,
+        "answer_correctness": 0.939341218924681
+      },
+      {
+        "user_input": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad E16 Gen 2 (AMD)?",
+        "response": "90.7 %",
+        "reference": "90.7 %",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Prozessoren unterstützt das Lenovo Thinkpad E16 Gen 2 (Intel)?",
+        "response": "Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 7 165U, Intel Core Ultra 5 135U, Intel Core Ultra 5 125H, Intel Core Ultra 7 155H",
+        "reference": "Intel Core Ultra 7 165U, Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 5 135U, Intel Core Ultra 5 125H, Intel Core Ultra 7 155H",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.39641649502830173,
+        "context_recall": 1.0,
+        "answer_correctness": 0.999289498860944
+      },
+      {
+        "user_input": "Welche Grafikkarten unterstützt das Lenovo Thinkpad E16 Gen 2 (Intel)?",
+        "response": "Intel Arc Graphics, Intel Graphics",
+        "reference": "Intel Arc Graphics, Intel Graphics",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad E16 Gen 2 (Intel)?",
+        "response": "64 GB DDR5-5600",
+        "reference": "64 GB",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.417541433581875,
+        "context_recall": 1.0,
+        "answer_correctness": 0.659758360142619
+      },
+      {
+        "user_input": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E16 Gen 2 (Intel)?",
+        "response": "DDR5-5600",
+        "reference": "DDR5-5600",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Was ist das Mindestgewicht für das Lenovo Thinkpad E16 Gen 2 (Intel)?",
+        "response": "1.71 kg",
+        "reference": "1.78 kg",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.09118751443176405,
+        "context_recall": 0.0,
+        "answer_correctness": 0.24034984105220938
+      },
+      {
+        "user_input": "Welche Prozessoren unterstützt das Lenovo Thinkpad E16 Gen 3 (AMD)?",
+        "response": "AMD Ryzen™ 3 210, AMD Ryzen™ 5 220, AMD Ryzen™ 5 230, AMD Ryzen™ 5 PRO 215, AMD Ryzen™ 5 PRO 230, AMD Ryzen™ 7 250",
+        "reference": "AMD Ryzen 3 210, AMD Ryzen 5 220, AMD Ryzen 5 230, AMD Ryzen 5 PRO 215, AMD Ryzen 5 PRO 230, AMD Ryzen 7 250",
+        "faithfulness": 0.16666666666666666,
+        "answer_relevancy": 0.46449335182233015,
+        "context_recall": 1.0,
+        "answer_correctness": 0.9791163383331519
+      },
+      {
+        "user_input": "Welche Prozessoren des Lenovo Thinkpad E16 Gen 3 (AMD) unterstützen AMD Ryzen AI?",
+        "response": "AMD Ryzen 5 230, AMD Ryzen 7 250",
+        "reference": "AMD Ryzen 5 230, AMD Ryzen 5 PRO 230, AMD Ryzen 7 250",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9063527611,
+        "context_recall": 1.0,
+        "answer_correctness": 0.8397457791011572
+      },
+      {
+        "user_input": "Welche Grafikkarten unterstützt das Lenovo Thinkpad E16 Gen 3 (AMD)?",
+        "response": "AMD Radeon 740M, AMD Radeon 760M, AMD Radeon 780M",
+        "reference": "AMD Radeon 740M, AMD Radeon 760M, AMD Radeon 780M",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wieviel maximalen Arbeitsspeicher hat das Lenovo Thinkpad E16 Gen 3 (AMD)?",
+        "response": "64 GB DDR5-5600",
+        "reference": "64 GB",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9783024613,
+        "context_recall": 1.0,
+        "answer_correctness": 0.659758360142619
+      },
+      {
+        "user_input": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E16 Gen 3 (AMD)?",
+        "response": "DDR5-5600",
+        "reference": "DDR5-5600",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wieviel maximale Speicher-Kapazität hat das Lenovo Thinkpad E16 Gen 3 (AMD)?",
+        "response": "2 TB",
+        "reference": "1 TB",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9809896511,
+        "context_recall": 1.0,
+        "answer_correctness": 0.23327125968232737
+      },
+      {
+        "user_input": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad E16 Gen 3 (AMD)?",
+        "response": "90.7%",
+        "reference": "90.7%",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Prozessoren unterstützt das Lenovo Thinkpad E16 Gen 3 (Intel)?",
+        "response": "Intel Core 3 100U (RPL), Intel Core 5 210H (RPL), Intel Core 5 220U (RPL), Intel Core 7 240H (RPL), Intel Core 7 250U (RPL), Intel Core Ultra 5 225U (ARL), Intel Core Ultra 7 265U (ARL)",
+        "reference": "Intel Core 3 100U (RPL), Intel Core 5 210H (RPL), Intel Core 5 220U (RPL), Intel Core Ultra 7 240H (RPL), Intel Core 7 250U (RPL), Intel Core Ultra 5 225U (ARL), Intel Core Ultra 5 225U (ARL), Intel Core Ultra 7 255H (ARL), Intel Core Ultra 7 265U (ARL), Intel Core Ultra 5 235U (ARL)",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.46447502731968254,
+        "context_recall": 1.0,
+        "answer_correctness": 0.8469950524313186
+      },
+      {
+        "user_input": "Welche Grafikkarten unterstützt das Lenovo Thinkpad E16 Gen 3 (Intel)?",
+        "response": "Intel Arc 130T GPU, Intel Arc 140T GPU, Intel Graphics",
+        "reference": "Intel Arc 130T GPU, Intel Arc 140T GPU, Intel Graphics",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad E16 Gen 3 (Intel)?",
+        "response": "64 GB DDR5-5600",
+        "reference": "64 GB",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9671417632,
+        "context_recall": 1.0,
+        "answer_correctness": 0.659758360142619
+      },
+      {
+        "user_input": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad E16 Gen 3 (Intel)?",
+        "response": "DDR5-5200, DDR5-5600",
+        "reference": "DDR5-5200, DDR5-5600",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Was ist das Mindestgewicht für das Lenovo Thinkpad E16 Gen 3 (Intel)?",
+        "response": "1.63 kg",
+        "reference": "1.63 kg",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad E16 Gen 3 (Intel)?",
+        "response": "90.7 %",
+        "reference": "90.7 %",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Prozessoren unterstützt das Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?",
+        "response": "Intel Core Ultra 7 165U, Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 5 135U",
+        "reference": "Intel Core Ultra 7 165U. Intel COre Ultra 5 125U, Intel Core Iltra 7 155U, Intel Core Ultra 5 135U",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.38807767462269577,
+        "context_recall": 1.0,
+        "answer_correctness": 0.9913656628207621
+      },
+      {
+        "user_input": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?",
+        "response": "Intel® Graphics",
+        "reference": "Intel Graphics",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9444969887,
+        "context_recall": 1.0,
+        "answer_correctness": 0.9875481497480684
+      },
+      {
+        "user_input": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?",
+        "response": "8 GB, 16 GB, 32 GB",
+        "reference": "8 GB, 16 GB, 32 GB",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?",
+        "response": "LPDDR5-6400, LPDDR5x-7467",
+        "reference": "LPDDR5-6400",
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.19504372631706104,
+        "context_recall": 0.0,
+        "answer_correctness": 0.7371099098215855
+      },
+      {
+        "user_input": "Was ist das Mindestgewicht für das Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?",
+        "response": "1.32 kg",
+        "reference": "1.32 kg",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L13 2-in-1 Gen 5 (Intel)?",
+        "response": "83.5%",
+        "reference": "83.5%",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Prozessoren unterstützt das Lenovo Thinkpad L13 Gen 4 (AMD)?",
+        "response": "AMD Ryzen™ 3 7330U, AMD Ryzen™ 5 PRO 7530U, AMD Ryzen™ 7 PRO 7730U",
+        "reference": "AMD Ryzen 3 7330U, AMD Ryzen 5 PRO 7530U, AMD Ryzen 7 PRO 7730U",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9977082324,
+        "context_recall": 1.0,
+        "answer_correctness": 0.988385799133576
+      },
+      {
+        "user_input": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L13 Gen 4 (AMD)?",
+        "response": "AMD Radeon™ Graphics",
+        "reference": "AMD Radeon Graphics",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9628063595,
+        "context_recall": 1.0,
+        "answer_correctness": 0.9898845189690874
+      },
+      {
+        "user_input": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L13 Gen 4 (AMD)?",
+        "response": "8 GB, 16 GB, 32 GB",
+        "reference": "8 GB, 16 GB, 32 GB",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L13 Gen 4 (AMD)?",
+        "response": "DDR4-3200",
+        "reference": "DDR4-3200",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Was ist das Mindestgewicht für das Lenovo Thinkpad L13 Gen 4 (AMD)?",
+        "response": "1.26 kg",
+        "reference": "1.26 kg",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L13 Gen 4 (AMD)?",
+        "response": "82.7%",
+        "reference": "82.7%",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Prozessoren unterstützt das Lenovo Thinkpad L13 Gen 6 (Intel)?",
+        "response": "Intel Core Ultra 5 225U, Intel Core Ultra 5 235U, Intel Core Ultra 7 255U, Intel Core Ultra 7 265U",
+        "reference": "Intel Core Ultra 5 225U, Intel Core Ultra 5 235U, Intel Core Ultra 7 255U, Intel Core Ultra 7 265U",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L13 Gen 6 (Intel)?",
+        "response": "Intel Graphics",
+        "reference": "Intel Graphics",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L13 Gen 6 (Intel)?",
+        "response": "16 GB, 32 GB",
+        "reference": "16 GB, 32 GB",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L13 Gen 6 (Intel)?",
+        "response": "LPDDR5x-7467, LPDDR5x-8533",
+        "reference": "LPDDR5x-7467",
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.2475300015555871,
+        "context_recall": 1.0,
+        "answer_correctness": 0.7401488588463518
+      },
+      {
+        "user_input": "Was ist das Mindestgewicht für das Lenovo Thinkpad L13 Gen 6 (Intel)?",
+        "response": "1.21 kg",
+        "reference": "1.21 kg",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L13 Gen 6 (Intel)?",
+        "response": "82.7%",
+        "reference": "84.7%",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.064326561843215,
+        "context_recall": 1.0,
+        "answer_correctness": 0.23906832852552912
+      },
+      {
+        "user_input": "Welche Prozessoren unterstützt das Lenovo Thinkpad L14 Gen 5 (Intel)?",
+        "response": "Intel Core Ultra 7 165U, Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 5 135U, Intel Core Ultra 5 125H, Intel Core Ultra 7 155H",
+        "reference": "Intel Core Ultra 7 165U, Intel Core Ultra 5 125U, Intel Core Ultra 7 155U, Intel Core Ultra 5 135U, Intel Core Ultra 5 125H, Intel Core Ultra 7 155H, Intel Core Ultra 5 135H",
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.40706006956447666,
+        "context_recall": 1.0,
+        "answer_correctness": 0.9413766875982237
+      },
+      {
+        "user_input": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L14 Gen 5 (Intel)?",
+        "response": "Intel Arc Graphics, Intel Graphics",
+        "reference": "Intel Arc Graphics, Intel Graphics",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L14 Gen 5 (Intel)?",
+        "response": "64 GB DDR5-5600",
+        "reference": "64 GB",
+        "faithfulness": 1.0,
+        "answer_relevancy": 0.9992302235,
+        "context_recall": 1.0,
+        "answer_correctness": 0.909758360142619
+      },
+      {
+        "user_input": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L14 Gen 5 (Intel)?",
+        "response": "DDR5-5600",
+        "reference": "DDR5-5600",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Was ist das Mindestgewicht für das Lenovo Thinkpad L14 Gen 5 (Intel)?",
+        "response": "1.36 kg",
+        "reference": "1.36 kg",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L14 Gen 5 (Intel)?",
+        "response": "85.5%",
+        "reference": "85.5%",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Prozessoren unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?",
+        "response": "AMD Ryzen™ 3 PRO 7335U, AMD Ryzen™ 5 PRO 7535U, AMD Ryzen™ 7 PRO 7735U",
+        "reference": "AMD Ryzen™ 3 PRO 7335U, AMD Ryzen™ 5 PRO 7535U, AMD Ryzen™ 7 PRO 7735U",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Welche Grafikkarten unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?",
+        "response": "AMD Radeon 660M, AMD Radeon 680M",
+        "reference": "AMD Radeon 660M, AMD Radeon 680M",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wieviel maximalen Arbeitsspeicher unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?",
+        "response": "64 GB DDR5-4800",
+        "reference": "64 GB",
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.407528056996408,
+        "context_recall": 1.0,
+        "answer_correctness": 0.6656165881362925
+      },
+      {
+        "user_input": "Welchen Arbeitsspeicher-Typ unterstützt das Lenovo Thinkpad L16 Gen 1 (AMD)?",
+        "response": "DDR5-5600, DDR5-4800",
+        "reference": "DDR5-4800",
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.3422014322795977,
+        "context_recall": 1.0,
+        "answer_correctness": 0.7270929380194089
+      },
+      {
+        "user_input": "Was ist das Mindestgewicht für das Lenovo Thinkpad L16 Gen 1 (AMD)?",
+        "response": "1.77 kg",
+        "reference": "1.77 kg",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      },
+      {
+        "user_input": "Wie ist die Screen-to-Body Ratio des Lenovo Thinkpad L16 Gen 1 (AMD)?",
+        "response": "87%",
+        "reference": "87%",
+        "faithfulness": 1.0,
+        "answer_relevancy": 1.0,
+        "context_recall": 1.0,
+        "answer_correctness": 1.0
+      }
+    ],
+    "summary": {
+      "faithfulness": 0.787037037037037,
+      "answer_relevancy": 0.7915745401685477,
+      "context_recall": 0.9055555555555556,
+      "answer_correctness": 0.8169392000297838
+    }
+  }
+}
