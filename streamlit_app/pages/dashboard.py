@@ -124,8 +124,8 @@ def show_dashboard():
                 non_indexed = [doc for doc in documents if doc['status'] != 'indexed']
                 indexed = [doc for doc in documents if doc['status'] == 'indexed']
                 
-                # Show summary and bulk ingest button
-                col1, col2 = st.columns([2, 1])
+                # Show summary and bulk action buttons
+                col1, col2, col3 = st.columns([2, 1, 1])
                 with col1:
                     st.write(f"**Gesamt:** {len(documents)} Dokument(e) | "
                             f"✅ Indiziert: {len(indexed)} | "
@@ -134,6 +134,24 @@ def show_dashboard():
                     if len(non_indexed) > 0:
                         if st.button("🔄 Alle indizieren", use_container_width=True, type="primary"):
                             ingest_all_documents()
+                with col3:
+                    if st.button("🗑️ Alle löschen", use_container_width=True, type="secondary"):
+                        # Zeige Bestätigungsdialog
+                        st.session_state.show_delete_all_confirm = True
+                        st.rerun()
+                
+                # Bestätigungsdialog
+                if st.session_state.get('show_delete_all_confirm', False):
+                    st.warning("⚠️ **WARNUNG:** Möchten Sie wirklich ALLE Dokumente löschen? Diese Aktion kann nicht rückgängig gemacht werden!")
+                    col_yes, col_no = st.columns(2)
+                    with col_yes:
+                        if st.button("✅ Ja, alle löschen", use_container_width=True, type="primary"):
+                            st.session_state.show_delete_all_confirm = False
+                            delete_all_documents(documents)
+                    with col_no:
+                        if st.button("❌ Abbrechen", use_container_width=True):
+                            st.session_state.show_delete_all_confirm = False
+                            st.rerun()
                 
                 if len(non_indexed) > 0:
                     st.divider()
@@ -227,6 +245,52 @@ def delete_document(doc_id):
             except (ValueError, requests.exceptions.JSONDecodeError):
                 error_detail = f"HTTP {response.status_code}: {response.text[:200]}"
             st.error(f"Fehler: {error_detail}")
+    except Exception as e:
+        st.error(f"Fehler: {str(e)}")
+
+def delete_all_documents(documents):
+    """Delete all documents."""
+    if len(documents) == 0:
+        st.info("Keine Dokumente zum Löschen vorhanden")
+        return
+    
+    try:
+        with st.spinner(f"Lösche {len(documents)} Dokument(e)..."):
+            success_count = 0
+            error_count = 0
+            errors = []
+            
+            for doc in documents:
+                try:
+                    response = requests.delete(
+                        f"{API_BASE_URL}/api/documents/{doc['id']}",
+                        headers=get_headers(),
+                        timeout=10
+                    )
+                    
+                    if response.status_code == 204:
+                        success_count += 1
+                    else:
+                        error_count += 1
+                        try:
+                            error_detail = response.json().get('detail', f'HTTP {response.status_code}')
+                        except (ValueError, requests.exceptions.JSONDecodeError):
+                            error_detail = f"HTTP {response.status_code}: {response.text[:200]}"
+                        errors.append(f"{doc['filename']}: {error_detail}")
+                except Exception as e:
+                    error_count += 1
+                    errors.append(f"{doc['filename']}: {str(e)}")
+            
+            if success_count > 0:
+                st.success(f"✅ {success_count} Dokument(e) erfolgreich gelöscht!")
+            
+            if error_count > 0:
+                st.warning(f"⚠️ {error_count} Dokument(e) konnten nicht gelöscht werden:")
+                for error in errors:
+                    st.error(f"  - {error}")
+            
+            if success_count > 0:
+                st.rerun()
     except Exception as e:
         st.error(f"Fehler: {str(e)}")
 

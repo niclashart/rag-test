@@ -27,6 +27,8 @@ from src.ingestion.pdf_processor_advanced import PDFProcessorAdvanced
 from src.chunking.chunker import Chunker
 from src.embeddings.embedder import Embedder
 from src.index.vector_store import VectorStore
+from src.extraction.spec_extractor import SpecExtractor
+from database.models import ProductSpecification, RequirementSpecification
 from logging_config.logger import get_logger
 
 logger = get_logger(__name__)
@@ -42,6 +44,7 @@ MAX_UPLOAD_SIZE = int(os.getenv("MAX_UPLOAD_SIZE", "104857600"))  # 100MB
 embedder = Embedder()
 vector_store = VectorStore()
 chunker = Chunker()
+spec_extractor = SpecExtractor()
 
 
 class DocumentResponse(BaseModel):
@@ -263,6 +266,62 @@ def ingest_all_documents(
             # Update document status
             update_document_status(db, document.id, "indexed")
             
+            # NEU: Spezifikationen extrahieren und speichern
+            try:
+                # Hole vollständigen Text des Dokuments
+                if document.file_type == "pdf":
+                    # pages_data wurde bereits oben geladen
+                    full_text = "\n\n".join([page.get("text", "") for page in pages_data])
+                else:
+                    # doc_data wurde bereits oben geladen
+                    full_text = doc_data.get("text", "")
+                
+                # Extrahiere Spezifikationen
+                extracted_specs = spec_extractor.extract_from_document(full_text, document.filename)
+                
+                if extracted_specs.get("document_type") == "requirement":
+                    # Speichere als Anforderung
+                    req_spec = RequirementSpecification(
+                        document_id=document.id,
+                        min_display_brightness_nits=extracted_specs.get("min_display_brightness_nits"),
+                        min_screen_to_body_ratio=extracted_specs.get("min_screen_to_body_ratio"),
+                        max_weight_kg=extracted_specs.get("max_weight_kg"),
+                        min_ram_gb=extracted_specs.get("min_ram_gb"),
+                        min_storage_tb=extracted_specs.get("min_storage_tb"),
+                        min_battery_wh=extracted_specs.get("min_battery_wh"),
+                        display_size_inch_min=extracted_specs.get("display_size_inch_min"),
+                        display_size_inch_max=extracted_specs.get("display_size_inch_max"),
+                        additional_requirements=extracted_specs.get("additional_requirements"),
+                        raw_requirements=extracted_specs
+                    )
+                    db.add(req_spec)
+                    db.commit()
+                    logger.info(f"Extracted requirement specifications from document {document.id}")
+                else:
+                    # Speichere als Produktspezifikation
+                    if extracted_specs.get("product_name"):
+                        prod_spec = ProductSpecification(
+                            document_id=document.id,
+                            product_name=extracted_specs.get("product_name"),
+                            brand=extracted_specs.get("brand"),
+                            display_brightness_nits=extracted_specs.get("display_brightness_nits"),
+                            screen_to_body_ratio=extracted_specs.get("screen_to_body_ratio"),
+                            weight_kg=extracted_specs.get("weight_kg"),
+                            ram_max_gb=extracted_specs.get("ram_max_gb"),
+                            storage_max_tb=extracted_specs.get("storage_max_tb"),
+                            battery_wh=extracted_specs.get("battery_wh"),
+                            display_size_inch=extracted_specs.get("display_size_inch"),
+                            display_resolution=extracted_specs.get("display_resolution"),
+                            raw_specs=extracted_specs
+                        )
+                        db.add(prod_spec)
+                        db.commit()
+                        logger.info(f"Extracted product specifications from document {document.id}: {extracted_specs.get('product_name')}")
+            except Exception as e:
+                logger.warning(f"Failed to extract specifications from document {document.id}: {e}", exc_info=True)
+                # Nicht kritisch - Dokument ist bereits indexiert
+                db.rollback()
+            
             results["success"].append({
                 "document_id": document.id,
                 "filename": document.filename,
@@ -371,6 +430,62 @@ def ingest_document(
         
         # Update document status
         update_document_status(db, document_id, "indexed")
+        
+        # NEU: Spezifikationen extrahieren und speichern
+        try:
+            # Hole vollständigen Text des Dokuments
+            if document.file_type == "pdf":
+                # Verwende bereits geladenen doc_data
+                full_text = "\n\n".join([page.get("text", "") for page in pages_data])
+            else:
+                # Verwende bereits geladenen doc_data
+                full_text = doc_data.get("text", "")
+            
+            # Extrahiere Spezifikationen
+            extracted_specs = spec_extractor.extract_from_document(full_text, document.filename)
+            
+            if extracted_specs.get("document_type") == "requirement":
+                # Speichere als Anforderung
+                req_spec = RequirementSpecification(
+                    document_id=document_id,
+                    min_display_brightness_nits=extracted_specs.get("min_display_brightness_nits"),
+                    min_screen_to_body_ratio=extracted_specs.get("min_screen_to_body_ratio"),
+                    max_weight_kg=extracted_specs.get("max_weight_kg"),
+                    min_ram_gb=extracted_specs.get("min_ram_gb"),
+                    min_storage_tb=extracted_specs.get("min_storage_tb"),
+                    min_battery_wh=extracted_specs.get("min_battery_wh"),
+                    display_size_inch_min=extracted_specs.get("display_size_inch_min"),
+                    display_size_inch_max=extracted_specs.get("display_size_inch_max"),
+                    additional_requirements=extracted_specs.get("additional_requirements"),
+                    raw_requirements=extracted_specs
+                )
+                db.add(req_spec)
+                db.commit()
+                logger.info(f"Extracted requirement specifications from document {document_id}")
+            else:
+                # Speichere als Produktspezifikation
+                if extracted_specs.get("product_name"):
+                    prod_spec = ProductSpecification(
+                        document_id=document_id,
+                        product_name=extracted_specs.get("product_name"),
+                        brand=extracted_specs.get("brand"),
+                        display_brightness_nits=extracted_specs.get("display_brightness_nits"),
+                        screen_to_body_ratio=extracted_specs.get("screen_to_body_ratio"),
+                        weight_kg=extracted_specs.get("weight_kg"),
+                        ram_max_gb=extracted_specs.get("ram_max_gb"),
+                        storage_max_tb=extracted_specs.get("storage_max_tb"),
+                        battery_wh=extracted_specs.get("battery_wh"),
+                        display_size_inch=extracted_specs.get("display_size_inch"),
+                        display_resolution=extracted_specs.get("display_resolution"),
+                        raw_specs=extracted_specs
+                    )
+                    db.add(prod_spec)
+                    db.commit()
+                    logger.info(f"Extracted product specifications from document {document_id}: {extracted_specs.get('product_name')}")
+        except Exception as e:
+            logger.warning(f"Failed to extract specifications from document {document_id}: {e}", exc_info=True)
+            # Nicht kritisch - Dokument ist bereits indexiert
+            db.rollback()
         
         logger.info(f"Ingested document {document_id} with {len(chunks)} chunks")
         

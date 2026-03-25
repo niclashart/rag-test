@@ -6,10 +6,10 @@ chunking:
   separators: ["\n\n", "\n", ". ", " ", ""]
 
 retrieval:
-  top_k: 5  # Reduced from 20 to 5 to avoid Ragas timeouts during evaluation
-  similarity_threshold: 0.0  # Low threshold - reranking will handle relevance
-  use_reranking: true
-  rerank_top_k: 15  # Return top 15 after reranking (more results for spec questions to ensure technical chunks are included)
+  top_k: 10  # Basisanzahl abgerufener Chunks (x8 bei Spec-Queries = bis zu 80 Kandidaten)
+  similarity_threshold: 0.0  # Alle Ergebnisse werden weitergegeben; Relevanz wird durch Boost-Logik geregelt
+  use_reranking: false  # Reranker derzeit nicht aktiv (Cross-Encoder ist konfiguriert aber nicht eingebunden)
+  rerank_top_k: 10  # Maximale Anzahl zurückgegebener Chunks
 
 qa:
   temperature: 0.3  # Lower temperature to reduce hallucinations and stick to facts

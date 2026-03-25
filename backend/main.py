@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database.database import init_db
-from backend.api import auth, documents, query, benchmark
+from backend.api import auth, documents, query, benchmark, products
 from logging_config.logger import get_logger
 
 logger = get_logger(__name__)
@@ -37,6 +37,7 @@ app.include_router(auth.router)
 app.include_router(documents.router)
 app.include_router(query.router)
 app.include_router(benchmark.router)
+app.include_router(products.router)
 
 
 @app.get("/")

@@ -235,9 +235,9 @@ class Retriever:
                 
                 logger.debug(f"Result {i}: doc_id={doc_id}, distance={distance}, similarity={similarity}, threshold={self.similarity_threshold}")
                 
-                # Allow all results through - the threshold is mainly for logging
-                # Some embedding models produce very different distance scales
-                if similarity is not None and similarity >= -100.0:  # Very permissive threshold
+                # Alle Ergebnisse werden weitergegeben (threshold=0.0 aus Config);
+                # Relevanzfilterung erfolgt über die Boost-Logik unten
+                if similarity is not None and similarity >= self.similarity_threshold:
                     doc_text = results["documents"][0][i] if results.get("documents") else ""
                     doc_metadata = results["metadatas"][0][i] if results.get("metadatas") else {}
                     

@@ -6,7 +6,7 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from streamlit_app.pages import dashboard, chat
+from streamlit_app.pages import dashboard, chat, product_filter
 
 # Page configuration
 st.set_page_config(
@@ -68,8 +68,8 @@ def main():
         st.title("Navigation")
         page = st.radio(
             "Seite auswählen",
-            ["Dashboard", "Chat"],
-            index=0 if st.session_state.current_page == "Dashboard" else 1,
+            ["Dashboard", "Chat", "Produkt-Filter"],
+            index=0 if st.session_state.current_page == "Dashboard" else (1 if st.session_state.current_page == "Chat" else 2),
             label_visibility="collapsed",
             key="page_selector"
         )
@@ -80,6 +80,8 @@ def main():
         dashboard.show_dashboard()
     elif page == "Chat":
         chat.show_chat()
+    elif page == "Produkt-Filter":
+        product_filter.show_product_filter()
 
 if __name__ == "__main__":
     main()
