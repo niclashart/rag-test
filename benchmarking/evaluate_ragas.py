@@ -45,11 +45,9 @@ def run_evaluation_from_file(
     Returns:
         Dictionary mit Evaluations-Ergebnissen
     """
-    # 1. Lade Goldstandard
     logger.info(f"Loading gold standard from {gold_standard_path}")
     gold_standard = load_gold_standard(gold_standard_path)
     
-    # Limitiere auf die ersten N Fragen, falls limit gesetzt
     questions_to_process = gold_standard["questions"]
     if limit is not None and limit > 0:
         questions_to_process = questions_to_process[:limit]
@@ -58,7 +56,6 @@ def run_evaluation_from_file(
     questions = [q["question"] for q in questions_to_process]
     ground_truths = [q.get("ground_truth") for q in questions_to_process]
     
-    # 2. Initialisiere RAG-Komponenten
     logger.info("Initializing RAG components...")
     embedder = Embedder()
     vector_store = VectorStore()
@@ -66,7 +63,6 @@ def run_evaluation_from_file(
     reranker = Reranker() if use_reranking else None
     qa_chain = QAChain()
     
-    # 3. Führe RAG-Pipeline für alle Fragen aus
     logger.info(f"Running RAG pipeline on {len(questions)} questions...")
     answers = []
     contexts = []
@@ -76,49 +72,37 @@ def run_evaluation_from_file(
         
         # Add delay to avoid rate limiting (except for first question)
         if i > 0:
-            delay = 3.0  # 3.0 second between questions to avoid rate limiting
+            delay = 3.0  
             time.sleep(delay)
         
         try:
-            # Retrieve - mirror logic from backend/api/query.py
-            # For specification queries, try without reranking first to see if it helps
-            # The reranker might be prioritizing title chunks over technical specification chunks
             spec_keywords = ["spezifikation", "specification", "specs", "technische", "hardware", 
                             "wieviel", "wie viel", "welche", "was ist"]
             is_spec_query = any(keyword in question.lower() for keyword in spec_keywords)
             
             if use_reranking and reranker and not is_spec_query:
-                # Für reranking benötigen wir user_id, aber da die VectorStore global ist,
-                # verwenden wir user_id=1 als Default
                 retrieved_docs = retriever.retrieve_with_reranking(
                     user_id=1,
                     query=question,
                     reranker=reranker
                 )
             else:
-                # For spec queries, use direct retrieval without reranking
-                # This helps find technical chunks that might be ranked lower by the reranker
-                # For evaluation, use fewer results to avoid token limit errors
-                n_results = 30 if is_spec_query else 15  # Reduced for evaluation
+                n_results = 30 if is_spec_query else 15  
                 retrieved_docs = retriever.retrieve(
                     query=question,
                     n_results=n_results
                 )
             
-            # Generate Answer first to get the actual chunks used
-            # Verwende eval_mode wenn Ground Truth vorhanden ist
             ground_truth = ground_truths[i] if i < len(ground_truths) and ground_truths[i] else None
             result = qa_chain.answer_with_retrieved_docs(
                 question=question,
                 retrieved_docs=retrieved_docs,
                 concise_mode=True,
-                eval_mode=True,  # Aktiviere Evaluierungsmodus
+                eval_mode=True,  
                 ground_truth=ground_truth
             )
             answers.append(result.get("answer", ""))
             
-            # Use the actual chunks that were used for answer generation (not all retrieved_docs)
-            # This ensures RAGAS evaluates with the same chunks that generated the answer
             used_chunks = result.get("used_chunks", retrieved_docs)
             context_text_list = [doc["text"] for doc in used_chunks]
             
@@ -133,7 +117,6 @@ def run_evaluation_from_file(
             contexts.append([])
             answers.append(f"Fehler bei der Verarbeitung: {str(e)}")
     
-    # 4. Evaluiere mit RAGAS
     logger.info("Running RAGAS evaluation...")
     evaluator = RAGASEvaluator()
     results = evaluator.evaluate_rag(
@@ -143,7 +126,6 @@ def run_evaluation_from_file(
         ground_truths=ground_truths
     )
     
-    # 5. Speichere Ergebnisse wenn gewünscht
     if save_results:
         output_dir = Path("data/benchmark_results")
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -151,7 +133,6 @@ def run_evaluation_from_file(
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         dataset_name_safe = gold_standard['dataset_name'].replace(' ', '_').replace('/', '_')
         
-        # Speichere JSON-Ergebnisse
         json_path = output_dir / f"evaluation_{dataset_name_safe}_{timestamp}.json"
         evaluation_data = {
             "dataset_info": {
@@ -169,7 +150,6 @@ def run_evaluation_from_file(
                     "question": q.get("question"),
                     "ground_truth": q.get("ground_truth"),
                     "answer": answers[i],
-                    # "contexts": contexts[i],  # Entfernt um Dateigröße zu reduzieren
                     "category": q.get("category")
                 }
                 for i, q in enumerate(questions_to_process)
@@ -188,7 +168,7 @@ def run_evaluation_from_file(
         
         logger.info(f"Results saved to {json_path}")
         
-        # Erstelle Visualisierung
+        # Visualisations
         try:
             visualizer = BenchmarkVisualizer()
             plot_filename = f"dashboard_{dataset_name_safe}_{timestamp}.html"
@@ -198,7 +178,6 @@ def run_evaluation_from_file(
         except Exception as e:
             logger.warning(f"Could not create visualization: {e}")
     
-    # 6. Zeige Ergebnisse
     print("\n" + "="*60)
     print("RAGAS Evaluation Results")
     print("="*60)
