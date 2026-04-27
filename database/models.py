@@ -150,3 +150,80 @@ class RequirementSpecification(Base):
     
     # Relationships
     document = relationship("Document", back_populates="requirement_specs")
+
+
+class Tender(Base):
+    """Uploaded tender document with raw extraction metadata."""
+    __tablename__ = "tenders"
+
+    id = Column(String, primary_key=True, index=True)
+    filename = Column(String, nullable=False)
+    uploaded_at = Column(DateTime, default=datetime.utcnow)
+    status = Column(String, default="uploaded")
+    raw_text = Column(Text, nullable=True)
+    tender_metadata = Column(JSON, default={})
+
+    requirements = relationship("CanonicalRequirement", back_populates="tender", cascade="all, delete-orphan")
+    match_results = relationship("TenderMatchResult", back_populates="tender", cascade="all, delete-orphan")
+
+
+class CanonicalRequirement(Base):
+    """Flexible canonical requirement extracted from a tender."""
+    __tablename__ = "canonical_requirements"
+
+    id = Column(String, primary_key=True, index=True)
+    tender_id = Column(String, ForeignKey("tenders.id"), nullable=False, index=True)
+    product_group = Column(String, nullable=True)
+    requirement_type = Column(String, nullable=False, default="unknown")
+    attribute = Column(String, nullable=False, index=True)
+    operator = Column(String, nullable=False)
+    value = Column(JSON, nullable=True)
+    unit = Column(String, nullable=True)
+    original_text = Column(Text, nullable=False)
+    source_page = Column(Integer, nullable=True)
+    source_chunk_id = Column(String, nullable=True)
+    confidence = Column(Float, default=0.0)
+    needs_review = Column(Boolean, default=True)
+    status = Column(String, default="pending", index=True)
+    points = Column(Float, nullable=True)
+    rationale = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    tender = relationship("Tender", back_populates="requirements")
+
+
+class ProductFact(Base):
+    """Canonical product fact used for deterministic matching."""
+    __tablename__ = "product_facts"
+
+    id = Column(String, primary_key=True, index=True)
+    product_id = Column(String, nullable=False, index=True)
+    model = Column(String, nullable=False)
+    attribute = Column(String, nullable=False, index=True)
+    value = Column(JSON, nullable=True)
+    unit = Column(String, nullable=True)
+    source_text = Column(Text, nullable=False)
+    source_document = Column(String, nullable=False)
+    source_page = Column(Integer, nullable=True)
+    confidence = Column(Float, default=0.0)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class TenderMatchResult(Base):
+    """Persisted match output for a tender/product pair."""
+    __tablename__ = "tender_match_results"
+
+    id = Column(String, primary_key=True, index=True)
+    tender_id = Column(String, ForeignKey("tenders.id"), nullable=False, index=True)
+    product_id = Column(String, nullable=False, index=True)
+    model = Column(String, nullable=False)
+    eligibility = Column(String, nullable=False, index=True)
+    score = Column(Float, default=0.0)
+    max_score = Column(Float, default=0.0)
+    must_passed = Column(Integer, default=0)
+    must_failed = Column(Integer, default=0)
+    unknown_count = Column(Integer, default=0)
+    requirement_results = Column(JSON, default=[])
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    tender = relationship("Tender", back_populates="match_results")

@@ -1,10 +1,9 @@
 """Specification extractor for product specs and requirements."""
-from langchain_openai import ChatOpenAI
 from typing import Dict, Optional
 import json
-import os
 from dotenv import load_dotenv
 from logging_config.logger import get_logger
+from src.llm import create_chat_llm
 
 load_dotenv()
 
@@ -15,11 +14,8 @@ class SpecExtractor:
     """Extrahiert strukturierte Spezifikationen aus Dokumenten."""
     
     def __init__(self):
-        model_name = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
-        self.llm = ChatOpenAI(
-            model_name=model_name,
+        self.llm = create_chat_llm(
             temperature=0,
-            openai_api_key=os.getenv("OPENAI_API_KEY"),
             max_retries=3,
             request_timeout=180  # Erhöht für umfangreichere Extraktion
         )
@@ -187,6 +183,10 @@ WICHTIG:
 
 Antworte NUR mit einem validen JSON-Objekt. Verwende null für fehlende Werte. Verwende die Terminologie aus dem Dokument."""
 
+        if self.llm is None:
+            logger.warning("Cannot extract product specs: no LLM API key configured")
+            return {}
+
         try:
             response = self.llm.invoke(prompt)
             content = response.content if hasattr(response, 'content') else str(response)
@@ -236,18 +236,24 @@ Antworte NUR mit einem validen JSON-Objekt. Verwende null für fehlende Werte. V
         # Erhöhe Text-Limit für vollständige Analyse (erste 50000 Zeichen)
         relevant_text = text[:50000]
         
-        prompt = f"""Analysiere das folgende Ausschreibungsdokument GRÜNDLICH und extrahiere ALLE technischen Mindestanforderungen.
+        prompt = f"""Analysiere das folgende Ausschreibungsdokument GRÜNDLICH und extrahiere ausschließlich datenblattfähig prüfbare Laptop/PC-Konfigurationsmerkmale.
 
 Dateiname: {filename}
 
 Dokument:
 {relevant_text}
 
-KRITISCH WICHTIG - DYNAMISCHE KATEGORIEN-ERKENNUNG:
-1. Analysiere die DOKUMENTSTRUKTUR und identifiziere ALLE Anforderungskategorien, die tatsächlich im Dokument verwendet werden
-2. Extrahiere ALLE Anforderungen - NICHTS übersehen!
+KRITISCH WICHTIG - FOKUS AUF GERÄTEKONFIGURATION:
+1. Analysiere die DOKUMENTSTRUKTUR und identifiziere Notebook-/Laptop-/PC-Gruppen und deren Mindestausstattung
+2. Extrahiere nur technische Geräteanforderungen, die später gegen Produktdatenblätter abgeglichen werden können
 3. Erstelle eine FLEXIBLE JSON-Struktur basierend auf den tatsächlich vorhandenen Kategorien im Dokument
 4. Verwende die TERMINOLOGIE aus dem Dokument (nicht vordefinierte Begriffe)
+
+NICHT EXTRAHIEREN:
+- Mengen, Preispositions-Mengen, Preisberechnung, Los-/Positionsnummern ohne technisches Merkmal
+- Vergabe-/Formularhinweise, Ansprechpartner, Liefer-/Vertragsbedingungen, Bewertungslogik, Zuschlagskriterien
+- allgemeine Hinweise wie "die angegebenen Mengen dienen ausschließlich der Berechnung des Preises"
+- Service-/Support-/Reklamationskonzepte, außer wenn direkt als produktbezogene Eigenschaft formuliert (z.B. Garantiedauer oder Einbehaltung defekter Datenträger)
 
 ANALYSESCHRITTE:
 
@@ -257,6 +263,7 @@ SCHRITT 1: Dokumentstruktur analysieren
 - Beachte spezifische Begriffe, die im Dokument verwendet werden
 
 SCHRITT 2: Kategorien identifizieren
+- Erstelle Kategorien nur für datenblattfähige Geräte-Konfigurationen (z.B. Prozessor, RAM, SSD, Display, Ports, Netzwerk, Kamera, Sensoren, BIOS/Sicherheit, Akku, Netzteil, Betriebssystem)
 - Erstelle Kategorien basierend auf dem Dokument (z.B. wenn das Dokument "Bildschirm" sagt, verwende "Bildschirm", nicht "Display")
 - Erkenne auch ungewöhnliche oder spezifische Kategorien, die nur in diesem Dokument vorkommen
 - Gruppiere verwandte Anforderungen logisch
@@ -278,7 +285,7 @@ WICHTIGE REGELN:
 - Suche nach Begriffen wie "mindestens", "min.", "mind.", "maximal", "max.", "höchstens", "Ausschlußkriterium"
 - Wenn "mindestens 300 nits" steht, extrahiere 300
 - Wenn "maximal 1.43 kg" steht, extrahiere 1.43
-- Extrahiere ALLE Details, auch wenn sie nicht explizit als "mindestens" formuliert sind
+- Extrahiere technische Bullet-Points auch dann, wenn sie nicht explizit als "mindestens" formuliert sind
 - Wenn eine Anforderung als "Ausschlußkriterium" markiert ist, ist sie besonders wichtig
 - Speichere alle Informationen so vollständig wie möglich
 - Verwende die Terminologie aus dem Dokument (z.B. "Bildschirm" statt "Display", "Prozessor" statt "CPU")
@@ -389,6 +396,10 @@ WICHTIG:
 
 Antworte NUR mit einem validen JSON-Objekt. Verwende null für fehlende Werte. Verwende die Terminologie aus dem Dokument."""
 
+        if self.llm is None:
+            logger.warning("Cannot extract requirements: no LLM API key configured")
+            return {}
+
         try:
             response = self.llm.invoke(prompt)
             content = response.content if hasattr(response, 'content') else str(response)
@@ -475,15 +486,138 @@ Antworte NUR mit einem validen JSON-Objekt. Verwende null für fehlende Werte. V
             logger.error(f"Error extracting requirements: {e}", exc_info=True)
             return {}
     
+    def extract_requirements_from_pages(self, text: str, filename: str, group_name: str = "") -> Dict:
+        """Extrahiert Anforderungen aus spezifischen Seiten eines Leistungsverzeichnisses.
+
+        Args:
+            text: Extracted text from the page range
+            filename: Original filename
+            group_name: Optional group name like "Gruppe 1: Notebook 14\""
+        """
+        prompt = f"""Analysiere das folgende Leistungsverzeichnis und extrahiere ausschließlich datenblattfähig prüfbare Laptop/PC-Konfigurationsmerkmale für {group_name if group_name else "das Basisgerät"}.
+
+Dateiname: {filename}
+
+Dokumentinhalt:
+{text}
+
+AUFGABE:
+Extrahiere nur die technische Mindestausstattung, Ausschlusskriterien und optionale Geräte-Konfigurationen, die später gegen Produktdatenblätter abgeglichen werden können.
+Typische relevante Bereiche sind z.B. Prozessor, RAM, SSD/Speicher, Grafik, Display, Anschlüsse, Funk/Netzwerk, Eingabegeräte, Kamera, Sensoren, Sicherheit/BIOS, Akku, Netzteil, Betriebssystem und produktbezogene Garantie/Datenträger-Regeln.
+
+NICHT EXTRAHIEREN:
+- Mengen, Preispositions-Mengen, Los-/Positionsnummern und reine Vergabe-/Formularhinweise
+- Beschaffungstexte, Vertragsbedingungen, Lieferfristen, Zuschlagslogik, Bewertungspunkte, Ansprechpartner, Seitenkopf/-fuß
+- allgemeine Hinweise wie "die angegebenen Mengen dienen ausschließlich der Berechnung des Preises"
+- Service-/Support-/Reklamationskonzepte, außer wenn direkt als gerätebezogene Eigenschaft formuliert (z.B. konkrete Garantiedauer oder Einbehaltung defekter Datenträger)
+
+Wenn der Text eine Gruppe wie "Gruppe 1 Notebook 14\"" und darunter "Mindestausstattung Basisgerät Notebook 14\" - Ausschlußkriterium" enthält, nutze genau diese Gruppe als Kontext und extrahiere die darunter stehenden Bullet-Points als technische Gerätemerkmale.
+Strukturiere die Anforderungen als JSON.
+
+WICHTIGE REGELN:
+- Numerische Werte als Zahlen extrahieren (z.B. 300, 16, 1.43)
+- Einheiten konvertieren: lbs→kg (1 lb = 0.453592 kg), GB→TB (1 TB = 1000 GB)
+- "mindestens"/"mind." → Mindestwert
+- "maximal"/"max." → Maximalwert
+- Ausschlusskriterien besonders markieren
+- Terminologie aus Dokument beibehalten
+- Bewahre die vollständige Originalanforderung je Kategorie als Textfeld, damit der Abgleich nachvollziehbar bleibt
+- Kurze Bullet-Points ohne "mind." sind trotzdem relevant, wenn sie konkrete Hardware-/Software-Konfigurationen nennen (z.B. "Wi-Fi 7", "2x Thunderbolt 4", "TPM 2.0 IPS 140-2 kompatibel")
+
+STRUKTURIERTE FELDER (wenn im Dokument vorhanden):
+- min_display_brightness_nits: Display-Helligkeit in nits (Zahl)
+- min_screen_to_body_ratio: Screen-to-Body Ratio in % (Zahl)
+- max_weight_kg: Max. Gewicht in kg (Zahl)
+- min_ram_gb: Min. RAM in GB (Zahl)
+- min_storage_tb: Min. Speicher in TB (Zahl)
+- min_battery_wh: Min. Akkukapazität in Wh (Zahl)
+- display_size_inch_min: Min. Display-Größe in Zoll (Zahl)
+- display_size_inch_max: Max. Display-Größe in Zoll (Zahl)
+
+ZUSÄTZLICHE KATEGORIEN (alle Anforderungen die im Dokument stehen):
+- prozessor: Anforderung an Prozessor/CPU
+- display: Display-Details (Auflösung, Typ, Features)
+- ram: RAM-Details (Typ, Slots, Aufrüstbarkeit)
+- speicher: Storage-Details (Typ, Interface, Größe)
+- grafik: Grafik-Anforderungen
+- anschlüsse: Ports (USB-C, USB-A, HDMI, Thunderbolt, Ethernet, Audio)
+- konnektivität: WiFi, Bluetooth, Wake-on-LAN, PXE, Miracast
+- eingabegeräte: Tastatur, Touchpad, Mikrofon
+- kamera: Webcam, Auflösung, Abdeckung
+- sensoren: Thermal, Ambient Light, Hall-Effekt
+- sicherheit: Kensington Lock, BIOS-Features
+- akku: Kapazität, Laufzeit, Austauschbarkeit
+- betriebssystem: Windows-Version
+- netzteil: Netzteil-Typ
+- garantie: Dauer, Details
+
+Erkenne und extrahiere auch Anforderungen, die nicht in dieser Liste stehen.
+
+Antworte NUR mit einem validen JSON-Objekt. Verwende null für fehlende Werte."""
+
+        if self.llm is None:
+            logger.warning("Cannot extract LV requirements: no LLM API key configured")
+            return {}
+
+        try:
+            response = self.llm.invoke(prompt)
+            content = response.content if hasattr(response, 'content') else str(response)
+
+            if "```json" in content:
+                content = content.split("```json")[1].split("```")[0].strip()
+            elif "```" in content:
+                content = content.split("```")[1].split("```")[0].strip()
+
+            requirements = json.loads(content)
+
+            structured_fields = {
+                "min_display_brightness_nits", "min_screen_to_body_ratio", "max_weight_kg",
+                "min_ram_gb", "min_storage_tb", "min_battery_wh", "min_battery_runtime_hours",
+                "display_size_inch_min", "display_size_inch_max", "warranty_years"
+            }
+
+            structured_data = {}
+            flexible_data = {}
+
+            for key, value in requirements.items():
+                if key == "document_type":
+                    continue
+                if key in structured_fields and value is not None:
+                    structured_data[key] = value
+                elif value is not None:
+                    flexible_data[key] = value
+
+            result = {"document_type": "requirement"}
+            result.update(structured_data)
+            if flexible_data:
+                result["additional_requirements"] = flexible_data
+
+            logger.info(f"Extracted LV requirements: structured={len(structured_data)}, "
+                       f"additional={len(flexible_data)}")
+            return result
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON decode error in LV extraction: {e}")
+            import re
+            json_match = re.search(r'\{.*\}', content, re.DOTALL)
+            if json_match:
+                try:
+                    return json.loads(json_match.group())
+                except json.JSONDecodeError:
+                    pass
+            return {}
+        except Exception as e:
+            logger.error(f"Error in LV extraction: {e}", exc_info=True)
+            return {}
+
     def extract_from_document(self, text: str, filename: str) -> Dict:
         """Hauptmethode: Erkennt Dokumenttyp und extrahiert entsprechend."""
         doc_type = self.detect_document_type(text, filename)
-        
+
         if doc_type == "requirement":
             specs = self.extract_requirements(text, filename)
             specs["document_type"] = "requirement"
         else:
             specs = self.extract_product_specs(text, filename)
             specs["document_type"] = "product"
-        
+
         return specs

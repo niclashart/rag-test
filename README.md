@@ -8,7 +8,7 @@ Eine vollständige RAG (Retrieval-Augmented Generation) Pipeline zur kontextbasi
 - **Erweiterte PDF-Verarbeitung**: OCR, Tabellenerkennung, automatische Entfernung von Kopf- und Fußzeilen
 - **Semantische Suche**: Vector-basierte Suche mit ChromaDB
 - **Reranking**: Cross-Encoder-basiertes Reranking für verbesserte Retrieval-Qualität
-- **LLM-Integration**: GPT-4o-mini für Antwortgenerierung
+- **LLM-Integration**: OpenAI oder DeepSeek für Antwortgenerierung
 - **Chat-Historie**: Unterstützung für kontextuelle Mehrfachrunden-Dialoge
 - **RAGAS-Evaluation**: Automatisierte Evaluation mit RAGAS-Metriken
 - **Streamlit & React Frontend**: Interaktive Benutzeroberflächen
@@ -42,8 +42,29 @@ pip install -r requirements.txt
 5. **Environment-Variablen konfigurieren:**
 ```bash
 cp .env.example .env
-# .env Datei bearbeiten und OPENAI_API_KEY eintragen
+# .env Datei bearbeiten und OPENAI_API_KEY oder DEEPSEEK_API_KEY eintragen
 ```
+
+### LLM Provider auswählen
+
+Die App unterstützt OpenAI und DeepSeek über dieselbe LangChain-Schnittstelle.
+
+Für DeepSeek:
+```env
+LLM_PROVIDER=deepseek
+DEEPSEEK_API_KEY=your_deepseek_api_key_here
+DEEPSEEK_MODEL=deepseek-chat
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+```
+
+Für OpenAI:
+```env
+LLM_PROVIDER=openai
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4o-mini
+```
+
+Mit `LLM_PROVIDER=auto` nutzt die App OpenAI, wenn `OPENAI_API_KEY` gesetzt ist, sonst DeepSeek, wenn `DEEPSEEK_API_KEY` gesetzt ist.
 
 ## Verwendung
 
@@ -149,7 +170,7 @@ Nach dem Start des Backends ist die interaktive API-Dokumentation unter `http://
 
 - **Backend**: FastAPI, SQLAlchemy, ChromaDB, LangChain
 - **Frontend**: Streamlit, React (optional)
-- **LLM**: OpenAI GPT-4o-mini
+- **LLM**: OpenAI oder DeepSeek
 - **Embeddings**: Sentence-Transformers
 - **Evaluation**: RAGAS
 

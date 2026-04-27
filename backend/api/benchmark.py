@@ -11,8 +11,6 @@ import os
 from database.database import get_db
 from database.models import User
 from backend.dependencies import get_current_active_user
-from benchmarking.evaluator import RAGASEvaluator
-from benchmarking.visualizer import BenchmarkVisualizer
 from src.retrieval.retriever import Retriever
 from src.rerank.reranker import Reranker
 from src.index.vector_store import VectorStore
@@ -24,8 +22,10 @@ logger = get_logger(__name__)
 
 router = APIRouter(prefix="/api/benchmark", tags=["benchmark"])
 
-evaluator = RAGASEvaluator()
-visualizer = BenchmarkVisualizer()
+_benchmark_tools = {
+    "evaluator": None,
+    "visualizer": None,
+}
 
 # Initialize RAG components (lazy loading)
 _rag_components = {
@@ -44,6 +44,23 @@ def get_rag_components():
         _rag_components["reranker"] = Reranker()
         _rag_components["qa_chain"] = QAChain()
     return _rag_components
+
+
+def get_benchmark_tools():
+    """Get or initialize optional benchmark dependencies."""
+    global _benchmark_tools
+    if _benchmark_tools["evaluator"] is None:
+        try:
+            from benchmarking.evaluator import RAGASEvaluator
+            from benchmarking.visualizer import BenchmarkVisualizer
+        except ImportError as exc:
+            raise HTTPException(
+                status_code=503,
+                detail=f"Benchmark dependencies are not installed: {exc}"
+            )
+        _benchmark_tools["evaluator"] = RAGASEvaluator()
+        _benchmark_tools["visualizer"] = BenchmarkVisualizer()
+    return _benchmark_tools
 
 
 class BenchmarkRequest(BaseModel):
@@ -78,6 +95,10 @@ def run_benchmark(
             detail="questions, answers, and contexts must have the same length"
         )
     
+    tools = get_benchmark_tools()
+    evaluator = tools["evaluator"]
+    visualizer = tools["visualizer"]
+
     # Run evaluation
     results = evaluator.evaluate_rag(
         questions=request.questions,
@@ -186,6 +207,10 @@ def run_benchmark_from_file(
             contexts.append([])
             answers.append(f"Fehler bei der Verarbeitung: {str(e)}")
     
+    tools = get_benchmark_tools()
+    evaluator = tools["evaluator"]
+    visualizer = tools["visualizer"]
+
     # Evaluiere mit RAGAS
     logger.info("Running RAGAS evaluation...")
     results = evaluator.evaluate_rag(
@@ -215,6 +240,8 @@ def get_benchmark_result(
     current_user: User = Depends(get_current_active_user)
 ):
     """Get a specific benchmark result."""
+    tools = get_benchmark_tools()
+    visualizer = tools["visualizer"]
     result_path = visualizer.output_dir / f"{result_id}.json"
     
     if not result_path.exists():
@@ -227,4 +254,3 @@ def get_benchmark_result(
         result = json.load(f)
     
     return result
-

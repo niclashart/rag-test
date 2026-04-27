@@ -1,11 +1,13 @@
 """Product filtering and matching endpoints."""
-from fastapi import APIRouter, Depends, Query, HTTPException
+from fastapi import APIRouter, Depends, Query, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from typing import Optional, List
 from pydantic import BaseModel
 from database.database import get_db
-from database.models import ProductSpecification, RequirementSpecification
+from database.models import Document, ProductSpecification, RequirementSpecification
 from src.matching.product_matcher import ProductMatcher
+from src.extraction.spec_extractor import SpecExtractor
+from src.ingestion.pdf_processor import PDFProcessor
 from logging_config.logger import get_logger
 
 logger = get_logger(__name__)
@@ -237,3 +239,119 @@ def list_all_products(db: Session = Depends(get_db)):
         )
         for p in products
     ]
+
+
+class ExtractRequirementsRequest(BaseModel):
+    start_page: int = 1
+    end_page: int = 999
+    group_name: str = ""
+
+
+@router.post("/extract-requirements")
+def extract_requirements_from_pdf(
+    file: UploadFile = File(...),
+    start_page: int = Query(1, description="Startseite (1-indiziert)"),
+    end_page: int = Query(999, description="Endseite (inklusiv)"),
+    group_name: str = Query("", description="Gruppenname z.B. 'Gruppe 1: Notebook 14\"'"),
+    db: Session = Depends(get_db)
+):
+    """Extrahiert Anforderungen aus einem Leistungsverzeichnis-PDF (seitenweise).
+
+    1. Speichert das PDF als Dokument
+    2. Extrahiert Text aus dem Seitenbereich
+    3. LLM extrahiert strukturierte Anforderungen
+    4. Speichert als RequirementSpecification
+    5. Gibt extrahierte Anforderungen zurück
+    """
+    import shutil
+    from pathlib import Path
+
+    UPLOAD_DIR = Path("./data/uploads")
+    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+    # Save uploaded file
+    file_content = file.file.read()
+    file_path = UPLOAD_DIR / file.filename
+    with open(file_path, "wb") as f:
+        f.write(file_content)
+
+    # Create document record
+    document = Document(
+        filename=file.filename,
+        file_path=str(file_path),
+        file_type="pdf",
+        file_size=len(file_content),
+        status="processing"
+    )
+    db.add(document)
+    db.commit()
+    db.refresh(document)
+
+    try:
+        # Extract text from page range
+        text = PDFProcessor.get_pages_text(str(file_path), start_page, end_page)
+
+        if not text.strip():
+            raise HTTPException(status_code=400, detail=f"Kein Text auf Seiten {start_page}-{end_page} gefunden")
+
+        # Extract requirements via LLM
+        extractor = SpecExtractor()
+        requirements = extractor.extract_requirements_from_pages(text, file.filename, group_name)
+
+        if not requirements:
+            raise HTTPException(status_code=500, detail="Anforderungsextraktion fehlgeschlagen")
+
+        # Build structured fields
+        structured_fields = {
+            "min_display_brightness_nits", "min_screen_to_body_ratio", "max_weight_kg",
+            "min_ram_gb", "min_storage_tb", "min_battery_wh", "min_battery_runtime_hours",
+            "display_size_inch_min", "display_size_inch_max", "warranty_years"
+        }
+
+        structured_data = {}
+        additional_data = {}
+
+        for key, value in requirements.items():
+            if key in ("document_type",):
+                continue
+            if key in structured_fields and value is not None:
+                structured_data[key] = value
+            elif key == "additional_requirements":
+                additional_data.update(value if isinstance(value, dict) else {})
+            elif value is not None:
+                additional_data[key] = value
+
+        # Store as RequirementSpecification
+        req_spec = RequirementSpecification(
+            document_id=document.id,
+            document_type="requirement",
+            raw_requirements=requirements,
+            additional_requirements=additional_data if additional_data else None,
+            **structured_data
+        )
+        db.add(req_spec)
+
+        document.status = "indexed"
+        db.commit()
+        db.refresh(req_spec)
+
+        logger.info(f"Extracted requirements from {file.filename} pages {start_page}-{end_page}: "
+                    f"req_id={req_spec.id}, structured={len(structured_data)}, "
+                    f"additional={len(additional_data)}")
+
+        return {
+            "requirement_id": req_spec.id,
+            "document_id": document.id,
+            "structured_requirements": structured_data,
+            "additional_requirements": additional_data,
+            "total_criteria": len(structured_data) + len(additional_data),
+            "pages_processed": f"{start_page}-{end_page}"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        document.status = "error"
+        db.commit()
+        logger.error(f"Error extracting requirements: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))

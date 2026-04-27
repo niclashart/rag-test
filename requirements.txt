@@ -23,6 +23,7 @@ chromadb
 pymupdf
 pymupdf-layout
 pymupdf4llm
+pdfplumber
 pytesseract
 python-docx
 pandas

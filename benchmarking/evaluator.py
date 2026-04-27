@@ -10,8 +10,8 @@ from ragas.metrics import (
 from datasets import Dataset
 from typing import List, Dict, Optional
 import pandas as pd
-import os
 from logging_config.logger import get_logger
+from src.llm import create_chat_llm
 
 logger = get_logger(__name__)
 
@@ -72,10 +72,11 @@ class RAGASEvaluator:
         # Evaluate
         logger.info(f"Evaluating {len(questions)} examples with RAGAS")
         
-        from langchain_openai import ChatOpenAI
         from langchain_huggingface import HuggingFaceEmbeddings
         
-        llm = ChatOpenAI(model="gpt-4o-mini", request_timeout=120, max_retries=5)
+        llm = create_chat_llm(request_timeout=120, max_retries=5)
+        if llm is None:
+            raise RuntimeError("RAGAS evaluation requires OPENAI_API_KEY or DEEPSEEK_API_KEY.")
         
         embeddings = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2"
@@ -129,5 +130,3 @@ class RAGASEvaluator:
         ground_truths = [q.get("ground_truth") for q in query_results] if any(q.get("ground_truth") for q in query_results) else None
         
         return self.evaluate_rag(questions, answers, contexts, ground_truths)
-
-

@@ -18,19 +18,29 @@ logger = get_logger(__name__)
 
 router = APIRouter(prefix="/api/query", tags=["query"])
 
-# Initialize components (lazy loading for reranker)
-vector_store = VectorStore()
-embedder = Embedder()
-retriever = Retriever(vector_store, embedder)
-reranker = None  # Will be initialized on first use
-qa_chain = QAChain()
+_query_components = {
+    "vector_store": None,
+    "embedder": None,
+    "retriever": None,
+    "reranker": None,
+    "qa_chain": None,
+}
+
+
+def get_query_components():
+    """Get RAG components without loading embedding models at app import time."""
+    if _query_components["retriever"] is None:
+        _query_components["vector_store"] = VectorStore()
+        _query_components["embedder"] = Embedder()
+        _query_components["retriever"] = Retriever(_query_components["vector_store"], _query_components["embedder"])
+        _query_components["qa_chain"] = QAChain()
+    return _query_components
 
 def get_reranker():
     """Get reranker instance (lazy initialization)."""
-    global reranker
-    if reranker is None:
-        reranker = Reranker()
-    return reranker
+    if _query_components["reranker"] is None:
+        _query_components["reranker"] = Reranker()
+    return _query_components["reranker"]
 
 
 class ChatMessage(BaseModel):
@@ -78,6 +88,10 @@ def query_rag(
     start_time = time.time()
     
     try:
+        components = get_query_components()
+        retriever = components["retriever"]
+        qa_chain = components["qa_chain"]
+
         # Retrieve relevant documents
         retrieval_start = time.time()
         
@@ -277,5 +291,4 @@ def get_query_history_endpoint(
             "query_metadata": item.query_metadata or {}
         })
     return result
-
 

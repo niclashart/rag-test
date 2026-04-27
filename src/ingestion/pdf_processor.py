@@ -6,36 +6,43 @@ import pytesseract
 import io
 import os
 import sys
+import shutil
 from logging_config.logger import get_logger
 
 logger = get_logger(__name__)
 
-# Try to get tesseract command from environment or use platform-specific defaults
-TESSERACT_CMD = os.getenv("TESSERACT_CMD")
-if not TESSERACT_CMD:
+def _find_tesseract_cmd() -> Optional[str]:
+    configured_cmd = os.getenv("TESSERACT_CMD")
+    if configured_cmd and os.path.exists(configured_cmd):
+        return configured_cmd
+
+    tesseract_in_path = shutil.which("tesseract")
+    if tesseract_in_path:
+        return tesseract_in_path
+
+    possible_paths = []
     if sys.platform.startswith('win'):
-        # Common Windows installation paths for Tesseract
         possible_paths = [
             r"C:\Program Files\Tesseract-OCR\tesseract.exe",
             r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
             r"C:\Users\{}\AppData\Local\Programs\Tesseract-OCR\tesseract.exe".format(os.getenv("USERNAME", "")),
         ]
-        # Try to find tesseract in PATH first
-        import shutil
-        tesseract_in_path = shutil.which("tesseract")
-        if tesseract_in_path:
-            TESSERACT_CMD = tesseract_in_path
-        else:
-            # Try common installation paths
-            for path in possible_paths:
-                if os.path.exists(path):
-                    TESSERACT_CMD = path
-                    break
     else:
-        # Linux/Mac default
-        TESSERACT_CMD = "/usr/bin/tesseract"
+        possible_paths = [
+            "/usr/bin/tesseract",
+            "/usr/local/bin/tesseract",
+            "/opt/homebrew/bin/tesseract",
+        ]
 
-if TESSERACT_CMD and os.path.exists(TESSERACT_CMD):
+    for path in possible_paths:
+        if os.path.exists(path):
+            return path
+
+    return None
+
+
+TESSERACT_CMD = _find_tesseract_cmd()
+if TESSERACT_CMD:
     pytesseract.pytesseract.tesseract_cmd = TESSERACT_CMD
     logger.info(f"Tesseract found at: {TESSERACT_CMD}")
 else:
@@ -157,10 +164,60 @@ class PDFProcessor:
         if page_number < 1 or page_number > len(doc):
             doc.close()
             return None
-        
+
         page = doc[page_number - 1]
         text = page.get_text()
         doc.close()
         return text
 
+    @staticmethod
+    def get_pages_text(pdf_path: str, start_page: int, end_page: int) -> str:
+        """Extract text from a range of pages (1-indexed, inclusive).
+
+        Uses OCR on images within the page range for text embedded in images.
+        """
+        doc = fitz.open(pdf_path)
+        total_pages = len(doc)
+        start = max(1, start_page)
+        end = min(total_pages, end_page)
+
+        if start > end:
+            doc.close()
+            return ""
+
+        pages_text = []
+        for page_num in range(start, end + 1):
+            page = doc[page_num - 1]
+
+            text_parts = []
+            blocks = page.get_text("dict")
+            for block in blocks["blocks"]:
+                if "lines" in block:
+                    block_text = ""
+                    for line in block["lines"]:
+                        for span in line["spans"]:
+                            block_text += span["text"]
+                        block_text += "\n"
+                    if block_text.strip():
+                        text_parts.append(block_text.strip())
+
+            image_list = page.get_images()
+            for img_index, img in enumerate(image_list):
+                try:
+                    xref = img[0]
+                    base_image = doc.extract_image(xref)
+                    image_bytes = base_image["image"]
+                    image = Image.open(io.BytesIO(image_bytes))
+                    ocr_text = pytesseract.image_to_string(image, lang='deu+eng')
+                    if ocr_text.strip():
+                        text_parts.append(f"\n[Image {img_index + 1}]:\n{ocr_text}")
+                except Exception as e:
+                    logger.warning(f"Failed to OCR image {img_index} on page {page_num}: {e}")
+
+            page_text = "\n\n".join(text_parts)
+            if page_text.strip():
+                pages_text.append(f"--- Seite {page_num} ---\n{page_text}")
+
+        doc.close()
+        return "\n\n".join(pages_text)
 

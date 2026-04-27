@@ -8,7 +8,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database.database import init_db
-from backend.api import auth, documents, query, benchmark, products
+from backend.api import auth, documents, query, benchmark, products, tenders
 from logging_config.logger import get_logger
 
 logger = get_logger(__name__)
@@ -38,6 +38,7 @@ app.include_router(documents.router)
 app.include_router(query.router)
 app.include_router(benchmark.router)
 app.include_router(products.router)
+app.include_router(tenders.router)
 
 
 @app.get("/")
@@ -55,5 +56,4 @@ def health():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
 

@@ -1,5 +1,4 @@
-"""QA chain using LangChain and OpenAI."""
-from langchain_openai import ChatOpenAI
+"""QA chain using LangChain and a configurable LLM provider."""
 try:
     from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 except ImportError:
@@ -11,6 +10,7 @@ import re
 from dotenv import load_dotenv
 from logging_config.logger import get_logger
 from loguru import logger as loguru_logger
+from src.llm import create_chat_llm, get_llm_config
 import json
 import time
 
@@ -35,21 +35,27 @@ class QAChain:
         else:
             qa_config = {}
         
-        model_name = os.getenv("OPENAI_MODEL", "gpt-4o-mini")  # Use gpt-4o-mini as default (faster, cheaper)
         temperature = qa_config.get("temperature", 0.7)
         max_tokens = qa_config.get("max_tokens", 2000)  # Increased to allow for longer answers
         eval_max_tokens = qa_config.get("eval_max_tokens", None)  # Optional max tokens for eval mode
         system_prompt = qa_config.get("system_prompt", 
             "Du bist ein hilfreicher Assistent, der Fragen basierend auf den bereitgestellten Dokumenten beantwortet.")
         
-        self.llm = ChatOpenAI(
-            model_name=model_name,
+        llm_config = get_llm_config()
+        self.model_name = llm_config.model_name
+        self.llm_provider = llm_config.provider
+        self.llm = create_chat_llm(
             temperature=temperature,
             max_tokens=max_tokens,
-            openai_api_key=os.getenv("OPENAI_API_KEY"),
-            max_retries=5,  # Increased retries to handle rate limiting
-            request_timeout=120  # Increased timeout for large contexts
+            max_retries=5,
+            request_timeout=120,
         )
+        if self.llm is None:
+            self.llm = None
+            self.system_prompt = system_prompt
+            self.eval_max_tokens = eval_max_tokens
+            self.default_max_tokens = max_tokens
+            return
         
         self.system_prompt = system_prompt
         self.eval_max_tokens = eval_max_tokens
@@ -164,6 +170,12 @@ class QAChain:
         Answer a question based on context and chat history.
         Returns dict with answer and optionally sources.
         """
+        if self.llm is None:
+            return {
+                "answer": "Es ist kein LLM API-Key konfiguriert. LLM-Antworten sind deaktiviert.",
+                "question": question,
+            }
+
         # Build messages with chat history
         messages = [SystemMessage(content=self.system_prompt)]
         
@@ -476,7 +488,7 @@ WICHTIG FÜR EVALUIERUNG:
                 "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
                 "question": question,
                 "answer": answer,
-                "model": self.llm.model_name,
+                "model": self.model_name,
                 "context_length": len(context) if context else 0,
                 "chat_history_length": len(chat_history) if chat_history else 0
             }
@@ -809,4 +821,3 @@ WICHTIG FÜR EVALUIERUNG:
         result["used_chunks"] = ordered_docs
         
         return result
-

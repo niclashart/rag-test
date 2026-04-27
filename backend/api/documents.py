@@ -41,10 +41,22 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 MAX_UPLOAD_SIZE = int(os.getenv("MAX_UPLOAD_SIZE", "104857600"))  # 100MB
 
-embedder = Embedder()
-vector_store = VectorStore()
-chunker = Chunker()
-spec_extractor = SpecExtractor()
+_document_components = {
+    "embedder": None,
+    "vector_store": None,
+    "chunker": None,
+    "spec_extractor": None,
+}
+
+
+def get_document_components():
+    """Load ingestion components only when documents are ingested."""
+    if _document_components["embedder"] is None:
+        _document_components["embedder"] = Embedder()
+        _document_components["vector_store"] = VectorStore()
+        _document_components["chunker"] = Chunker()
+        _document_components["spec_extractor"] = SpecExtractor()
+    return _document_components
 
 
 class DocumentResponse(BaseModel):
@@ -197,6 +209,12 @@ def ingest_all_documents(
     
     for document in non_indexed_docs:
         try:
+            components = get_document_components()
+            embedder = components["embedder"]
+            vector_store = components["vector_store"]
+            chunker = components["chunker"]
+            spec_extractor = components["spec_extractor"]
+
             if document.status == "indexed":
                 continue
             
@@ -365,6 +383,12 @@ def ingest_document(
         return {"message": "Document already indexed", "document_id": document_id}
     
     try:
+        components = get_document_components()
+        embedder = components["embedder"]
+        vector_store = components["vector_store"]
+        chunker = components["chunker"]
+        spec_extractor = components["spec_extractor"]
+
         update_document_status(db, document_id, "processing")
         
         # Load document based on type
@@ -577,5 +601,3 @@ def get_chunk(
         )
     
     return chunk
-
-
